@@ -1,0 +1,213 @@
+#set($layout = "/layout/layoutNew.vm") 
+<script type="text/javascript" src="${pms.contextPath}/resources/js/calculate.js"></script>
+<script>
+    function saveDraft(){
+    	alert("暂存功能暂时未开发，请使用提交表单功能")
+    }
+	$(function(){
+		$("#collectMoneyCompany").change(function(){
+			var collectMoneyCompany = $("#collectMoneyCompany").val();
+			if(collectMoneyCompany == "") {
+				$("#needLoad").html('');
+			} else {
+				var url="${pms.contextPath}/projectEnd/queryListProjectList?collectMoneyCompany="+collectMoneyCompany;
+				$.ajaxSetup ({
+                	cache:false
+                });
+				layer.load();
+				$("#needLoad").html('');
+            	$("#needLoad").load(url,function(){
+            		layer.closeAll('loading');
+            		//layer.msg('查询成功', {icon:1,anim: 4 ,time: 1000});  
+            	});
+			}
+		});
+		
+		$("#submit_btn").click(function(){
+			var result = validateFrom();
+    		if(result){
+    			submitFrom();
+    		}
+    	});
+		function submitFrom(){
+			layer.load(2);
+			var attach =  $("#box").find("span").map(function(){
+                    	return $(this).html();
+                }).toArray();
+    		var processName = $.trim($("input[name='processName']").val())
+    		var params2 = {'processName': processName,'attachIds':attach,'shiCaogao':false};
+			var params=$("#projectEnd").serializeJSON();
+			params.common=params2;
+    		var params3=JSON.stringify(params);
+			$.ajax({
+        		type: "POST",
+        	    url: "/projectEnd/ajaxAddProcessAndProjectEnd",
+        	    data: params3,
+        	    error: function(){
+					layer.closeAll('loading');
+        			alert("服务器错误")
+        	    },
+        	    success: function(res){
+        	    	layer.closeAll('loading');
+        			if(res.code === 0){
+        				layer.msg('提交成功', {icon:1,anim: 4 ,time: 1500},function(){
+							window.location.href = "${pms.contextPath}/process/alreadySend";
+						});
+        			}else{
+        				alert("提交失败："+res.msg);
+        			}
+        		}
+        	});
+		}
+	});
+	
+	function validateFrom(){
+		var num=$("input[name='projectEndArr[][projectId]']").length;
+		if(num<=0){
+			alert("无数据，不可提交");
+			return false;
+		}
+		if(!validTd("realNum","上线人数不能为空")){
+    		return false;
+    	}
+		if(!validTd("payCount","应缴费人数不能为空")){
+    		return false;
+    	}
+		if(!validTd("chargeCount","收费人数不能为空")){
+    		return false;
+    	}
+		if(!validTd("laterPay","应收款金额为空，若没有请填写0")){
+    		return false;
+    	}
+		if(!validNote()){
+    		return false;
+    	}
+		return true;
+	}
+	//验证某一列项目是否非空
+    function validTd(tag,msg){
+    	var flag=true;
+    	$("input[name='projectEndArr[]["+tag+"]']").each(
+            function(i,ele){
+            	if($(ele).val()==""){
+        		 	alert('第'+(i+1)+'行'+msg);
+        			flag=false;
+        		 }
+            }
+    	);
+    	return flag;
+    }
+	
+	//验证备注：如应收款金额小于未到款金额，在这种情况下不能为空。
+	function validNote(){
+		var flag=true;
+		var num=$("input[name='notTotalPay']").length;
+		var noteArr=$("input[name='projectEndArr[][note]']");
+		var notTotalPayArr=$("input[name='notTotalPay']");
+		var laterPayArr=$("input[name='projectEndArr[][laterPay]']");
+		for(var i=0;i<num;i++){
+			if($(notTotalPayArr[i]).val()>$(laterPayArr[i]).val()){
+				if($(noteArr[i]).val()==""){
+            		alert("第"+(i+1)+"行应收款金额小于未到款金额，在这种情况下备注不能为空");
+					flag=false;
+            	}
+			}
+		}
+		return flag;
+	}
+</script>
+<form id="projectEnd">
+    <div class="new_tableBox clear" style="display: block;">
+        <div class="tablewrap" style="margin-right: 185px; display: block;">
+            <div class="table_tit">项目完结单</div>
+            <div class="clear" style="overflow-x: scroll;padding: 10px 0px 50px 0px;">
+                <table border="1" cellspacing="0" cellpadding="0" width="1800px" class="table fl">
+                    <tr>
+                        <td colspan="2" class="gray">单位名称</td>
+                        <td colspan="6">
+                            <select id="collectMoneyCompany">
+                                <option value="">请选择</option>
+    							#foreach($company in $companyList)
+    							<option value="$company.name">$company.name</option>
+    							#end
+                            </select>
+                        </td>
+                        <td colspan="2" class="gray">截止月份</td>
+                        <td colspan="6"><input type="text" value="$projectEndMonth" readonly = "readonly"></td>
+                    </tr>
+					<table id = "needLoad" border="1" cellspacing="0" cellpadding="0" width="1800px" class="table fl">
+				 
+					</table>
+                 </table>
+				 
+                <div class="fr" style="width: 50px;"></div>
+            </div>
+            <div style="color:#f00; padding-top: 15px;">
+                <p>1、选择单位名称后，系统生成当月此单位结束的所有项目，生成项目完结单</p>
+                <p>2、项目结束后未到款项金额应为零，如有后期回款，请将回款金额填写在“应收款金额”单元格，并在备注中写清回款时间</p>
+            </div>
+    
+        </div>
+        <div class="new_beizhu fr mt10">
+            <div class="beizhu_btn">
+                <a href="javascript:;">备注</a>
+            </div>
+            <div class="beizhu_tex mr10">
+                <textarea placeholder="禁止填写，请使用表单中的备注" disabled="disabled"></textarea>
+            </div>
+        </div>
+    </div>
+</form>
+<!--额外三个/div，关闭的是layoutNew未关闭的标签-->
+</div>
+</div>
+</div>
+<!--下面是弹窗div -->
+<!--查看流程-->
+<span style="display:none" id="cklcname">项目完结流程</span>
+<div class="liuchengBox" id="cklc" style="display:none">
+	<div class="liucheng_list clear" style="height:400px;width:950px">
+		<div class="list2">
+			<ul class="clear fl">
+				<li title=""></li>
+				<li title=""></li>
+				<li title=""></li>
+				<li title=""></li>
+				<li title=""></li>
+			</ul>
+			#*
+			<div class="fl">
+				<div style="margin-bottom:75px;" class="caiwu">
+					<div class="caiwu_list" style="display: none;">
+						<h1>财务部</h1>
+						<ul>
+							<li>田文强</li>
+							<li>田文</li>
+							<li>文强</li>
+							<li>田强</li>
+							<li>田文强</li>
+							<li>田文强</li>
+							<li>田文强</li>
+						</ul>
+					</div>
+				</div>
+				<div></div>
+			</div>
+			*#
+		</div>
+	</div>
+</div>
+
+<div class="prompt_cont_box" id="upload" style="display:none">
+	<div class="prompt_cont clear">
+		<div class="prompt_cont_text">
+			<p>您可以点击按钮上传文件或图片(文件大小为50MB以内)</p>
+			<div class="From mt10 mb10">
+				<div>
+					<input type="file" name="file" id = "file" lay-type="file"  class="layui-upload-file">
+					<span style="padding-left: 10px;color: red;font-size: 14px;" id="uploadMsg"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

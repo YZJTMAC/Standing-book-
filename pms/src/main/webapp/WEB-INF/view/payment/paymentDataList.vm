@@ -1,0 +1,71 @@
+#set($layout = "/layout/layoutAdmin.vm") 
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab_one">
+	<thead>
+		<tr>
+			<td class="Center p0">序号</td>
+			<td>交易日期</td>
+			<td>汇款人</td>
+			<td>到账银行</td>
+			<td>到账金额</td>
+			<td>提前开票到款</td>
+			<td>开票状态</td>
+		</tr>
+	</thead>
+	<tbody>
+		#foreach( $payment in $paymentList.list )
+    		<tr #if($velocityCount % 2 == 0) class="f9" #end>
+    			<td class="Center p0">$velocityCount</td>
+				#if(${payment.extInfo.process})
+				<td><a target="_blank" href="${pms.contextPath}/processDetail/all?type=3&id=$!payment.extInfo.process.id"> $date.format($!payment.traTime) </a></td>
+				#else
+				<td><a href="javascript:;" onclick="javascript:layer.msg('抱歉！旧项目的数据无法查看表单信息')"> $date.format($!payment.traTime) </a></td>	
+				#end
+				#if(${payment.extInfo.process})
+				<td><a target="_blank" href="${pms.contextPath}/processDetail/all?type=3&id=$!payment.extInfo.process.id"> $!payment.remitter </a></td>
+    			#else
+				<td><a href="javascript:;" onclick="javascript:layer.msg('抱歉！旧项目的数据无法查看表单信息')"> $!payment.remitter </a></td>		
+				#end
+				#if(${payment.extInfo.process})
+				<td><a target="_blank" href="${pms.contextPath}/processDetail/all?type=3&id=$!payment.extInfo.process.id"> $!payment.payBank </a></td>
+				#else
+				<td><a href="javascript:;" onclick="javascript:layer.msg('抱歉！旧项目的数据无法查看表单信息')"> $!payment.payBank </a></td>		
+				#end
+				<td>$!payment.amount</td>
+    			#if($payment.advancePay==1)
+					<td>是</td>
+				#elseif($payment.advancePay==2)
+					<td>否</td>	
+				#else
+					<td>——</td>	
+				#end
+				#if($payment.hasInvoice==1)
+					<td>已开票</td>
+				#elseif($payment.hasInvoice==2)
+					<td>未开票</td>
+				#else
+					<td>——</td>
+				#end
+    		</tr>
+		 #end
+	</tbody>
+</table>
+<div class="Center">共 $!paymentList.totalCount 条<div id="payfenye" style="display:inline-block;margin:0 10px;"></div></div>
+
+<script >
+layui.use('laypage', function(){
+  	var laypage = layui.laypage;
+    laypage({
+        cont: 'payfenye'
+        ,pages: $!paymentList.totalPage
+		,curr: $!paymentList.currPage
+        ,skin: '#1E9FFF'
+		,jump: function(obj, first){
+          	if(!first){
+				reloadContent2(obj.curr);
+          	}
+        }
+  	});
+})
+
+</script>

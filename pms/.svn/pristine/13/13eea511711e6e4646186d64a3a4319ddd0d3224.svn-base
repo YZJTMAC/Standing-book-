@@ -1,0 +1,256 @@
+<div class="content_warp">
+	<div class="content_tit_box">
+		<div class="w1230 clear">
+			<div class="content_tit fl clear">
+				<a href="javascript:;">工作台</a> ##<i></i>
+				##<a href="javascript:;">我的项目</a>
+			</div>
+		</div>
+	</div>
+	<!--内容star-->
+	<div class="content w1230">
+		<div class="clear">
+			<div class="work_tab_list w460 fl">
+				#foreach($sc in $scList)
+				<a #if($sc.icon == "one" || $sc.icon == "two" || $sc.icon == "three") target="_blank" #end href="$!sc.url" id="$sc.id" class="work_tab $sc.icon">$sc.name</a>
+				#end
+				<a href="javascript:;" id="quick" class="work_tab eight last">添加快捷方式</a>
+			</div>
+			<div class="fr w750">
+				<div class="list_tab h235">
+					<div class="list_tab_tit clear">
+						<div class="tab_tit fl"> <span>我的项目(#if($proList) $!{proList.totalCount} #else 0 #end 项)</span> </div>
+						<div class="tab_more fr">
+							#if($myUtil.hasPriByFunCode("project:my_project",$psList))
+							<a href="/project/all" style="display: block;">更多>></a>
+							#else
+							<a href="javascript:alert('您没有权限访问!');" style="display: block;">更多>></a>
+							#end
+						</div>
+					</div>
+					<div class="list_tab_box" style="display: block;">
+						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<tbody>
+								#foreach($project in $proList.list)
+								<tr>
+									<td>$project.serialNumber</td>
+									<td>
+										<a target="_blank" href="${pms.contextPath}/project/page?id=$project.id" title="$project.name">$myUtil.substring($project.name,25)</a>  ##最多25zi
+									</td>
+									<td>#if($project.type == 1)国培 #elseif($project.type == 2)地培 #else --- #end &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+									<td>$date.format("yyyy-MM-dd",$project.genTime)</td>
+									<td #if($project.status == 2) style="color: #f57c00;" #else style="color: #2EA4C1;" #end> #if($project.status == 2) 已结束 #else 进行中 #end </td>
+								</tr>
+								#end
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div><!--class="clear"结束 -->
+		<div class="mt20 clear">
+			<div class="fl w605">
+				<div class="list_tab h300">
+					<div class="list_tab_tit clear">
+						<div class="tab_tit fl">
+							<a href="javascript:;" class="active">待发事项(#if($needSend) $!{needSend.totalCount} #else 0 #end 项)</a> |
+							<a href="javascript:;">已发事项(#if($alreadySend) $!{alreadySend.totalCount} #else 0 #end 项)</a>
+						</div>
+						<div class="tab_more fr">
+							#if($myUtil.hasPriByFunCode("team:draft",$psList))
+							<a href="/process/needSend" style="display: block;">更多>></a>
+							#else
+							<a href="javascript:alert('您没有权限访问!');" style="display: block;">更多>></a>
+							#end
+							#if($myUtil.hasPriByFunCode("team:send",$psList))
+							<a href="${pms.contextPath}/process/alreadySend" >更多>></a>
+							#else
+							<a href="javascript:alert('您没有权限访问!');" >更多>></a>
+							#end
+						</div>
+					</div>
+					<div>
+						<div class="list_tab_box pt0" style="display: block;">
+							<table width="100%" border="0" cellspacing="0" cellpadding="0">
+								<thead>
+									<tr>
+										<td>标题</td>
+										<td>创建时间</td>
+										<td>状态</td>
+									</tr>
+								</thead>
+								<tbody>
+									#foreach($nsprocess in $needSend.list)
+									<tr>
+    									<td>
+    										<a target="_blank" href="${pms.contextPath}/processDetail/all?type=4&id=$nsprocess.id" title="$nsprocess.title">$myUtil.substring($nsprocess.title,28)</a>  ##最多25zi
+    									</td>
+    									<td>$date.format($nsprocess.lastStepTime)</td>
+    									<td #if($nsprocess.status < 2) style="color: #2EA4C1;" #else style="color: #f57c00;" #end> #if($nsprocess.status == 0)草稿 #elseif($nsprocess.status == 1)已撤销 #elseif($nsprocess.status == 2)被退回 #else 未知 #end </td>
+									</tr>
+									#end
+								</tbody>
+							</table>
+						</div>
+						<div class="list_tab_box pt0">
+							<table width="100%" border="0" cellspacing="0" cellpadding="0">
+								<thead>
+									<tr>
+										<td>标题</td>
+										<td>发起时间</td>
+										<td>当前待办人</td>
+									</tr>
+								</thead>
+								<tbody>
+									#foreach($asprocess in $alreadySend.list)
+									<tr>
+    									<td>
+    										<a target="_blank" href="${pms.contextPath}/processDetail/all?type=3&id=$asprocess.id" title="$asprocess.title">$myUtil.substring($asprocess.title,28)</a>  ##最多25zi
+    									</td>
+    									<td>$date.format($asprocess.startTime)</td>
+    									<td #if($asprocess.status != 4) style="color: #2EA4C1;" #end> #if($asprocess.status == 4) 已结束   #else $asprocess.extInfo.realName #end </td>
+									</tr>
+									#end
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="fr w605">
+				<div class="list_tab h300">
+					<div class="list_tab_tit clear">
+						<div class="tab_tit fl">
+							<a href="javascript:;" class="active">待办事项(#if($needDealList) $!{needDealList.totalCount} #else 0 #end 项)</a> |
+							<a href="javascript:;">已办事项(#if($alreadyDealList) $!{alreadyDealList.totalCount} #else 0 #end 项)</a>
+						</div>
+						<div class="tab_more fr">
+							#if($myUtil.hasPriByFunCode("team:need",$psList))
+							<a href="/process/needDeal" style="display: block;">更多>></a>
+							#else
+							<a href="javascript:alert('您没有权限访问!');" style="display: block;">更多>></a>
+							#end
+							#if($myUtil.hasPriByFunCode("team:already",$psList))
+							<a href="/process/alreadyDeal" >更多>></a>
+							#else
+							<a href="javascript:alert('您没有权限访问!');" >更多>></a>
+							#end
+						</div>
+					</div>
+					<div>
+						<div class="list_tab_box pt0" style="display: block;">
+							<table width="100%" border="0" cellspacing="0" cellpadding="0">
+								<thead>
+									<tr>
+										<td>标题</td>
+										<td>发起时间</td>
+										<td>发起人</td>
+										<td>操作</td>
+									</tr>
+								</thead>
+								<tbody>
+									#foreach($ndprocess in $needDealList.list)
+									<tr>
+										<td>
+											<a target="_blank" href="${pms.contextPath}/processDetail/all?type=1&id=$ndprocess.processId&needId=$ndprocess.id" title="$ndprocess.processName">$myUtil.substring($ndprocess.processName,28)</a>
+										</td>
+										<td>$date.format($ndprocess.startTime)</td>
+										<td>$!{ndprocess.createUserName}</td>
+										<td>
+											<a target="_blank" href="${pms.contextPath}/processDetail/all?type=1&id=$ndprocess.processId&needId=$ndprocess.id" #if($ndprocess.type == 2) style="color: #2EA4C1;" #else style="color: #f57c00;" #end >#if($ndprocess.type == 2) 查阅  #else 审批  #end</a>
+										</td>
+									</tr>
+									#end
+								</tbody>
+							</table>
+						</div>
+						<div class="list_tab_box pt0">
+							<table width="100%" border="0" cellspacing="0" cellpadding="0">
+								<thead>
+									<tr>
+										<td>标题</td>
+										<td>处理时间</td>
+										<td>发起人</td>
+										<td>分类</td>
+									</tr>
+								</thead>
+								<tbody>
+									#foreach($adhprocess in $alreadyDealList.list)
+									<tr>
+										<td>
+											<a target="_blank" href="${pms.contextPath}/processDetail/all?type=2&id=$adhprocess.processId" title="${adhprocess.processEntity.title}">$myUtil.substring(${adhprocess.processEntity.title},28)</a>
+										</td>
+										<td>$date.format($adhprocess.dealTime)</td>
+										<td>$!{adhprocess.processEntity.createUserName}</td>
+										<td>
+											#if($adhprocess.type == 2) 查阅  #else 审批  #end
+										</td>
+									</tr>
+									#end
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--内容end-->
+</div><!--content_warp结束 -->
+</div><!--Warp clear结束 -->
+
+<div id="mask"></div>
+
+<div id="quick_pop" class="pop w860">
+	<div class="prompt_tit_box clear">
+		<span class="prompt_tit fl">添加快捷</span>
+		<a href="javascript:window.location.reload();" class="close prompt_close fr" ></a>
+	</div>
+	<div class="quick_cont_box">
+		<div class="quick_cont clear">
+			<div class="quick_cont_l fl">
+				<a href="javascript:;" class="active">全部</a>
+			</div>
+			<div class="quick_cont_r fr">
+
+				<div class="quick_tab_list">
+					#foreach($menu in $menuMap.get("menu"))
+					#if($menu.parentId != 39)##个人中心下的菜单没有设计快捷方式
+    				<a href="javascript:;" class="work_tab $menu.icon" id = "$menu.id">$menu.name<span></span></a>
+					#end
+    				#end
+							
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+
+function editShortcut(id){
+	layer.load(2);
+	$.ajax({
+		type: "POST",
+	    url: "/index/editShortcut",
+	    data: {'menuId':id},
+		contentType: "application/x-www-form-urlencoded",
+	    error: function(){
+			alert("服务器错误",function(){
+				window.location.reload();
+			})
+			layer.closeAll('loading');
+	    },
+	    success: function(res){
+	    	layer.closeAll('loading');
+			if(res.code === 0){
+				layer.msg(res.msg, {time: 2000});   
+			}else{
+				alert(res.msg,function(){
+    				window.location.reload();
+    			});
+			}
+		}
+	});
+}
+</script>

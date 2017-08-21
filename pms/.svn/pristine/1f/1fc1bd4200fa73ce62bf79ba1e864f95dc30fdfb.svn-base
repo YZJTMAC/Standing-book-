@@ -1,0 +1,45 @@
+#set($layout = "/layout/layoutTest.vm") 
+	<p>这是一个showUser界面 ${user.email}</p>	
+	<p>Title: ${user.email}</p>
+	<table>
+    <tr><td bgcolor="#CC00FF">${user.id}</td></tr>
+    <tr><td bgcolor="#CC00FF">${user.realname}</td></tr>
+    <tr><td bgcolor="#CC00FF">${user.password}</td></tr>
+    <tr><td bgcolor="#CC00FF">${user.sex}</td></tr>
+    <tr><td bgcolor="#CC00FF">$!{user.email}</td></tr>
+	</table>
+	
+<div style=" height: 300px;background: aliceblue;padding: 10px 10px 10px 10px;">
+	<input type="text" value="" style="width: 509px;height: 30px;" id="args"/>
+	<a href="javascript:;" class="layui-btn" target="_blank" onclick="dexport();return false;">测试</a>
+</div>
+<script >
+var layer;
+var $;
+layui.use('layer', function(){
+  layer = layui.layer; 
+	$=layui.jquery;
+	
+});
+function dexport() {
+	layer.load(2);
+	$.ajax({
+		type: "POST",
+	    url: "/a/importOldProject2",
+	    data: {'args':$('#args').val()},
+		dataType: "json",
+	    error: function(){
+	    	layer.closeAll('loading');
+			alert("服务器错误")
+	    },
+	    success: function(res){
+	    	layer.closeAll('loading');
+			if(res.code === 0){
+				layer.alert(res.msg)
+			}else{
+				layer.alert("出错了："+ res.msg)
+			}
+		}
+	});
+}
+</script>	

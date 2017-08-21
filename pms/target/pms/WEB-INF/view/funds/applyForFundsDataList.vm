@@ -1,0 +1,194 @@
+#set($layout = "/layout/layoutAdmin.vm") 
+<head>
+    <link rel="stylesheet" type="text/css" href="${pms.contextPath}/resources/css/updates.css" />
+    <script src="${pms.contextPath}/resources/js/pop.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" src="${pms.contextPath}/resources/js/cascade.js"></script>
+</head>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab_one">
+	<thead>
+		<tr>
+			<td class="Center p0">序号</td>
+			<td>申请日期</td>
+			<td>发起人</td>
+			<td>收款人</td>
+			<td>金额</td>
+			<td>费用类型</td>
+			<td>付款状态</td>
+			<td>操作</td>
+		</tr>
+	</thead>
+	<tbody>
+		#foreach( $fund in $fundsList.list )
+    		<tr #if($velocityCount % 2 == 0) class="f9" #end>
+    			<td class="Center p0">$velocityCount</td>
+				#if($fund.extInfo.process)
+				<td><a target="_blank" href="${pms.contextPath}/processDetail/all?type=3&id=$fund.extInfo.process.id"> $date.format($!fund.createTime) </a></td>
+				#else
+				<td><a href="javascript:;" onclick="javascript:layer.msg('抱歉！旧项目的数据无法查看表单信息')"> $date.format($!fund.createTime) </a></td>		
+				#end
+				#if($fund.extInfo.process)
+				<td><a target="_blank" href="${pms.contextPath}/processDetail/all?type=3&id=$fund.extInfo.process.id"> $!{fund.extInfo.process.createUserName} </a></td>
+				#else
+				<td><a href="javascript:;" onclick="javascript:layer.msg('抱歉！旧项目的数据无法查看表单信息')"> $!{fund.extInfo.process.createUserName} </a></td>		
+				#end
+				#if($fund.extInfo.process)
+				<td><a target="_blank" href="${pms.contextPath}/processDetail/all?type=3&id=$fund.extInfo.process.id"> $!fund.recName </a></td>
+				#else
+				<td><a href="javascript:;" onclick="javascript:layer.msg('抱歉！旧项目的数据无法查看表单信息')"> $!fund.recName </a></td>		
+				#end
+				<td>$!fund.applyAmount</td>
+    			#if($fund.type==1)
+					<td>借款</td>
+				#elseif($fund.type==2)
+					<td>报销</td>
+				#else
+                    <td></td>
+				#end
+				#if($fund.wonPay==0)
+					<td>审批中</td>
+				#elseif($fund.wonPay==1)
+					<td>未付款</td>
+				#elseif($fund.wonPay==2)
+					<td>已付款($!fund.payAmount)</td>
+				#elseif($fund.wonPay==3)
+					<td>已完成</td>
+				#else
+                    <td></td>
+				#end
+				<td class="jfsq_operation_btn" value="$!fund.id" rownum="$velocityCount" wonpay="$!fund.wonPay" >
+					<a class="#if($canPay==1&&($fund.wonPay==1||$fund.wonPay==2))orange operation_record #end">付款登记</a>
+					<a style="display:none;">付款登记</a>
+					<a class="#if($fund.wonPay==2||$fund.wonPay==3)blue #end operation_rayment">查看记录</a>
+				</td>
+    		</tr>
+		 #end
+	</tbody>
+</table>
+<div class="Center">共 $!fundsList.totalCount 条<div id="affenye" style="display:inline-block;margin:0 10px;"></div></div>
+	<div class="pop w355" id="record_pop">
+		<div class="prompt_tit_box clear">
+			<span class="prompt_tit fl">请输入本次付款金额</span>
+		</div>
+		<div class="prompt_cont_box">
+			<div class="prompt_cont clear">
+				<div class="prompt_cont_text Center">
+					<input type="text" id = "pay_amount" class="NumDecText" value="" style="width: 80%;"/>
+					<input type="hidden" id = "fund_id">
+					<input type="hidden" id = "row_num">
+					<p class="Right m_auto" class="NumDecText" style="width: 80%;">操作人：$!{operator}</p>
+				</div>
+			</div>
+		</div>
+		<div  id = "tip1_div">
+			<font id = "tip1" color = "red"></font>
+        </div>
+		<div class="prompt_btn_box Right">
+			<a href="javascript:;" class="prompt_btn_true" id = "pay_confirm">确认</a>
+			<a href="javascript:;" class="closeBtn prompt_btn_false" id = "pay_cancle">取消</a>
+		</div>
+	</div>
+	<div class="pop w860" id="rayment_pop" style="position: inherit;display:none">
+		<div class="prompt_cont"  id="load_funds_pay">
+		
+	</div>
+	</div>
+<script >
+    layui.use('laypage', function(){
+      	var laypage = layui.laypage;
+        laypage({
+            cont: 'affenye'
+            ,pages: $!fundsList.totalPage
+    		,curr: $!fundsList.currPage
+            ,skin: '#1E9FFF'
+    		,jump: function(obj, first){
+              	if(!first){
+    				reloadContent2(obj.curr);
+              	}
+            }
+      	});
+    })
+    $(".NumDecText").keyup(function(){
+    		 $(this).val($(this).val().replace(/[^0-9.]/g,'').replace(/^\./g,"").replace(/\.{2,}/g,".").replace(".","$#$").replace(/\./g,"").replace("$#$",".").replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'));
+    })
+	$(".operation_record").click(function(){
+		var fundId = $(this).parent().attr("value");
+		$("#fund_id").val(fundId);
+		var rowNum = $(this).parent().attr("rownum");
+		$("#row_num").val(rowNum);
+	});
+	$(".operation_rayment").click(function(){
+		var wonPay = $(this).parent().attr("wonpay");
+		if(wonPay==0||wonPay==1)return;
+		var fundId = $(this).parent().attr("value");
+		$.ajaxSetup ({
+			    	cache:false
+			    });
+		$("#load_funds_pay").html("正在加载数据……")
+		$("#load_funds_pay").load("${pms.contextPath}/applyForFundsList/fundsPayTable?fundId="+fundId);
+		layer.open({
+	  			  type: 1,
+	  			  title: '付款详情',
+	  			  closeBtn: 0,
+	  			  area:  ['860px', '600px'],
+				  btnAlign: 'c',
+				  btn: ['关闭'],
+				  yes: function(index, layero){
+					layer.close(index);
+				  },
+	  			  shadeClose: false,
+	  			  content: $('#rayment_pop')
+	  			});
+	});
+	$('.operation_record').pop({
+		selectors:{
+			pop:'#record_pop',
+		}
+	})
+	/*$('.operation_rayment').pop({
+		selectors:{
+			pop:'#rayment_pop',
+		}
+	})*/
+	$("#pay_cancle").click(function(){
+		$("#pay_amount").val("");
+		$("#tip1_div").hide();
+		$("#pay_amount").css("border","1px solid gray");
+	});
+	$("#pay_amount").focus(function(){
+		$("#tip1_div").hide();
+		$("#pay_amount").css("border","1px solid gray");
+	});
+	$("#pay_confirm").click(function(){
+		var amount = $("#pay_amount").val();
+		var fundid = $("#fund_id").val();
+		if(amount=="")return;
+		$.ajax({
+    		type: "POST",
+			contentType: "application/x-www-form-urlencoded" ,
+			data: {"fundId":fundid,"amount":amount},
+    	    url: "/applyForFundsList/payFund",
+    	    error: function(){
+				
+    	    },
+    	    success: function(res){
+    			if(res.code === 0){
+    				var wonPay = res.msg ;
+            		var rowNum = $("#row_num").val();
+					$(".tab_one").find("tr").eq(rowNum).find("td").eq(6).html(wonPay);
+					$(".tab_one").find("tr").eq(rowNum).find("td").eq(7).find("a").eq(2).addClass("blue operation_rayment");
+					$(".tab_one").find("tr").eq(rowNum).find("td").eq(7).attr({"wonpay":wonPay});
+					if(wonPay=="已完成"){
+						$(".tab_one").find("tr").eq(rowNum).find("td").eq(7).find("a").eq(0).hide();
+						$(".tab_one").find("tr").eq(rowNum).find("td").eq(7).find("a").eq(1).show();
+					}
+					$("#record_pop").hide();
+					$("#pay_amount").val("");
+    			}else{
+					$("#tip1_div").show();
+					$("#tip1").html(res.msg);
+					$("#pay_amount").css("border","1px solid red");
+    			}
+    		}
+    	});
+	});
+</script>

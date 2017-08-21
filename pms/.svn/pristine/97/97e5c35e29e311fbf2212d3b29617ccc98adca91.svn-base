@@ -1,0 +1,166 @@
+#set($layout = "/layout/layoutNew.vm")
+<form id = "paymentForm">
+<div class="new_tableBox clear" style="display: block;">
+    <div class="tablewrap" style="margin-right: 185px;display: block;">
+        <div><a class="layui-btn layui-btn-normal layui-btn-small" id="import_btn">从Excel导入</a><a href="${pms.contextPath}/file/downloadTemplate?path=${pms.contextPath}/resources/file/payment_template.xlsx" target="_blank" class="layui-btn layui-btn-mini layui-btn-radius layui-btn-primary">模板下载</a></div>
+        <div class="table_tit">到款表</div>
+		<div id="contentforload">
+        
+		</div>
+    </div>
+    <div class="new_beizhu fr mt10">
+        <div class="beizhu_btn">
+            <a href="javascript:;">备注</a>
+        </div>
+        <div class="beizhu_tex mr10">
+            <textarea placeholder="禁止填写，请使用表单中的备注" disabled="disabled"></textarea>
+        </div>
+    </div>
+</div>
+</form>
+</div>
+<!--内容end-->
+</div>
+</div>
+<!--下面是弹窗div -->
+<!--查看流程-->
+<span style="display:none" id="cklcname">到款分配流程</span>
+<div class="liuchengBox" id="cklc" style="display:none">
+	<div class="liucheng_list clear" style="height:222px;width:900px">
+		<div class="list3">
+			<ul class="clear fl">
+				<li title=""></li>
+				<li title=""></li>
+				<li title=""></li>
+			</ul>
+		</div>
+	</div>
+</div>	
+
+<div class="prompt_cont_box" id="upload" style="display:none">
+	<div class="prompt_cont clear">
+		<div class="prompt_cont_text">
+			<p>您可以点击按钮上传文件或图片(文件大小为50MB以内)</p>
+			<div class="From mt10 mb10">
+				<div>
+					<input type="file" name="file" id = "file" lay-type="file"  class="layui-upload-file">
+					<span style="padding-left: 10px;color: red;font-size: 14px;" id="uploadMsg"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="prompt_cont_box" id="import" style="display:none">
+	<div class="prompt_cont clear">
+		<div class="prompt_cont_text">
+			<p>您可以点击按钮上传要导入的excel文件(大小为50MB以内)</p>
+			<div class="From mt10 mb10">
+				<div>
+					<input type="file" name="file" id = "file2" lay-ext="xls|xlsx"  class="layui-upload-file">
+					<span style="padding-left: 10px;color: red;font-size: 14px;" id="uploadMsg2"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+	
+<script>
+$(function(){
+	$("#contentforload").html("正在加载数据……")
+	$("#contentforload").load('${pms.contextPath}/payment/addPaymentDataList?args=');
+	
+	//上传附件按钮的弹窗
+	$('#import_btn').on('click',function(){
+	
+		layer.open({
+		  type: 1,
+		  title: '导入文件',
+		  closeBtn: 1,
+		  area: '350px',
+		  skin: 'layui-layer-lan',
+		  offset: ['60px', '250px'],
+		  shadeClose: false,
+		  content: $('#import')
+		});
+		console.log("-----!!!")
+	})
+	//提交触发的方法
+	$("#submit_btn").click(function(){
+			var verify = validate();
+			if(!verify){
+				return;
+			}
+		confirm("确认提交表单吗？" , function(){
+			layer.close(layer.index)
+			layer.load(2);
+			var attach =  $("#box").find("span").map(function(){
+                                	return $(this).html();
+                            }).toArray();
+			var processName = $.trim($("input[name='processName']").val())
+			var param = {'processName': processName,'attachIds':attach,'shiCaogao':false};
+			var params = JSON.stringify($.mergeJsonObject($("#paymentForm").serializeJSON(),param));
+			var paramsPayment = JSON.stringify($.mergeJsonObject($("#paymentForm").serializeJSON() ));
+            $.ajax({
+            	type: "POST",
+                url: "/payment/ajaxAddPayment",
+                data: params,
+                error: function(){
+            		alert("服务器错误")
+            		layer.closeAll('loading');
+                },
+                success: function(res){
+					layer.closeAll('loading');
+            		if(res.code === 0){
+        				layer.msg('提交成功', {icon:1,anim: 4 ,time: 1500},function(){
+							window.location.href = "${pms.contextPath}/process/alreadySend";
+						});
+            		}else{
+            			alert("提交失败："+res.msg);
+				//在局部改变load方法的contentType值
+            			$.ajaxSetup ({
+							contentType: "application/x-www-form-urlencoded",
+							cache: false
+						});
+            			$("#contentforload").html("正在加载数据……")
+            			$("#contentforload").load('${pms.contextPath}/payment/displyPaymentDataLits',{"params":paramsPayment},function(){});
+            			$.ajaxSetup ({
+							contentType: "application/json"
+					    });
+            		}
+            	}
+            });
+    	})
+	});
+});
+layui.use('upload', function(){
+  	layui.upload({
+		elem: '#file2',
+  		url: '/file/importAjax',
+		title: '导入文件',
+		before: function(input){
+			$('#uploadMsg2').html('上传中。。。请等待');
+			layer.load(1);
+      	},
+  		success: function(res){
+  			$('#uploadMsg2').html('');
+  			layer.closeAll('loading'); //上传成功返回值，必须为json格式
+  			if(res.result == true){
+				$('#uploadMsg2').html('上传成功，正在解析。。。');
+  				//alert(res.filePath);
+				$.ajaxSetup ({
+                	cache:false
+                });
+            	$("#contentforload").html("正在加载数据……")
+            	$("#contentforload").load('${pms.contextPath}/payment/addPaymentDataList?args='+res.filePath);
+  				layer.closeAll()
+  			} else {
+  				alert(res.msg);
+				$('#uploadMsg2').html('');
+  			}
+  		}
+	});
+})
+function saveDraft(){
+	alert("暂存功能暂时未开发，请使用提交表单功能")
+}
+</script>

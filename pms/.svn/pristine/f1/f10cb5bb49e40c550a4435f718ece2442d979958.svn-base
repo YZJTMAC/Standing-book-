@@ -1,0 +1,822 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.teacheredu.mapping.ProjectSummariesMapper" >
+  <resultMap id="BaseResultMap" type="cn.teacheredu.entity.ProjectSummariesEntity" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="project_id" property="projectId" jdbcType="INTEGER" />
+    <result column="project_company" property="projectCompany" jdbcType="VARCHAR" />
+    <result column="project_type" property="projectType" jdbcType="TINYINT" />
+    <result column="project_year" property="projectYear" jdbcType="INTEGER" />
+    <result column="project_provincial_id" property="projectProvincialId" jdbcType="VARCHAR" />
+    <result column="project_provincial" property="projectProvincial" jdbcType="VARCHAR" />
+    <result column="project_serial_number" property="projectSerialNumber" jdbcType="VARCHAR" />
+    <result column="project_name" property="projectName" jdbcType="VARCHAR" />
+    <result column="project_cooper_name" property="projectCooperName" jdbcType="VARCHAR" />
+    <result column="project_start_date" property="projectStartDate" jdbcType="TIMESTAMP" />
+    <result column="project_end_date" property="projectEndDate" jdbcType="TIMESTAMP" />
+    <result column="project_train_period" property="projectTrainPeriod" jdbcType="INTEGER" />
+    <result column="project_charge" property="projectCharge" jdbcType="DECIMAL" />
+    <result column="project_expected_num" property="projectExpectedNum" jdbcType="INTEGER" />
+    <result column="project_live_num" property="projectLiveNum" jdbcType="INTEGER" />
+    <result column="predict_total_amount" property="predictTotalAmount" jdbcType="DECIMAL" />
+    <result column="project_real_total_amount" property="projectRealTotalAmount" jdbcType="DECIMAL" />
+    <result column="project_status" property="projectStatus" jdbcType="TINYINT" />
+    <result column="project_protocol_name" property="projectProtocolName" jdbcType="VARCHAR" />
+    <result column="real_payment_amount" property="realPaymentAmount" jdbcType="DECIMAL" />
+    <result column="predict_later_payment" property="predictLaterPayment" jdbcType="DECIMAL" />
+    <result column="predict_receive_amount" property="predictReceiveAmount" jdbcType="DECIMAL" />
+    <result column="real_income_amount" property="realIncomeAmount" jdbcType="DECIMAL" />
+    <result column="pro_fund_proportion" property="proFundProportion" jdbcType="DECIMAL" />
+    <result column="later_fund_proportion" property="laterFundProportion" jdbcType="DECIMAL" />
+    <result column="pro_fund_amount" property="proFundAmount" jdbcType="DECIMAL" />
+    <result column="later_fund_amount" property="laterFundAmount" jdbcType="DECIMAL" />
+    <result column="real_fund_amount" property="realFundAmount" jdbcType="DECIMAL" />
+    <result column="nopay_fund_amount" property="nopayFundAmount" jdbcType="DECIMAL" />
+    <result column="predict_budget" property="predictBudget" jdbcType="DECIMAL" />
+    <result column="real_budget_amount" property="realBudgetAmount" jdbcType="DECIMAL" />
+    <result column="real_cost_amount" property="realCostAmount" jdbcType="DECIMAL" />
+    <result column="real_invoice_amount" property="realInvoiceAmount" jdbcType="DECIMAL" />
+    <result column="no_invoice_amount" property="noInvoiceAmount" jdbcType="DECIMAL" />
+    <result column="fund_error" property="fundError" jdbcType="DECIMAL" />
+    <result column="project_format" property="projectFormat" jdbcType="TINYINT" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="note" property="url" jdbcType="VARCHAR" />
+    <result column="project_charge_area" property="projectChargeArea" jdbcType="INTEGER" />
+    <result column="income_first_time" property="incomeFirstTime" jdbcType="TIMESTAMP" />
+    <result column="income_last_time" property="incomeLastTime" jdbcType="TIMESTAMP" />
+    <result column="over_first_time" property="overFirstTime" jdbcType="TIMESTAMP" />
+    <result column="over_last_time" property="overLastTime" jdbcType="TIMESTAMP" />
+    <result column="payment_first_time" property="paymentFirstTime" jdbcType="TIMESTAMP" />
+    <result column="payment_last_time" property="paymentLastTime" jdbcType="TIMESTAMP" />
+    <result column="funds_first_time" property="fundsFirstTime" jdbcType="TIMESTAMP" />
+    <result column="funds_last_time" property="fundsLastTime" jdbcType="TIMESTAMP" />
+    <result column="invoice_first_time" property="invoiceFirstTime" jdbcType="TIMESTAMP" />
+    <result column="invoice_last_time" property="invoiceLastTime" jdbcType="TIMESTAMP" />
+    <result column="budget_first_time" property="budgetFirstTime" jdbcType="TIMESTAMP" />
+    <result column="budget_last_time" property="budgetLastTime" jdbcType="TIMESTAMP" />
+    <result column="summary_first_time" property="summaryFirstTime" jdbcType="TIMESTAMP" />
+    <result column="summary_last_time" property="summaryLastTime" jdbcType="TIMESTAMP" />
+    <result column="total" property="total" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, project_id, project_company, project_type, project_year, project_provincial_id, project_provincial, 
+    project_serial_number, project_name, project_cooper_name, project_start_date, project_end_date, 
+    project_train_period, project_charge, project_expected_num, project_live_num, predict_total_amount, 
+    project_real_total_amount, project_status, project_protocol_name, real_payment_amount, predict_later_payment, 
+    predict_receive_amount, real_income_amount, pro_fund_proportion, later_fund_proportion, 
+    pro_fund_amount, later_fund_amount, real_fund_amount, nopay_fund_amount, predict_budget, 
+    real_budget_amount, real_cost_amount, real_invoice_amount, no_invoice_amount, fund_error, 
+    project_format, url, note, project_charge_area, income_first_time, income_last_time, over_first_time, over_last_time, 
+    payment_first_time, payment_last_time, funds_first_time, funds_last_time, invoice_first_time, 
+    invoice_last_time, budget_first_time, budget_last_time, summary_first_time, summary_last_time
+  </sql>
+  <sql id="Query_Column_List" >
+  	<if test="totalFlag == -1">count(1) total</if>
+	<if test="totalFlag != -1">
+    id, project_id, project_company, project_type, project_year, project_provincial_id, project_provincial, 
+    project_serial_number, project_name, project_cooper_name, project_start_date, project_end_date, 
+    project_train_period, project_charge, project_expected_num, project_live_num, predict_total_amount, 
+    project_real_total_amount, project_status, project_protocol_name, real_payment_amount, predict_later_payment, 
+    predict_receive_amount, real_income_amount, pro_fund_proportion, later_fund_proportion, 
+    pro_fund_amount, later_fund_amount, real_fund_amount, nopay_fund_amount, predict_budget, 
+    real_budget_amount, real_cost_amount, real_invoice_amount, no_invoice_amount, fund_error, 
+    project_format, url, note, project_charge_area, income_first_time, income_last_time, over_first_time, over_last_time, 
+    payment_first_time, payment_last_time, funds_first_time, funds_last_time, invoice_first_time, 
+    invoice_last_time, budget_first_time, budget_last_time, summary_first_time, summary_last_time
+    </if>
+  </sql>
+  <sql id = "Where_Clause">
+  	<where>
+        <if test="companyListM != null">
+	        and project_company in 
+	        <foreach item="item" collection="companyListM" open="(" separator="," close=")">
+				#{item,jdbcType=VARCHAR}
+			</foreach>
+        </if>
+      	<if test="provincial != null">
+	        and project_provincial_id = #{provincial,jdbcType=INTEGER}
+      	</if>
+      	<if test="chargeArea != null">
+	        and project_charge_area = #{chargeArea,jdbcType=INTEGER}
+      	</if>
+  		<if test="type == 1 ">
+  			and project_type = #{projectType,jdbcType=TINYINT}
+  		</if>
+  		<if test="type == 2 ">
+  			and project_year = #{projectYear,jdbcType=INTEGER}
+  		</if>
+  		<if test="type == 3 ">
+  			and project_provincial_id = #{projectProvincialId,jdbcType=INTEGER}
+  		</if>
+  		<if test="type == 4 ">
+  			and project_serial_number = #{projectSerialNumber,jdbcType=VARCHAR}
+  		</if>
+  		<if test="type == 5 ">
+  			and project_name like concat(concat('%',#{projectName,jdbcType=VARCHAR}),'%')
+  		</if>
+  		<if test="type == 6 ">
+  			<if test="startDate != null">
+  				and project_start_date &gt;= #{startDate,jdbcType=TIMESTAMP}
+  			</if>
+  			<if test="endDate != null">
+  				and project_start_date &lt;= #{endDate,jdbcType=TIMESTAMP}
+  			</if>
+  		</if>
+  		<if test="type == 7 ">
+  			<if test="startDate != null">
+  				and project_end_date &gt;= #{startDate,jdbcType=TIMESTAMP}
+  			</if>
+  			<if test="endDate != null">
+  				and project_end_date &lt;= #{endDate,jdbcType=TIMESTAMP}
+  			</if>
+  		</if>
+  		<if test="type == 8 ">
+  			<if test="minAmount != null">
+  				and predict_total_amount &gt;= #{minAmount,jdbcType=DECIMAL}
+  			</if>
+  			<if test="maxAmount != null">
+  				and predict_total_amount &lt;= #{maxAmount,jdbcType=DECIMAL}
+  			</if>
+  		</if>
+  		<if test="type == 9 ">
+  			<if test="minAmount != null">
+  				and project_real_total_amount &gt;= #{minAmount,jdbcType=DECIMAL}
+  			</if>
+  			<if test="maxAmount != null">
+  				and project_real_total_amount &lt;= #{maxAmount,jdbcType=DECIMAL}
+  			</if>
+  		</if>
+  		<if test="type == 10 ">
+  			<if test="projectProtocolName == 1 ">
+  				and project_protocol_name is not null
+  			</if>
+  			<if test="projectProtocolName == 2 ">
+  				and project_protocol_name is null
+  			</if>
+  		</if>
+  		<if test="type == 11 ">
+  			<if test="startDate != null">
+  				and exists (select 1 from payment where payment.project_id = project_summaries.project_id and tra_time &gt;= #{startDate,jdbcType=TIMESTAMP} and ( exists(select 1 from process where process.object_id=payment.id and table_name="payment" and status = 4) or not exists(select 1 from process where process.object_id=payment.id and table_name="payment")))
+  			</if>
+  			<if test="endDate != null ">
+  				and exists (select 1 from payment where payment.project_id = project_summaries.project_id and tra_time &lt;= #{endDate,jdbcType=TIMESTAMP} and ( exists(select 1 from process where process.object_id=payment.id and table_name="payment" and status = 4) or not exists(select 1 from process where process.object_id=payment.id and table_name="payment")))
+  			</if>
+  		</if>
+  		<if test="type == 12 ">
+  			and predict_later_payment &gt;= 0
+  			<if test="startDate != null">
+  				and project_end_date &gt;= #{startDate,jdbcType=TIMESTAMP}
+  			</if>
+  			<if test="endDate != null">
+  				and project_start_date &lt;= #{endDate,jdbcType=TIMESTAMP}
+  			</if>
+  		</if>
+  		<if test="type == 13 ">
+  			<if test="minAmount != null">
+  				and predict_receive_amount &gt;= #{minAmount,jdbcType=DECIMAL}
+  			</if>
+  			<if test="maxAmount != null">
+  				and predict_receive_amount &lt;= #{maxAmount,jdbcType=DECIMAL}
+  			</if>
+  		</if>
+  		<if test="type == 14 "><!-- zk等开发结转收入的功能后,查询结转收入的详细表-->
+  			and real_income_amount &gt;= 0
+  			and exists(select 1 from project_year_summary where project_id = project_summaries.project_id and incomeAmount>0
+			<if test="startDate != null">
+	     		and year &gt;= Year(#{startDate,jdbcType=TIMESTAMP})
+	    	</if>
+	    	<if test="endDate != null">
+	     		and (year &lt;= Year(#{endDate,jdbcType=TIMESTAMP})
+	     		or Year(#{endDate,jdbcType=TIMESTAMP}) &lt;= 2015)
+	    	</if>)
+	    	<if test="startDate != null">
+	     		and project_end_date &gt;= #{startDate,jdbcType=TIMESTAMP}
+	    	</if>
+	    	<if test="endDate != null">
+	     		and project_start_date &lt;= #{endDate,jdbcType=TIMESTAMP}
+	    	</if>
+  		</if>
+  		<if test="type == 15 ">
+  			<if test="minAmount != null">
+  				and pro_fund_amount &gt;= #{minAmount,jdbcType=DECIMAL}
+  			</if>
+  			<if test="maxAmount != null">
+  				and pro_fund_amount &lt;= #{maxAmount,jdbcType=DECIMAL}
+  			</if>
+  		</if>
+  		<if test="type == 16 ">
+  			<if test="minAmount != null">
+  				and later_fund_amount &gt;= #{minAmount,jdbcType=DECIMAL}
+  			</if>
+  			<if test="maxAmount != null">
+  				and later_fund_amount &lt;= #{maxAmount,jdbcType=DECIMAL}
+  			</if>
+  		</if>
+  		<if test="type == 17 ">
+  			<if test="startDate != null">
+  				and exists (select 1 from funds where funds.project_id = project_summaries.project_id and create_time &gt;= #{startDate,jdbcType=TIMESTAMP} and ( exists(select 1 from process where process.object_id=funds.id and table_name="funds" and status = 4) or not exists(select 1 from process where process.object_id=funds.id and table_name="funds")))
+  			</if>
+  			<if test="endDate != null ">
+  				and exists (select 1 from funds where funds.project_id = project_summaries.project_id and create_time &lt;= #{endDate,jdbcType=TIMESTAMP} and ( exists(select 1 from process where process.object_id=funds.id and table_name="funds" and status = 4) or not exists(select 1 from process where process.object_id=funds.id and table_name="funds")))
+  			</if>
+  		</if>
+  		<if test="type == 18 ">
+  			<if test="minAmount != null">
+  				and nopay_fund_amount &gt;= #{minAmount,jdbcType=DECIMAL}
+  			</if>
+  			<if test="maxAmount != null">
+  				and nopay_fund_amount &lt;= #{maxAmount,jdbcType=DECIMAL}
+  			</if>
+  		</if>
+  		<if test="type == 19 ">
+  			and project_format = #{projectFormat,jdbcType=TINYINT}
+  		</if>
+  		<if test="type == 20 ">
+  			and project_status = #{projectStatus,jdbcType=TINYINT}
+  		</if>
+  	</where>
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from project_summaries
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByProjectId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from project_summaries
+    where project_id = #{projectId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectSummaries" resultMap="BaseResultMap" parameterType="cn.teacheredu.vo.ProjectSummariesQueryVo" >
+    select 
+    <include refid="Query_Column_List" />
+    from project_summaries
+	<if test="_parameter !=null">
+   		<include refid="Where_Clause"/>
+   	</if>
+    <if test="totalFlag != -1">
+    	limit #{startPosition,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+    </if>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from project_summaries
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.teacheredu.entity.ProjectSummariesEntity" >
+    insert into project_summaries (id, project_id , summary_first_time )
+    values (#{id,jdbcType=INTEGER}, #{projectId,jdbcType=INTEGER}, #{summaryFirstTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.teacheredu.entity.ProjectSummariesEntity" >
+    insert into project_summaries
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="projectId != null" >
+        project_id,
+      </if>
+      <if test="projectCompany != null" >
+        project_company,
+      </if>
+      <if test="projectType != null" >
+        project_type,
+      </if>
+      <if test="projectYear != null" >
+        project_year,
+      </if>
+      <if test="projectProvincialId != null" >
+        project_provincial_id,
+      </if>
+      <if test="projectProvincial != null" >
+        project_provincial,
+      </if>
+      <if test="projectSerialNumber != null" >
+        project_serial_number,
+      </if>
+      <if test="projectName != null" >
+        project_name,
+      </if>
+      <if test="projectCooperName != null" >
+        project_cooper_name,
+      </if>
+      <if test="projectStartDate != null" >
+        project_start_date,
+      </if>
+      <if test="projectEndDate != null" >
+        project_end_date,
+      </if>
+      <if test="projectTrainPeriod != null" >
+        project_train_period,
+      </if>
+      <if test="projectCharge != null" >
+        project_charge,
+      </if>
+      <if test="projectExpectedNum != null" >
+        project_expected_num,
+      </if>
+      <if test="projectLiveNum != null" >
+        project_live_num,
+      </if>
+      <if test="predictTotalAmount != null" >
+        predict_total_amount,
+      </if>
+      <if test="projectRealTotalAmount != null" >
+        project_real_total_amount,
+      </if>
+      <if test="projectStatus != null" >
+        project_status,
+      </if>
+      <if test="projectProtocolName != null" >
+        project_protocol_name,
+      </if>
+      <if test="realPaymentAmount != null" >
+        real_payment_amount,
+      </if>
+      <if test="predictLaterPayment != null" >
+        predict_later_payment,
+      </if>
+      <if test="predictReceiveAmount != null" >
+        predict_receive_amount,
+      </if>
+      <if test="realIncomeAmount != null" >
+        real_income_amount,
+      </if>
+      <if test="proFundProportion != null" >
+        pro_fund_proportion,
+      </if>
+      <if test="laterFundProportion != null" >
+        later_fund_proportion,
+      </if>
+      <if test="proFundAmount != null" >
+        pro_fund_amount,
+      </if>
+      <if test="laterFundAmount != null" >
+        later_fund_amount,
+      </if>
+      <if test="realFundAmount != null" >
+        real_fund_amount,
+      </if>
+      <if test="nopayFundAmount != null" >
+        nopay_fund_amount,
+      </if>
+      <if test="predictBudget != null" >
+        predict_budget,
+      </if>
+      <if test="realBudgetAmount != null" >
+        real_budget_amount,
+      </if>
+      <if test="realCostAmount != null" >
+        real_cost_amount,
+      </if>
+      <if test="realInvoiceAmount != null" >
+        real_invoice_amount,
+      </if>
+      <if test="noInvoiceAmount != null" >
+        no_invoice_amount,
+      </if>
+      <if test="fundError != null" >
+        fund_error,
+      </if>
+      <if test="projectFormat != null" >
+        project_format,
+      </if>
+      <if test="url != null" >
+        income_first_time,
+      </if>
+      <if test="note != null" >
+        income_last_time,
+      </if>
+      <if test="incomeLastTime != null" >
+        income_last_time,
+      </if>
+      <if test="incomeLastTime != null" >
+        income_last_time,
+      </if>
+      <if test="overFirstTime != null" >
+        over_first_time,
+      </if>
+      <if test="overLastTime != null" >
+        over_last_time,
+      </if>
+      <if test="paymentFirstTime != null" >
+        payment_first_time,
+      </if>
+      <if test="paymentLastTime != null" >
+        payment_last_time,
+      </if>
+      <if test="fundsFirstTime != null" >
+        funds_first_time,
+      </if>
+      <if test="fundsLastTime != null" >
+        funds_last_time,
+      </if>
+      <if test="invoiceFirstTime != null" >
+        invoice_first_time,
+      </if>
+      <if test="invoiceLastTime != null" >
+        invoice_last_time,
+      </if>
+      <if test="budgetFirstTime != null" >
+        budget_first_time,
+      </if>
+      <if test="budgetLastTime != null" >
+        budget_last_time,
+      </if>
+      <if test="summaryFirstTime != null" >
+        summary_first_time,
+      </if>
+      <if test="summaryLastTime != null" >
+        summary_last_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="projectId != null" >
+        #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="projectCompany != null" >
+        #{projectCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="projectType != null" >
+        #{projectType,jdbcType=TINYINT},
+      </if>
+      <if test="projectYear != null" >
+        #{projectYear,jdbcType=INTEGER},
+      </if>
+      <if test="projectProvincialId != null" >
+        #{projectProvincialId,jdbcType=INTEGER},
+      </if>
+      <if test="projectProvincial != null" >
+        #{projectProvincial,jdbcType=VARCHAR},
+      </if>
+      <if test="projectSerialNumber != null" >
+        #{projectSerialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="projectName != null" >
+        #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="projectCooperName != null" >
+        #{projectCooperName,jdbcType=VARCHAR},
+      </if>
+      <if test="projectStartDate != null" >
+        #{projectStartDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="projectEndDate != null" >
+        #{projectEndDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="projectTrainPeriod != null" >
+        #{projectTrainPeriod,jdbcType=INTEGER},
+      </if>
+      <if test="projectCharge != null" >
+        #{projectCharge,jdbcType=DECIMAL},
+      </if>
+      <if test="projectExpectedNum != null" >
+        #{projectExpectedNum,jdbcType=INTEGER},
+      </if>
+      <if test="projectLiveNum != null" >
+        #{projectLiveNum,jdbcType=INTEGER},
+      </if>
+      <if test="predictTotalAmount != null" >
+        #{predictTotalAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="projectRealTotalAmount != null" >
+        #{projectRealTotalAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="projectStatus != null" >
+        #{projectStatus,jdbcType=TINYINT},
+      </if>
+      <if test="projectProtocolName != null" >
+        #{projectProtocolName,jdbcType=VARCHAR},
+      </if>
+      <if test="realPaymentAmount != null" >
+        #{realPaymentAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="predictLaterPayment != null" >
+        #{predictLaterPayment,jdbcType=DECIMAL},
+      </if>
+      <if test="predictReceiveAmount != null" >
+        #{predictReceiveAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="realIncomeAmount != null" >
+        #{realIncomeAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="proFundProportion != null" >
+        #{proFundProportion,jdbcType=DECIMAL},
+      </if>
+      <if test="laterFundProportion != null" >
+        #{laterFundProportion,jdbcType=DECIMAL},
+      </if>
+      <if test="proFundAmount != null" >
+        #{proFundAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="laterFundAmount != null" >
+        #{laterFundAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="realFundAmount != null" >
+        #{realFundAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="nopayFundAmount != null" >
+        #{nopayFundAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="predictBudget != null" >
+        #{predictBudget,jdbcType=DECIMAL},
+      </if>
+      <if test="realBudgetAmount != null" >
+        #{realBudgetAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="realCostAmount != null" >
+        #{realCostAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="realInvoiceAmount != null" >
+        #{realInvoiceAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="noInvoiceAmount != null" >
+        #{noInvoiceAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="fundError != null" >
+        #{fundError,jdbcType=DECIMAL},
+      </if>
+      <if test="projectFormat != null" >
+        #{projectFormat,jdbcType=TINYINT},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="projectChargeArea != null" >
+        #{projectChargeArea,jdbcType=INTEGER},
+      </if>
+      <if test="incomeFirstTime != null" >
+        #{incomeFirstTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="incomeLastTime != null" >
+        #{incomeLastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="overFirstTime != null" >
+        #{overFirstTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="overLastTime != null" >
+        #{overLastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paymentFirstTime != null" >
+        #{paymentFirstTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paymentLastTime != null" >
+        #{paymentLastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fundsFirstTime != null" >
+        #{fundsFirstTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fundsLastTime != null" >
+        #{fundsLastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="invoiceFirstTime != null" >
+        #{invoiceFirstTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="invoiceLastTime != null" >
+        #{invoiceLastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="budgetFirstTime != null" >
+        #{budgetFirstTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="budgetLastTime != null" >
+        #{budgetLastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="summaryFirstTime != null" >
+        #{summaryFirstTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="summaryLastTime != null" >
+        #{summaryLastTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.teacheredu.entity.ProjectSummariesEntity" >
+    update project_summaries
+    <set >
+      <if test="projectId != null" >
+        project_id = #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="projectCompany != null" >
+        project_company = #{projectCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="projectType != null" >
+        project_type = #{projectType,jdbcType=TINYINT},
+      </if>
+      <if test="projectYear != null" >
+        project_year = #{projectYear,jdbcType=INTEGER},
+      </if>
+      <if test="projectProvincialId != null" >
+        project_provincial_id = #{projectProvincialId,jdbcType=INTEGER},
+      </if>
+      <if test="projectProvincial != null" >
+        project_provincial = #{projectProvincial,jdbcType=VARCHAR},
+      </if>
+      <if test="projectSerialNumber != null" >
+        project_serial_number = #{projectSerialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="projectName != null" >
+        project_name = #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="projectCooperName != null" >
+        project_cooper_name = #{projectCooperName,jdbcType=VARCHAR},
+      </if>
+      <if test="projectStartDate != null" >
+        project_start_date = #{projectStartDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="projectEndDate != null" >
+        project_end_date = #{projectEndDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="projectTrainPeriod != null" >
+        project_train_period = #{projectTrainPeriod,jdbcType=INTEGER},
+      </if>
+      <if test="projectCharge != null" >
+        project_charge = #{projectCharge,jdbcType=DECIMAL},
+      </if>
+      <if test="projectExpectedNum != null" >
+        project_expected_num = #{projectExpectedNum,jdbcType=INTEGER},
+      </if>
+      <if test="projectLiveNum != null" >
+        project_live_num = #{projectLiveNum,jdbcType=INTEGER},
+      </if>
+      <if test="predictTotalAmount != null" >
+        predict_total_amount = #{predictTotalAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="projectRealTotalAmount != null" >
+        project_real_total_amount = #{projectRealTotalAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="projectStatus != null" >
+        project_status = #{projectStatus,jdbcType=TINYINT},
+      </if>
+      <if test="projectProtocolName != null" >
+        project_protocol_name = #{projectProtocolName,jdbcType=VARCHAR},
+      </if>
+      <if test="realPaymentAmount != null" >
+        real_payment_amount = #{realPaymentAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="predictLaterPayment != null" >
+        predict_later_payment = #{predictLaterPayment,jdbcType=DECIMAL},
+      </if>
+      <if test="predictReceiveAmount != null" >
+        predict_receive_amount = #{predictReceiveAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="realIncomeAmount != null" >
+        real_income_amount = #{realIncomeAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="proFundProportion != null" >
+        pro_fund_proportion = #{proFundProportion,jdbcType=DECIMAL},
+      </if>
+      <if test="laterFundProportion != null" >
+        later_fund_proportion = #{laterFundProportion,jdbcType=DECIMAL},
+      </if>
+      <if test="proFundAmount != null" >
+        pro_fund_amount = #{proFundAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="laterFundAmount != null" >
+        later_fund_amount = #{laterFundAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="realFundAmount != null" >
+        real_fund_amount = #{realFundAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="nopayFundAmount != null" >
+        nopay_fund_amount = #{nopayFundAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="predictBudget != null" >
+        predict_budget = #{predictBudget,jdbcType=DECIMAL},
+      </if>
+      <if test="realBudgetAmount != null" >
+        real_budget_amount = #{realBudgetAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="realCostAmount != null" >
+        real_cost_amount = #{realCostAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="realInvoiceAmount != null" >
+        real_invoice_amount = #{realInvoiceAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="noInvoiceAmount != null" >
+        no_invoice_amount = #{noInvoiceAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="fundError != null" >
+        fund_error = #{fundError,jdbcType=DECIMAL},
+      </if>
+      <if test="projectFormat != null" >
+        project_format = #{projectFormat,jdbcType=TINYINT},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        note = #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="projectChargeArea != null" >
+        project_charge_area = #{projectChargeArea,jdbcType=INTEGER},
+      </if>
+      <if test="incomeFirstTime != null" >
+        income_first_time = #{incomeFirstTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="incomeLastTime != null" >
+        income_last_time = #{incomeLastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="overFirstTime != null" >
+        over_first_time = #{overFirstTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="overLastTime != null" >
+        over_last_time = #{overLastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paymentFirstTime != null" >
+        payment_first_time = #{paymentFirstTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paymentLastTime != null" >
+        payment_last_time = #{paymentLastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fundsFirstTime != null" >
+        funds_first_time = #{fundsFirstTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fundsLastTime != null" >
+        funds_last_time = #{fundsLastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="invoiceFirstTime != null" >
+        invoice_first_time = #{invoiceFirstTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="invoiceLastTime != null" >
+        invoice_last_time = #{invoiceLastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="budgetFirstTime != null" >
+        budget_first_time = #{budgetFirstTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="budgetLastTime != null" >
+        budget_last_time = #{budgetLastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="summaryFirstTime != null" >
+        summary_first_time = #{summaryFirstTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="summaryLastTime != null" >
+        summary_last_time = #{summaryLastTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.teacheredu.entity.ProjectSummariesEntity" >
+    update project_summaries
+    set project_id = #{projectId,jdbcType=INTEGER},
+      project_company = #{projectCompany,jdbcType=VARCHAR},
+      project_type = #{projectType,jdbcType=TINYINT},
+      project_year = #{projectYear,jdbcType=INTEGER},,
+      project_provincial_id = #{projectProvincialId,jdbcType=INTEGER},
+      project_provincial = #{projectProvincial,jdbcType=VARCHAR},
+      project_serial_number = #{projectSerialNumber,jdbcType=VARCHAR},
+      project_name = #{projectName,jdbcType=VARCHAR},
+      project_cooper_name = #{projectCooperName,jdbcType=VARCHAR},
+      project_start_date = #{projectStartDate,jdbcType=TIMESTAMP},
+      project_end_date = #{projectEndDate,jdbcType=TIMESTAMP},
+      project_train_period = #{projectTrainPeriod,jdbcType=INTEGER},
+      project_charge = #{projectCharge,jdbcType=DECIMAL},
+      project_expected_num = #{projectExpectedNum,jdbcType=INTEGER},
+      project_live_num = #{projectLiveNum,jdbcType=INTEGER},
+      predict_total_amount = #{predictTotalAmount,jdbcType=DECIMAL},
+      project_real_total_amount = #{projectRealTotalAmount,jdbcType=DECIMAL},
+      project_status = #{projectStatus,jdbcType=TINYINT},
+      project_protocol_name = #{projectProtocolName,jdbcType=VARCHAR},
+      real_payment_amount = #{realPaymentAmount,jdbcType=DECIMAL},
+      predict_later_payment = #{predictLaterPayment,jdbcType=DECIMAL},
+      predict_receive_amount = #{predictReceiveAmount,jdbcType=DECIMAL},
+      real_income_amount = #{realIncomeAmount,jdbcType=DECIMAL},
+      pro_fund_proportion = #{proFundProportion,jdbcType=DECIMAL},
+      later_fund_proportion = #{laterFundProportion,jdbcType=DECIMAL},
+      pro_fund_amount = #{proFundAmount,jdbcType=DECIMAL},
+      later_fund_amount = #{laterFundAmount,jdbcType=DECIMAL},
+      real_fund_amount = #{realFundAmount,jdbcType=DECIMAL},
+      nopay_fund_amount = #{nopayFundAmount,jdbcType=DECIMAL},
+      predict_budget = #{predictBudget,jdbcType=DECIMAL},
+      real_budget_amount = #{realBudgetAmount,jdbcType=DECIMAL},
+      real_cost_amount = #{realCostAmount,jdbcType=DECIMAL},
+      real_invoice_amount = #{realInvoiceAmount,jdbcType=DECIMAL},
+      no_invoice_amount = #{noInvoiceAmount,jdbcType=DECIMAL},
+      fund_error = #{fundError,jdbcType=DECIMAL},
+      project_format = #{projectFormat,jdbcType=TINYINT},
+      url = #{url,jdbcType=VARCHAR},
+      note = #{note,jdbcType=VARCHAR},
+      project_charge_area = #{projectChargeArea,jdbcType=INTEGER},
+      income_first_time = #{incomeFirstTime,jdbcType=TIMESTAMP},
+      income_last_time = #{incomeLastTime,jdbcType=TIMESTAMP},
+      over_first_time = #{overFirstTime,jdbcType=TIMESTAMP},
+      over_last_time = #{overLastTime,jdbcType=TIMESTAMP},
+      payment_first_time = #{paymentFirstTime,jdbcType=TIMESTAMP},
+      payment_last_time = #{paymentLastTime,jdbcType=TIMESTAMP},
+      funds_first_time = #{fundsFirstTime,jdbcType=TIMESTAMP},
+      funds_last_time = #{fundsLastTime,jdbcType=TIMESTAMP},
+      invoice_first_time = #{invoiceFirstTime,jdbcType=TIMESTAMP},
+      invoice_last_time = #{invoiceLastTime,jdbcType=TIMESTAMP},
+      budget_first_time = #{budgetFirstTime,jdbcType=TIMESTAMP},
+      budget_last_time = #{budgetLastTime,jdbcType=TIMESTAMP},
+      summary_first_time = #{summaryFirstTime,jdbcType=TIMESTAMP},
+      summary_last_time = #{summaryLastTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

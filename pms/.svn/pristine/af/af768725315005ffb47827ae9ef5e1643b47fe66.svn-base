@@ -1,0 +1,390 @@
+#set($layout = "/layout/layoutAudit.vm")
+<script type="text/javascript" src="${pms.contextPath}/resources/js/cascade.js"></script>
+<div class="new_tableWrap">
+	
+    <div class="new_tableBox clear" style="display: block;">
+        <div class="tablewrap" #if($type == 1) style="margin-right: 246px;" #end">
+            <div class="table_tit">到款表</div>
+    		<div class="clear" style="overflow-x: scroll;padding: 10px 0px 50px 0px;" >
+                <table border="1" cellspacing="0" cellpadding="0" width="3200px" class="table fl">
+                    <thead>
+                        <tr class="gray1">
+                            <td width="50px">序号</td>
+                            <td width="50px">年度</td>
+                            <td width="40px">月份</td>
+                            <td width="150px">流水号</td>
+                            <td width="120px">交易日期</td>
+                            <td width="180px">汇款人名称</td>
+                            <td width="200px">汇款人开户行名称或账号</td>
+                            <td width="200px">到账银行</td>
+                            <td width="75px">转账形式</td>
+                            <td width="100px">金额</td>
+							<td width="200px">汇款留言（备注）</td>
+                            <td width="100px" style="background: #e8f7ff;">省</td>
+                            <td width="100px" style="background: #e8f7ff;">市</td>
+                            <td width="100px" style="background: #e8f7ff;">县</td>
+                            <td width="250px" style="background: #bbdff0;">项目</td>
+                            <td width="150px" style="background: #bbdff0;">所属公司</td>
+                            <td width="90px" style="background: #bbdff0;">是否提前开票回款</td>
+                            <td width="90px" style="background: #bbdff0;">开票信息</td>
+                            <td width="200px" style="background: #bbdff0;">备注</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+            			##foreach($payment in $paymentList)
+                        <tr>
+                            <td><input type="text" value="$!payment.num" readonly="readonly" style="text-align: center;" /></td>
+                            <td><input type="text" value="$!payment.year" readonly="readonly" style="text-align: center;" /></td>
+                            <td><input type="text" value="$!payment.month" readonly="readonly" style="text-align: center;" /></td>
+                            <td><input type="text" value="$!payment.serialNumber" readonly="readonly" style="text-align: center;" /></td>
+                            <td><input type="text" value="$!date.format($payment.traTime)" readonly="readonly" style="text-align: center;" /></td>
+                            <td><input type="text" value="$!payment.remitter" readonly="readonly" style="text-align: center;" /></td>
+                            <td><input type="text" value="$!payment.remitterAccount" readonly="readonly" style="text-align: center;" /></td>
+                            <td><input type="text" value="$!payment.payBank" readonly="readonly" style="text-align: center;" /></td>
+                            <td><input type="text" value="$!payment.transferForm" readonly="readonly" style="text-align: center;" /></td>
+                            <td><input type="text" value="$!payment.amount" readonly="readonly" style="text-align: center;" /></td>
+                            <td><input type="text" value="$!payment.note" readonly="readonly" style="text-align: center;" /></td>
+							<td>
+								#if($type == 1 && $isShangwu)
+									<select name="provincial" id="provincial">
+            							<option value = "0">请选择</option>
+            							#foreach($province in $provinceList)
+            							#if($province.id > 0)
+            							<option value = "$province.id" title="$province.name">$province.name</option>
+            							#end
+            							#end
+            						</select>
+								#else
+								<input type="text" value="$provincial" readonly="readonly" style="text-align: center;" />
+								#end
+                            </td>
+                            <td>
+								#if($type == 1 && $isShangwu)
+									<select name="city" id = "city" disabled="disabled">
+            							<option value='0'></option>
+            						</select>
+								#else
+								<input type="text" value="$city" readonly="readonly" style="text-align: center;" />
+								#end
+                            </td>
+                            <td>
+								#if($type == 1 && $isShangwu)
+									<select name="county" id = "county" disabled="disabled">
+            							<option value='0'></option>
+            						</select>
+								#else
+								<input type="text" value="$county" readonly="readonly" style="text-align: center;" />
+								#end
+                            </td>
+                             <td>
+								#if($type == 1 && !$isShangwu)
+									<select name="projectId" id = "projectId">
+            							<option value='0'>请选择</option>
+										#foreach($project in $projectList)
+											<option value='$project.id'>$project.name</option>
+										#end
+            						</select>
+								#else
+								<input type="text" value="$projectName" readonly="readonly" style="text-align: center;" />
+								#end
+                            </td>
+                            <td>
+								#if($type == 1 && !$isShangwu)
+								<input type="text" class="gray" id="projectCompany" value="$!payment.company" readonly="readonly" style="text-align: center;" />
+								#else
+								<input type="text" value="$!projectCompany" id="projectCompany"  readonly="readonly" style="text-align: center;" />
+								#end
+                            </td>
+                            <td>
+								#if($type == 1 && !$isShangwu)
+									<select name="advancePay" id = "advancePay" class="makeInvoice">
+            							<option value='0'>请选择</option>
+										<option value='1'>是</option>
+										<option value='2'>否</option>
+            						</select>
+            						<!--
+            						<div class="xl_box">
+										<a href="javascript:;" class="fpsq btn_orange">发票申请</a>
+										<div class="xl_box_list">
+											<a href="javascript:;" class="ykfp">已到款发票</a>
+											<a target="_blank" href="${pms.contextPath}/invoice/add?projectId=$project.id&type=1" id="sad" style="display:none;">我藏起来了</a>
+											<a target="_blank" href="${pms.contextPath}/invoice/add?projectId=$project.id&type=2">未到款发票</a>
+										</div>
+									</div>
+									-->
+								#else
+								<input type="text" id="advancePay" value="#if($payment.advancePay == 1) 是 #elseif($payment.advancePay == 2) 否 #else #end" readonly="readonly" style="text-align: center;" />
+								<input type="hidden" value="$payment.advancePay" id = "advancePayNum"/>
+								#end
+                            </td>
+                           <td>
+								#if($type == 1 && !$isShangwu)
+								<input type="text" class="gray" id="invoiceMsg" value="" readonly="readonly" style="text-align: center; cursor: pointer;" />
+								#else
+								<input type="text" value="$!headerStr" id="invoiceMsg" readonly="readonly" style="text-align: center; cursor: pointer;" />
+								#end<!--zk审批完成后的展示页面-->
+								<input type = "hidden" id = "paymentInvoiceIdList" value="$!idStr" />
+                            </td>
+                            <td>
+								#if($type == 1 && !$isShangwu)
+								<input type="text" id="noteYw" placeholder="可以填写备注"/>
+								#else
+								<input type="text" value="$!payment.noteYw" readonly="readonly" style="text-align: center;" />
+								#end
+            				</td>
+                        </tr>
+            			##end
+                    </tbody>
+                </table>
+            	
+                <div class="fr" style="width: 50px;"></div>
+            </div>
+			<div class="opinion">
+                <h1>发起人备注</h1>
+                <div class="opinionCon">
+					<textarea style="width: 880px;height: 100px;border: 0px;padding: 5px;" readonly="readonly"></textarea>					
+				</div>
+                <h2 style="border-top: 2px solid #4faae7;">处理人意见</h2>
+                <div class="opinionBox">
+					#foreach($ph in $phList)
+                    <div class="opinionList">
+                        <h3>$!{ph.extInfo.realName}  <span #if(${ph.dealResult} == "同意") class="y" #else class="n" #end>（$!{ph.dealResult}）</span><i> #if(${ph.dealTime}) $date.format("yyyy-MM-dd",$!{ph.dealTime}) #end </i> </h3>	
+                        <div><textarea style="width: 880px;height: 100px;border: 0px;padding: 5px;background: #f0f8ff;" readonly="readonly">${ph.dealOpinion}</textarea></div>
+                    </div>
+					#end
+                </div>
+            </div>
+        </div>
+        <div class="new_shenpi fr" #if($type != 1) style="display: none;" #end>
+            <h2 class="mb20">》 到款分配</h2>
+            <div class="shenpi_tex mr10">
+                <textarea id="dealOpinion" placeholder="这里的意见可填可不填"></textarea>
+            </div>
+            <div class="mb10 mt10">
+				<input type="radio" name = "dealResult" value="完善到款信息" checked="checked" />完善到款信息
+            </div>
+            <div class="shenpi_btn mt20">
+                <a href="javascript:;" class="active" id="submit">提交</a>
+                <a href="javascript:;" id = "cancel" title="回到待办事项页面">取消</a>
+            </div>
+        </div>
+    </div>
+	
+	
+	<!-- 流程start -->
+	<div class="new_tableBox">
+        <div class="liuchengBox">
+            <div class="liucheng_list clear">
+                <div class="list3">
+                    <ul class="clear fl">
+                        <li title="" ></li>
+                        <li title="" ></li>##<li title="" class="weikan"></li>
+                        <li title="" ></li>##<li title="" class="tongguo"></li>
+						<li title="" ></li> ##<li title="" class="yikan"></li>
+                        <li title=""></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+	<!-- 流程end -->
+</div><!--new_tableWrap结束-->
+
+<!--下面3个</div>关闭的是layout中的div-->
+</div>
+<!--内容end-->
+</div>
+</div>
+<div class="pop" id="makeInvoice_div" style="position: inherit;display:none">
+	<div class="prompt_cont"  id="loadInvoice">
+		
+	</div>
+</div>
+<script>
+	$(document).ready(function() {
+		$('#projectId').change(function(){
+			var projectid = $("#projectId").val();
+			layer.load(1);
+			$.ajax({
+        		type: "POST",
+        		contentType:"application/x-www-form-urlencoded",
+	            data: {"projectId":projectid},
+        	    url: "/invoice/queryProjectcompany",
+        	    datatype: "json",
+        	    error: function(){
+					layer.closeAll('loading');
+        			alert("提交失败，服务器错误！")
+        	    },
+        	    success: function(projectJson){
+        	    	layer.closeAll('loading');
+        	    	if(projectJson!=null&&projectJson!==""){
+						$("#projectCompany").val(projectJson.company);
+					}else{
+						$("#projectCompany").val("");
+					}
+        		}
+        	});
+			
+		});
+		$('#advancePay').change(function(){
+			var projectFlag = $("#projectCompany").val();
+			if(!projectFlag){
+				alert("请先选择项目信息！");
+				$("#advancePay").val(0);
+				return;
+			}
+			var projectId = $("#projectId").val();
+			var isInvoice = $(this).val();
+			if(isInvoice==1){
+				$.ajaxSetup ({
+			    	cache:false
+			    });
+				$("#loadInvoice").html("正在加载数据……")
+				$("#loadInvoice").load('/invoice/queryPaymentInvoice?projectId='+projectId);//zk 查询projectid下边的所有开票信息，返回到invoiceTable
+				layer.open({
+	  			  type: 1,
+	  			  title: '请先选择开发票的记录（一次最多选择100条）',
+	  			  closeBtn: 0,
+	  			  area:  ['1000px', '600px'],
+				  btnAlign: 'c',
+				  btn: ['确定', '取消'],
+				  yes: function(index, layero){
+					submitInvoice();
+					layer.close(index);
+				  },
+				  btn2: function(index, layero){
+				  	$("#advancePay").val(2);
+				  },
+	  			  shadeClose: false,
+	  			  content: $('#makeInvoice_div')
+	  			});
+	  			
+			}else{
+				$("#invoiceMsg").val("");
+				$("#paymentInvoiceIdList").val("");
+			}
+		});
+		
+		$("#invoiceMsg").click(function(){
+			var invoiceMsg = $("#invoiceMsg").val();
+			var paymentInvoiceIdList = $("#paymentInvoiceIdList").val();
+			if(!invoiceMsg){
+				return;
+			}
+			var isInvoice = $("#advancePay").val();
+			var isInvoiceNum = $("#advancePayNum").val();
+			
+			if(invoiceMsg){
+				$.ajaxSetup ({
+			    	cache:false
+			    });
+				$("#loadInvoice").html("正在加载数据……")
+				$("#loadInvoice").load('/invoice/queryPaymentInvoice?paymentInvoiceIdList='+paymentInvoiceIdList);//zk 查询projectid下边的所有开票信息，返回到invoiceTable
+				layer.open({
+	  			  type: 1,
+	  			  title: '关联的开发票的记录',
+	  			  closeBtn: 0,
+	  			  area:  ['1000px', '600px'],
+				  btnAlign: 'c',
+				  btn: ['确定', '取消'],
+				  yes: function(index, layero){
+					layer.close(index);
+				  },
+	  			  shadeClose: false,
+	  			  content: $('#makeInvoice_div')
+	  			});
+	  			
+			}else{
+				$("#invoiceMsg").val("");
+				$("#paymentInvoiceIdList").val("");
+			}
+		});
+		function submitInvoice() {
+			//for循环遍历表格
+			var invoiceHeader = "";
+			var invoiceId = "";
+			$("#imt").find("tr").each(function(){
+		        var tdArr = $(this).children();
+				var tCheck = tdArr.eq(0).find("input[type='checkbox']");
+				if(tCheck.is(':checked')){
+		       	 	invoiceHeader += tdArr.eq(3).html()+",";
+		       	 	invoiceId += tCheck.val()+",";
+				}
+		    });
+		    if(invoiceHeader.length>0){
+		    	invoiceHeader = invoiceHeader.substring(0,invoiceHeader.length-1);
+		    	invoiceId = invoiceId.substring(0,invoiceId.length-1);
+		    	$("#invoiceMsg").val(invoiceHeader);
+		    	$("#paymentInvoiceIdList").val(invoiceId);
+		    }else{
+		    	$("#advancePay").val(0);
+		    	$("#invoiceMsg").val("");
+		    	$("#paymentInvoiceIdList").val("");
+		    }
+		}
+		
+		$('.layui-layer-btn1').click(function(){
+			alert("关闭");
+		});
+		$('#cancel').click(function() {
+			window.location.href = "${pms.contextPath}/process/needDeal"
+		});
+		
+		$('#submit').click(function() {
+			var spyj = $('#dealOpinion').val();
+			#if($isShangwu)
+    			var provincial = $('#provincial').val();
+    			var city = $('#city').val();
+    			var county = $('#county').val();
+    			if(provincial == "" || provincial == "0"){
+    				alert("请选择到款所属省份");
+    				return;
+    			}
+				var val = $('#provincial').find("option:selected").text()+$('#city').find("option:selected").text()+$('#county').find("option:selected").text();
+    			var params = JSON.stringify({'dealOpinion': spyj,'dealResult':val,'processId':$process.id,'type':$needProcess.type,'needId':$needProcess.id,'provincial':provincial,'city':city,'county':county});
+			#else
+				var advancePay = $('#advancePay').val();
+    			var projectId = $('#projectId').val();
+    			var company = $('#company').val();
+				var noteYw = $('#noteYw').val();
+				var paymentInvoiceIdList = $('#paymentInvoiceIdList').val();
+    			if(advancePay == "" || advancePay == "0"){
+    				alert("请选择是否是提前开发票的回款");
+    				return;
+    			}
+				if(projectId == "" || projectId == "0"){
+    				alert("请选择所属项目");
+    				return;
+    			}
+				if(company == ""){
+    				alert("请选择所属公司");
+    				return;
+    			}
+				var val = "完善了到款所属项目和公司等信息";
+    			var params = JSON.stringify({'dealOpinion': spyj,'dealResult':val,'processId':$process.id,'type':$needProcess.type,'needId':$needProcess.id,'advancePay':advancePay,'projectId':projectId,'company':company,'noteYw':noteYw,'paymentInvoiceIdList':paymentInvoiceIdList});
+			#end
+			
+			layer.load(2);
+    		$.ajax({
+        		type: "POST",
+        	    url: "/processDeal/dealPayment",
+        	    data: params,
+        	    error: function(){
+					layer.closeAll('loading');
+        			alert("提交失败，服务器错误！")
+        	    },
+        	    success: function(res){
+        	    	layer.closeAll('loading');
+        			if(res.code === 0){
+        				layer.msg('提交成功', {icon:1,anim: 4 ,time: 2000},function(){
+							window.location.href = "${pms.contextPath}/process/needDeal";
+						});
+        			}else{
+        				alert("提交失败："+res.msg);
+        			}
+        		}
+        	});
+		});
+	
+	})
+</script>

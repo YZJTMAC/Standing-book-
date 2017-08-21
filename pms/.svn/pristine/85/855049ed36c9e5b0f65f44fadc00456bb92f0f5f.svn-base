@@ -1,0 +1,143 @@
+#set($layout = "/layout/layoutTest.vm") 
+<link rel="stylesheet" href="${pms.contextPath}/resources/admin/plugins/layui/css/layui.css">
+<script type="text/javascript" src="${pms.contextPath}/resources/js/jquery.min.js"></script>
+<script type="text/javascript" src="${pms.contextPath}/resources/admin/plugins/layui/layui.js"></script>
+<script type="text/javascript" src="${pms.contextPath}/resources/js/jquery.serializejson.min.js"></script>
+
+<h2>    $user.realname  成  功 登  录 了 ！</h2>
+<br/>
+<a href="/layout"> 退出</a>
+
+<br/>
+
+<br/>
+<input type="file" name="file" id = "file" lay-type="file" lay-ext="jpg|png|gif" class="layui-upload-file">
+<span id = "msg"></span>
+<br/>
+<br/>
+<input type="file" name="file"  id = "file2" lay-type="file" lay-ext="xls|xlsx" class="layui-upload-file">
+
+<br/>
+<br/>
+
+<a href="javascript:;" class="layui-btn" target="_blank" onclick="dexport();return false;">测试</a>
+<a href="${pms.contextPath}/a/exportExeclTest" class="layui-btn" target="_blank">导出2</a>
+$!servicePath
+<br />
+<hr />
+<form id = "userForm">
+  <input name="loginName" value="zzj" /> 
+  <input name="dmId" value="22" />
+  <input name="genTime" value="2017-03-15 19:53:01" /> 
+  <input name="name" value="2017北京市海淀区幼儿园新教师培训" /> 
+  <input name="type" value="1" /> 
+  <input name="chargeStandard" value="150.50" /> 
+  <input name="totalMoney" value="600000.55" />
+  <input type="button" id="button_submit" value="提交">
+  ##<input type="submit" value="提交" />
+ </form>
+<script>
+
+var layer;
+layui.use('layer', function(){
+  layer = layui.layer; 
+});
+layui.use('upload', function(){
+  	layui.upload({
+		elem: '#file',
+  		url: '/file/uploadAjax',
+		title: '上传附件',
+		before: function(input){
+            $("#msg").html('文件上传中');
+      	},
+  		success: function(res){
+    		console.log(res.msg); //上传成功返回值，必须为json格式
+		 	$("#msg").html(res.fileName);
+  		}
+	});
+	layui.upload({
+		elem: '#file2',
+  		url: '/file/importAjax',
+		title: '导入文件',
+		before: function(input){
+            layer.load(2);
+      	},
+  		success: function(res){
+			layer.closeAll('loading');
+		 	$("#msg").html(res.msg);
+  		}
+	});
+});
+
+//全局配置
+$.ajaxSetup({
+	dataType: "json",
+	contentType: "application/json",
+	cache: false
+});
+
+//重写alert
+window.alert = function(msg, callback){
+	parent.layer.alert(msg, function(index){
+		parent.layer.close(index);
+		if(typeof(callback) === "function"){
+			callback("ok");
+		}
+	});
+}
+
+//重写confirm式样框
+window.confirm = function(msg, callback){
+	layer.confirm(msg, {btn: ['确定','取消']},
+	function(){//确定事件
+		if(typeof(callback) === "function"){
+			callback("ok");
+		}
+	});
+}
+
+function dexport() {
+	layer.load(2);
+	$.ajax({
+		type: "POST",
+	    url: "/a/ajaxTest",
+	    data: {},
+	    error: function(){
+	    	layer.closeAll('loading');
+			alert("服务器错误")
+	    },
+	    success: function(res){
+	    	layer.closeAll('loading');
+			if(res.code === 0){
+				alert(res.msg)
+			}else{
+				alert("出错了："+res.msg);
+			}
+		}
+	});
+}
+$(document).ready(function(){
+	$("#button_submit").click(function(){
+   		var params = JSON.stringify($("#userForm").serializeJSON());
+		//alert(JSON.parse(params).name)
+    	$.ajax({
+    		type: "POST",
+    	    url: "/a/testForm",
+    	    data: params,
+    	    error: function(){
+    			alert("服务器错误")
+    	    },
+    	    success: function(res){
+    	    	layer.closeAll('loading');
+    			if(res.code === 0){
+    				alert(res.msg)
+    			}else{
+    				alert(res.msg);
+    			}
+    		}
+    	});
+	});
+});
+
+</script>
+

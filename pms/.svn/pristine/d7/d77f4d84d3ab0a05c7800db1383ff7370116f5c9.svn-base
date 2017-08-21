@@ -1,0 +1,172 @@
+#set($layout = "/layout/layoutAdmin.vm")
+<div class="content_list_wrap mt10">
+	<table width="800%" border="0" cellspacing="0" cellpadding="0" class="tab_one">
+		<thead align="center">
+			<tr>
+				<td rowspan="2" width="50">序号</td>
+				<td rowspan="2" width="200">公司名称</td>
+				<td rowspan="2" width="70">项目类型</td>
+				<td rowspan="2" width="80">年份</td>
+				<td rowspan="2" width="80">省份</td>
+				<td rowspan="2" width="100">项目编号</td>
+				<td rowspan="2" width="250">项目名称</td>
+				<td rowspan="2" width="250">合作单位</td>
+				<td colspan="3">培训周期</td>
+				<td rowspan="2" width="100">培训单价</td>
+				<td rowspan="2" width="100">报名人数</td>
+				<td rowspan="2" width="100">上线人数</td>
+				<td rowspan="2" width="150">预计项目总额<br>（单价*报名人数）</td>
+				<td rowspan="2" width="100">实际项目总额</td>
+				<td rowspan="2" width="150">项目运营状态<br>（正在进行、已完结）</td>
+				<td rowspan="2" width="100">是否有协议</td>
+				<td colspan="${colNum}" class="gray">项目实际到款总额</td>
+				<td rowspan="2" width="100" class="gray">预计后期到款</td>
+				<td rowspan="2" width="100" class="gray">应收账款</td>
+				<td colspan="4">已转收入</td>
+				<td colspan="2">经费比例</td>
+				<td colspan="2">应付经费总额</td>
+				<td colspan="${colNum}" class="gray">已支付经费金额（财务账冲减应付账款）</td>
+				<td rowspan="2" width="150" class="gray">尚未支付经费金额<br>（应付账款余额）</td>
+				<td width="100">运营成本预算</td>
+				<td colspan="${colNum}">项目运营成本</td>
+				<td colspan="${colNum}">结转成本</td>
+				#set( $colN = ${colNum} + 1)
+				<td colspan="${colN}">开票金额</td>
+				<td rowspan="2" width="180">经费支付异常提示<br>（已到款应付经费-已付经费）</td>
+				<td rowspan="2" width="300">说明</td>
+				<td rowspan="2" width="300">平台链接</td>
+			</tr>
+			<tr>
+				<td width="100">培训起始时间</td>
+				<td width="100">培训截止时间</td>
+				<td width="100">培训期限（月）</td>
+				#foreach($strYear in $years)
+					<td width="80" class="gray">$!{strYear}年到款</td>
+				#end
+				<td width="80" class="gray">合计</td>
+				<td width="80">12-15年累计收入</td>
+				#foreach($strYear in $years)
+					#if(${strYear} != 12 && ${strYear} != 13 && ${strYear} != 14 && ${strYear} != 15 )
+					<td width="80" class="gray">$!{strYear}年累计收入</td>
+					#end
+				#end
+				<td width="80">收入合计</td>
+				<td width="80">前期</td>
+				<td width="80">后期</td>
+				<td width="80">前期</td>
+				<td width="80">后期</td>
+				#foreach($strYear in $years)
+					<td width="80" class="gray">$!{strYear}年支付</td>
+				#end
+				<td width="80" class="gray">支付经费合计</td>
+				<td></td>
+				#foreach($strYear in $years)
+					<td width="80">$!{strYear}年累计</td>
+				#end
+				<td width="80">合计</td>
+				#foreach($strYear in $years)
+					<td width="80">$!{strYear}年累计</td>
+				#end
+				<td width="80">合计</td>
+				#foreach($strYear in $years)
+					 <td width="80">$!{strYear}年开票</td>
+				#end
+				<td width="80">开票合计</td>
+				<td width="100">未开发票金额</td>
+			</tr>
+		</thead>
+		<tbody  align="center">
+			#foreach($!projectSummary in $!projectSummaryList.list)
+			<tr #if($velocityCount % 2 == 0) class="f9" #end>
+					#set( $Num = $velocityCount - 10 + $!projectSummaryList.currPage * 10)
+				<td class="Center p0">$Num</td>
+				<td>$!projectSummary.projectCompany</td>
+				<td>#if($!projectSummary.projectType == 1) 国培 #else 地陪 #end</td>
+				<td>$!projectSummary.projectYear</td>		
+				<td>$!projectSummary.projectProvincial</td>		
+				<td>$!projectSummary.projectSerialNumber</td>		
+				<td>$!projectSummary.projectName</td>		
+				<td>$!projectSummary.projectCooperName</td>	
+				<td>$date.format("yyyy-MM-dd",$!projectSummary.projectStartDate)</td>
+				<td>$date.format("yyyy-MM-dd",$!projectSummary.projectEndDate)</td>
+				<td>$!projectSummary.projectTrainPeriod</td>		
+				<td>$!projectSummary.projectCharge</td>		
+				<td>$!projectSummary.projectExpectedNum</td>		
+				<td>$!projectSummary.projectLiveNum</td>		
+				<td>$!projectSummary.predictTotalAmount</td>		
+				<td>$!projectSummary.projectRealTotalAmount</td>	
+				<td>#if($!projectSummary.projectStatus == 0 ) 审批中或者草稿中  #elseif($!projectSummary.projectStatus == 1) 进行中  #elseif($!projectSummary.projectStatus == 2) 已结束  #elseif($!projectSummary.projectStatus == 3) 正在走完结流程  #elseif($!projectSummary.projectStatus == 4) 待完结  #end</td>		
+				<td>#if($projectSummary.projectProtocolName) 有  #else 无 #end</td>
+				<!--项目实际到款总额-->
+				#foreach($projectYearSum in $projectSummary.projectYearSummarys)
+					<td>#if(!$!projectYearSum.paymentamount) - #else $!projectYearSum.paymentamount #end</td>
+				#end
+				<td>$!projectSummary.realPaymentAmount</td>
+				<td>$!projectSummary.predictLaterPayment</td>
+				<td>$!projectSummary.predictReceiveAmount</td>
+				<!--累计收入-->
+				
+				#foreach($projectYearSum in $projectSummary.projectYearSummarys)
+					#if($velocityCount == 3)
+					<td>#if(!$!projectSummary.realIncomeAmount12To15) - #else $!projectSummary.realIncomeAmount12To15 #end</td>
+					#end
+					#if($velocityCount > 4)
+					<td>#if(!$!projectYearSum.incomeamount) - #else $!projectYearSum.incomeamount #end</td>
+					#end
+				#end
+				<td>$!projectSummary.realIncomeAmount</td>
+				<td>$!projectSummary.proFundProportion</td>
+				<td>$!projectSummary.laterFundProportion</td>
+				<td>$!projectSummary.proFundAmount</td>
+				<td>$!projectSummary.laterFundAmount</td>
+				<!--支付经费金额-->
+				#foreach($projectYearSum in $projectSummary.projectYearSummarys)
+					<td>#if(!$!projectYearSum.fundsamount) - #else $!projectYearSum.fundsamount #end</td>
+				#end
+				<td>$!projectSummary.realFundAmount</td>
+				<td style="#if($!projectSummary.nopayFundAmount<0)color:red; #end" >$!projectSummary.nopayFundAmount</td>
+				<!--运营成本-->
+				<td>#if(!$!projectSummary.predictBudget) 0.00 #else $!projectSummary.predictBudget #end</td>
+				#foreach($projectYearSum in $projectSummary.projectYearSummarys)
+					<td>#if(!$!projectYearSum.budgetamount) - #else $!projectYearSum.budgetamount #end</td>
+				#end
+				<td>$!projectSummary.realBudgetAmount</td>
+				<!--结转成本-->
+				#foreach($projectYearSum in $projectSummary.projectYearSummarys)
+					<td>#if(!$!projectYearSum.overamount) - #else $!projectYearSum.overamount #end</td>
+				#end
+				<td>$!projectSummary.realCostAmount</td>
+				<!--开票金额-->
+				#foreach($projectYearSum in $projectSummary.projectYearSummarys)
+					<td>#if(!$!projectYearSum.invoiceamount) - #else $!projectYearSum.invoiceamount #end</td>
+				#end
+				<td>$!projectSummary.realInvoiceAmount</td>
+				<td>$!projectSummary.noInvoiceAmount</td>
+				<td style="#if($!projectSummary.fundError<0)color:red; #end" >$!projectSummary.fundError</td>
+				<td>$!projectSummary.note</td>
+				<td>$!projectSummary.url</td>
+			</tr>
+			#end
+		</tbody>
+	</table>
+    <div class="Center">共 $!projectSummaryList.totalCount 条<div id="fenye" style="display:inline-block;margin:0 10px;"></div></div>
+</div>
+<script >
+layui.use('laypage', function(){
+  	var laypage = layui.laypage;
+    laypage({
+        cont: 'fenye'
+        ,pages: $!projectSummaryList.totalPage
+		,curr: $!projectSummaryList.currPage
+        ,skin: '#1E9FFF'
+		,jump: function(obj, first){
+          	if(!first){
+				reloadContent2(obj.curr);
+          	}
+        }
+  	});
+})
+
+
+	
+</script>

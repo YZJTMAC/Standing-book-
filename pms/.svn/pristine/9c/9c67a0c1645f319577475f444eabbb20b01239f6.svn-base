@@ -1,0 +1,86 @@
+package cn.teacheredu.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import cn.teacheredu.entity.ProjectSummariesEntity;
+import cn.teacheredu.entity.ProjectYearSummaryEntity;
+import cn.teacheredu.form.QueryTermsForm;
+import cn.teacheredu.mapping.ProjectSummariesMapper;
+import cn.teacheredu.mapping.ProjectYearSummaryMapper;
+import cn.teacheredu.service.ProjectSummaryService;
+import cn.teacheredu.utils.PageUtils;
+import cn.teacheredu.vo.ProjectSummariesQueryVo;
+
+@Service
+public class ProjectSummaryServiceImpl implements ProjectSummaryService {
+	
+	@Autowired
+	private ProjectSummariesMapper projectSummariesMapper;
+	@Autowired
+	private ProjectYearSummaryMapper projectYearSummaryMapper;
+	
+	@Override
+	public PageUtils<ProjectSummariesEntity> getProjectSummaryList(QueryTermsForm queryForm) throws Exception {
+		List<ProjectSummariesEntity> projectSummaries;
+		int total;
+		
+		ProjectSummariesQueryVo vo = new ProjectSummariesQueryVo();
+		//设置当前的位置和页面大小
+		vo.setStartPosition((queryForm.getCurrPage() - 1) * queryForm.getPageSize());
+		vo.setPageSize(queryForm.getPageSize());
+		//基础条件
+		if (queryForm.getUserId() == null) {
+			Integer prov = queryForm.getDmId();
+			if (prov != -8) {
+				if (prov < 0) { //按照分管大区查询项目
+					vo.setChargeArea(prov);
+				} else { //按照省份查询项目
+					vo.setProvincial(prov);
+				}
+			}
+			List<String> companyList = queryForm.getCompanyList();
+			if (companyList.size() != 0) {
+				vo.setCompanyListM(companyList);
+			}
+		}
+		Integer type = queryForm.getType();
+		vo.setType(queryForm.getType());
+		if(type==1){
+			vo.setProjectType(queryForm.getProType());
+		}else if(type==2){
+			vo.setProjectYear(queryForm.getProYear());
+		}else if(type==3){
+			vo.setProjectProvincialId(queryForm.getProvince()) ;
+		}else if(type==4){
+			vo.setProjectSerialNumber(queryForm.getValue());
+		}else if(type==5){
+			vo.setProjectName(queryForm.getValue());
+		}else if(type == 6 || type == 7 || type == 11 || type == 12 || type == 14 || type == 17){
+			vo.setStartDate(queryForm.getStartDate());
+			vo.setEndDate(queryForm.getEndDate());
+		}else if(type == 8 || type == 9 || type == 13 || type == 15 || type == 16 || type == 18){
+			vo.setMinAmount(queryForm.getMinAmount());
+			vo.setMaxAmount(queryForm.getMaxAmount());
+		}else if(type==10){
+			vo.setProjectProtocolName(queryForm.getProtocol()+"");
+		}else if(type==19){
+			vo.setProjectFormat(queryForm.getTrainType());
+		}else if(type==20){
+			vo.setProjectStatus(queryForm.getStatus());
+		}
+		projectSummaries = projectSummariesMapper.selectSummaries(vo);
+		
+		for(ProjectSummariesEntity ps : projectSummaries){
+			ps.getProjectId();
+			List<ProjectYearSummaryEntity> ProjectYearSummarys = projectYearSummaryMapper.selectByProjectId(ps.getProjectId());
+			ps.setProjectYearSummarys(ProjectYearSummarys);
+		}
+		vo.setTotalFlag(-1);
+		total = projectSummariesMapper.selectSummaries(vo).get(0).getTotal();
+		PageUtils<ProjectSummariesEntity> pageUtil = new PageUtils<ProjectSummariesEntity>(projectSummaries, total, queryForm.getPageSize(), queryForm.getCurrPage());
+		return pageUtil;
+	}
+}

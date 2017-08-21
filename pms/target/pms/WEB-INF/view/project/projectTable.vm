@@ -1,0 +1,207 @@
+#set($layout = "/layout/layoutAdmin.vm")
+
+        <tr class="gray1" id="mytr">
+            <td width="50">序号</td>
+            <td width="110">项目编号</td>
+            <td width="300">项目名称</td>
+            <td width="85">培训起始时间</td>
+            <td width="85">培训截止时间</td>
+            <td width="90">培训周期（月）</td>
+            <td width="60">报名人数</td>
+            <td width="60">单价</td>
+            <td width="70">上线人数</td>
+			<td width="70">应缴费人数</td>
+            <td width="85">实际项目总额</td>
+            <td width="70">收费人数</td>
+            <td width="85">已到款金额</td>
+            <td width="85">已开票金额</td>
+            <td width="85">未到款金额</td>
+            <td width="95">应收款金额</td>
+			<td width="185">项目网址</td>
+            <td width="130">备注</td>			
+        </tr>
+    	#foreach( $projectEntity in $projectEntityList )
+            <tr>
+                <td>
+					$velocityCount
+					<input type="hidden" name="projectEndArr[][projectId]" value="$!projectEntity.id"/>
+					<input type="hidden" name="qqhzjf" value="$!projectEntity.extInfo.qhj"/>
+				</td>
+                <td><input name="" value="$!projectEntity.serialNumber" readonly="readonly" /> </td>
+                <td><input name="" value="$!projectEntity.name" readonly="readonly" /></td>
+                <td><input name="" value="$date.format("yyyy-MM-dd",$!projectEntity.startDate)" readonly="readonly" /></td>
+                <td><input name="" value="$date.format("yyyy-MM-dd",$!projectEntity.endDate)" readonly="readonly" /></td>
+                <td><input name="" value="$myUtil.getMonthDiff(${projectEntity.endDate},${projectEntity.startDate})" readonly="readonly" /></td>
+                <td><input name="expectedNum" value="$!projectEntity.expectedNum" readonly="readonly" /></td>
+                <td><input name="chargeStandard" value="$!projectEntity.chargeStandard" readonly="readonly" /></td>
+                ##实际上线人数（来源教务平台）
+    			<td><input class="TotalRealNumText" name="projectEndArr[][realNum]" value="" placeholder="请输入"/></td>
+				##应缴费人数(业务人员填写)
+				<td><input class="NumTextForCalTotal" name="projectEndArr[][payCount]" value="" placeholder="请输入"/></td>
+                ##实际项目总额
+    			<td><input name="projectEndArr[][realTotalMoney]" value="" readonly="readonly" /></td>
+                ##收费人数(业务人员填写)
+    			<td><input class="NumTextForCal" name="projectEndArr[][chargeCount]" value="" placeholder="请输入"/></td>
+				##已到款
+                <td><input name="projectEndArr[][realTotalPay]" value="$!projectEntity.extInfo.realTotalPay" readonly="readonly" /></td>
+                ##已开票
+				<td><input name="projectEndArr[][realTotalInvoice]" value="$!projectEntity.extInfo.realTotalInvoice" readonly="readonly" /></td>
+                ##未到款金额
+    			<td><input name="projectEndArr[][notTotalPay]" value="" readonly="readonly"/></td>
+    			##应收款金额
+                <td><input class="NumDecTextForCal" name="projectEndArr[][laterPay]" value="" placeholder="请根据情况输入"/></td>
+    			##项目网址
+				<td><input name="" value="$!projectEntity.url" readonly="readonly" /></td>
+				##备注
+                <td><input name="projectEndArr[][note]" value=""  placeholder="请根据情况输入"/></td>
+            </tr>
+        #end
+        <tr>
+            <td class="gray">合计</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td><input id="total_expected_num" readonly = "readonly" /></td>
+            <td>&nbsp;</td>
+            <td><input id="total_real_num" readonly = "readonly" /></td> 		##实际上线人数
+			<td><input id="total_payfee_num" readonly = "readonly" /></td>   	##应缴费人数
+            <td><input id="total_real_money_num" readonly = "readonly" /></td>	##实际项目总额
+            <td><input id="total_charge_num" readonly = "readonly" /></td>		##收费人数
+            <td><input id="total_pay_num" readonly = "readonly" /></td>			##已到款金额
+            <td><input id="total_invoice_num" readonly = "readonly" /></td>		##已开票金额
+            <td><input id="total_not_pay_num" readonly = "readonly" /></td>		##未到款金额
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+			<td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="gray">办事处(分公司)负责人意见</td>
+            <td colspan="6">
+                ##<span>方建星（同意）</span>
+                ##<i style="color:#999; position:relative; top:3px; font-style:normal;">2017-02-25</i>
+            </td>
+            <td colspan="2" class="gray">分管领导意见</td>
+            <td colspan="8"></td>
+        </tr>
+        <tr>
+			<td colspan="2" class="gray">商务负责人意见</td>
+            <td colspan="6"></td>
+            <td colspan="2" class="gray">主管副总裁意见</td>
+            <td colspan="8"></td>
+        </tr>
+<script >
+/*限制文本框只能输入数字和小数点,小数点只能有1个，小数点后只能有2位*/  
+$(".NumDecTextForCal").keyup(function(){
+	 $(this).val($(this).val().replace(/[^0-9.]/g,'').replace(/^\./g,"").replace(/\.{2,}/g,".").replace(".","$#$").replace(/\./g,"").replace("$#$",".").replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'));
+})
+
+/*收费人数合计*/
+$(".NumTextForCal").keyup(function(){
+	$(this).val($(this).val().replace(/\D/gi,""));
+	var chargeCountArray = $("#needLoad").find("input[name='projectEndArr[][chargeCount]']");
+	var total_charge_num = 0;
+	$(chargeCountArray).each(function(i,ele){
+    	var temp = $(ele).val() == "" ? 0 : $(ele).val() * 1;
+		total_charge_num = total_charge_num.add(temp)
+    })
+	$('#total_charge_num').val(total_charge_num);
+})
+
+/*实际上线人数合计*/
+$(".TotalRealNumText").keyup(function(){
+	$(this).val($(this).val().replace(/\D/gi,""));
+	var realNumCountArray = $("#needLoad").find("input[name='projectEndArr[][realNum]']");
+	var total_real_num = 0;
+	$(realNumCountArray).each(function(i,ele){
+    	var temp = $(ele).val() == "" ? 0 : $(ele).val() * 1;
+		total_real_num = total_real_num.add(temp)
+    })
+	$('#total_real_num').val(total_real_num);
+})
+
+/*应缴费人数合计*/
+$(".NumTextForCalTotal").keyup(function(){
+	$(this).val($(this).val().replace(/\D/gi,""));
+	var parent = $(this).parent().parent('tr');
+	var qj = $(parent).find("input[name='qqhzjf']").val(); //前期经费
+		qj = qj == "" ? 0 : qj * 1;
+	var chargeStandard = $(parent).find("input[name='chargeStandard']").val();  //单价
+		chargeStandard = chargeStandard == "" ? 0 : chargeStandard * 1;
+	var payCount = $(this).val();		//应缴费人数
+		payCount = payCount == "" ? 0 : payCount * 1;
+	
+	var TotalMoney =  payCount.mul(chargeStandard).sub(qj);	//实际项目总额=单价*应缴费人数-前期经费
+	var realTotalMoney = $(parent).find("input[name='projectEndArr[][realTotalMoney]']");  //实际项目总额
+	realTotalMoney.val(TotalMoney)  
+	
+	var realTotalPay = $(parent).find("input[name='projectEndArr[][realTotalPay]']").val();  //已到款金额
+		realTotalPay = realTotalPay == "" ? 0 : realTotalPay * 1;
+		
+	var TotalNotMoney = (TotalMoney * 1).sub(realTotalPay)	//未到款金额=实际项目总额-已到款总额
+	var notTotalPay = $(parent).find("input[name='projectEndArr[][notTotalPay]']");
+	notTotalPay.val(TotalNotMoney+"")
+	
+	calTotal()
+})
+
+function calTotal(){
+	var payCountArray = $("#needLoad").find("input[name='projectEndArr[][payCount]']");
+	var total_payfee_num = 0;
+	$(payCountArray).each(function(i,ele){
+    	var temp = $(ele).val() == "" ? 0 : $(ele).val() * 1;
+		total_payfee_num = total_payfee_num.add(temp)
+    })
+	$('#total_payfee_num').val(total_payfee_num); 	//总应缴费人数
+	
+	var realTotalMoneyArray = $("#needLoad").find("input[name='projectEndArr[][realTotalMoney]']");
+	var total_real_money_num = 0;
+	$(realTotalMoneyArray).each(function(i,ele){
+    	var temp = $(ele).val() == "" ? 0 : $(ele).val() * 1;
+		total_real_money_num = total_real_money_num.add(temp)
+    })
+	$('#total_real_money_num').val(total_real_money_num);  //总实际项目总额
+	
+	
+	var notTotalPayArray = $("#needLoad").find("input[name='projectEndArr[][notTotalPay]']");
+	var total_not_pay_num = 0;
+	$(notTotalPayArray).each(function(i,ele){
+    	var temp = $(ele).val() == "" ? 0 : $(ele).val() * 1;
+		total_not_pay_num = total_not_pay_num.add(temp)
+    })
+	$('#total_not_pay_num').val(total_not_pay_num);  //总未到款金额
+	
+	
+	
+
+}
+
+$(function(){
+	var expectedNumArray = $("#needLoad").find("input[name='expectedNum']");
+	var total_expected_num = 0;
+	$(expectedNumArray).each(function(i,ele){
+    	var temp = $(ele).val() == "" ? 0 : $(ele).val() * 1;
+		total_expected_num = total_expected_num.add(temp)
+    })
+	$('#total_expected_num').val(total_expected_num);  //总报名人数
+	
+	var realTotalPayArray = $("#needLoad").find("input[name='projectEndArr[][realTotalPay]']");
+	var total_pay_num = 0;
+	$(realTotalPayArray).each(function(i,ele){
+    	var temp = $(ele).val() == "" ? 0 : $(ele).val() * 1;
+		total_pay_num = total_pay_num.add(temp)
+    })
+	$('#total_pay_num').val(total_pay_num);  	//总已到款金额
+	
+	var realTotalInvoiceArray = $("#needLoad").find("input[name='projectEndArr[][realTotalInvoice]']");
+	var total_invoice_num = 0;
+	$(realTotalInvoiceArray).each(function(i,ele){
+    	var temp = $(ele).val() == "" ? 0 : $(ele).val() * 1;
+		total_invoice_num = total_invoice_num.add(temp)
+    })
+	$('#total_invoice_num').val(total_invoice_num);  //总已开票金额
+})
+</script>
+		
+		

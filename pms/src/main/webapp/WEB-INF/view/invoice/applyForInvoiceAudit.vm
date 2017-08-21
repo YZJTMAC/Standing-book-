@@ -1,0 +1,256 @@
+#set($layout = "/layout/layoutAudit.vm")
+<div class="new_tableWrap">
+   <div class="new_tableBox clear" style="display: block">
+       <div class="tablewrap" #if($type == 1) style="margin-right: 246px;" #end >
+            <div class="table_tit" >发票申请表</div>
+            <div class="clear" style="width: 1350px;">
+                <table border="1" cellspacing="0" cellpadding="0" width="1300" class="table fl">
+                    <tr>
+                        <td colspan="2" width="13%" class="gray">单位名称</td>
+                        <td colspan="11"><input type="text" readonly value="$!projectEntity.collectMoneyCompany" name=""/></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="gray">项目编号</td>
+                        <td colspan="4"><input type="text" readonly value="$!projectEntity.serialNumber" name=""/></td>
+                        <td colspan="2" width="13%" class="gray">项目名称</td>
+                        <td colspan="5"><input type="text" readonly value="$!projectEntity.name" name=""/></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="gray">项目类型</td>
+                        <td colspan="4">
+								
+								#if($projectEntity.type== 1)
+									<input type="text" readonly value="国培" />
+    							#else
+									<input type="text" readonly value="地培"/>
+								#end
+						</td>
+                        <td colspan="2" class="gray">培训形式</td>
+                        <td colspan="5">
+							#if($projectEntity.format== 1)
+								<input type="text" readonly value="在线" />
+    						#else
+								<input type="text" readonly value="面授" />
+							#end
+						</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="4" colspan="2" class="gray">提前开发票情况说明</td>
+                        <td rowspan="2" colspan="2" width="15%" class="gray">回款日期</td>
+                        <td rowspan="2" colspan="2">#if($invoice.advancePaydate)<input type="text" value="$date.format("yyyy-MM-dd",$invoice.advancePaydate)" readonly="readonly" />#end</td>
+                        <td rowspan="4" colspan="2" class="gray">发票邮寄信息</td>
+                        <td class="gray">姓名</td>
+                        <td colspan="4"><input id="postName" type="text" name="postName" value="$!invoice.postName"></td>
+                    </tr>
+                    <tr>
+                        <td class="gray" width="100">电话（手机）</td>
+                        <td colspan="4"><input id="postMobile" type="text" name="postMobile" value="$!invoice.postMobile"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="gray">培训起始时间</td>
+                        <td colspan="2"><input type="text" value="$date.format("yyyy-MM-dd",$projectEntity.startDate)" readonly="readonly" /></td>
+                        <td class="gray">单位名称</td>
+                        <td colspan="4"><input id="postCompany" type="text" readonly  name="postCompany" value="$!invoice.postCompany"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="gray">培训截止时间</td>
+                        <td colspan="2"><input type="text" value="$date.format("yyyy-MM-dd",$projectEntity.endDate)" readonly="readonly" /></td>
+                        <td class="gray">地址</td>
+                        <td colspan="4"><input id="postAddr" type="text" name="postAddr" readonly  value="$!invoice.postAddr"></td>
+                    </tr>
+                    <tr class="gray1">
+                        <td rowspan="2" width="40">序号</td>
+                        <td rowspan="2" width="100">汇款日期</td>
+                        <td rowspan="2" width="100">汇款单位/个人</td>
+                        <td rowspan="2" width="100">汇款金额</td>
+                        <td rowspan="2" width="250">税务识别号</td>
+                        <td rowspan="2" width="300">发票抬头付款单位名称</td>
+                        <td rowspan="2" width="100">发票项目</td>
+                        <td rowspan="2" width="50">单价</td>
+                        <td rowspan="2" width="50">数量</td>
+                        <td colspan="5" width="500">发票种类</td>
+                    </tr>
+                    <tr class="gray1">
+                        <td width="100px">机打发票金额</td>
+                        <td width="100px">定额发票号</td>
+                        <td width="100px">备注</td>
+                    </tr>
+                     
+					#foreach ($paymentInvoice in $paymentInvoiceList)
+                        <tr class="table_content" id="tr1">
+                           <td>$velocityCount</td>
+                            <td><input type="text" value="#if(${paymentInvoice.payment.traTime})$date.format(${paymentInvoice.payment.traTime})#end" readonly="readonly" /></td>
+                            <td><input type="text" value="$!{paymentInvoice.payment.remitter}" readonly="readonly" /></td>
+                            <td><input type="text" value="$!{paymentInvoice.payment.amount}" readonly="readonly" /></td>
+                            <td><input type="text" value="$!paymentInvoice.taxpayerNum" readonly="readonly" /></td>
+                            <td><input type="text" value="$!paymentInvoice.invoiceHeader" readonly="readonly" /></td>
+                            <td><input type="text" value="$!paymentInvoice.invoiceItem" readonly="readonly" /></td>
+                            <td><input type="text" value="$!paymentInvoice.unitPrice" readonly="readonly" /></td>
+                            <td><input type="text" value="$!paymentInvoice.count" readonly="readonly" /></td>
+                            <td><input type="text" value="$!paymentInvoice.invoiceMachine" readonly="readonly" /></td>
+                            <td><input type="text" value="$!paymentInvoice.invoiceNumber" readonly="readonly" /></td>
+                            <td><input type="text" value="$!paymentInvoice.note" readonly="readonly" /></td>
+                        </tr>
+                    #end
+                    <tr>
+                        <td colspan="9" class="gray">合计</td>
+                        <td><input type="text" value="$invoiceMachineTotal" readonly="readonly" /></td>
+                        <!--<td><input type="text" value="$invoiceHundredTotal" readonly="readonly" /></td>
+                        <td><input type="text" value="$invoiceFiftyTotal" readonly="readonly" /></td>-->
+                        <td style="background: #ebebe4;"></td>
+                        <td style="background: #ebebe4;"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="gray">办事处（分公司）负责人意见</td>
+                        <td colspan="3">
+                            <span>#if($ph_1) $!{ph_1.extInfo.realName}（$!{ph_1.dealResult}）#end</span>
+                            <i style="color:#999; position:relative; top:3px; font-style:normal;">#if($ph_1) $date.format("yyyy-MM-dd",${ph_1.dealTime}) #end</i>
+                        </td>
+                        <td colspan="2" class="gray">分管领导意见</td>
+                        <td colspan="4">
+    						<span>#if($ph_2) $!{ph_2.extInfo.realName}（$!{ph_2.dealResult}）#end</span>
+                            <i style="color:#999; position:relative; top:3px; font-style:normal;">#if($ph_2) $date.format("yyyy-MM-dd",${ph_2.dealTime}) #end</i>
+    					</td>
+                    </tr>
+					<tr>
+                        <td colspan="3" class="gray">商务负责人意见</td>
+                        <td colspan="3">
+                            <span>#if($ph_3) $!{ph_3.extInfo.realName}（$!{ph_3.dealResult}）#end</span>
+                            <i style="color:#999; position:relative; top:3px; font-style:normal;">#if($ph_3) $date.format("yyyy-MM-dd",${ph_3.dealTime}) #end</i>
+                        </td>
+                        <td colspan="2" class="gray">主管副总裁意见</td>
+                        <td colspan="4">
+    						<span>#if($ph_4) $!{ph_4.extInfo.realName}（$!{ph_4.dealResult}）#end</span>
+                            <i style="color:#999; position:relative; top:3px; font-style:normal;">#if($ph_4) $date.format("yyyy-MM-dd",${ph_4.dealTime}) #end</i>
+    					</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="gray">财务负责人查阅</td>
+                        <td colspan="9">
+    						<span>#if($ph_6) $!{ph_6.extInfo.realName}（$!{ph_6.dealResult}）#end</span>
+                            <i style="color:#999; position:relative; top:3px; font-style:normal;">#if($ph_6) $date.format("yyyy-MM-dd",${ph_6.dealTime}) #end</i>
+    					</td>
+                    </tr>
+                </table>
+            </div>
+			<div class="opinion">
+                <h1>发起人备注</h1>
+                <div class="opinionCon">
+					<textarea style="width: 880px;height: 100px;border: 0px;padding: 5px;" readonly="readonly">$!{invoice.note}</textarea>					
+				</div>
+                <h2 style="border-top: 2px solid #4faae7;">处理人意见</h2>
+                <div class="opinionBox">
+					#foreach($ph in $phList)
+                    <div class="opinionList">
+                        <h3>$!{ph.extInfo.realName}  <span #if(${ph.dealResult} == "同意") class="y" #else class="n" #end>（$!{ph.dealResult}）</span><i> #if(${ph.dealTime}) $date.format("yyyy-MM-dd",$!{ph.dealTime}) #end </i> </h3>	
+                        <div><textarea style="width: 880px;height: 100px;border: 0px;padding: 5px;background: #f0f8ff;" readonly="readonly">${ph.dealOpinion}</textarea></div>
+                    </div>
+					#end
+                </div>
+            </div>
+            <div style="height: 50px;"></div>
+        </div>
+       
+       <div class="new_shenpi fr" #if($type != 1) style="display: none;" #end>
+            <h2 class="mb20">》 #if($process.type == 1) 审批 #elseif($process.type == 2) 查阅 #elseif($process.type == 3) 添加项目链接 #else ---- #end</h2>
+            <div class="shenpi_tex mr10">
+                <textarea id="dealOpinion"></textarea>
+            </div>
+            <div class="mb10 mt10">
+    			#if($process.type == 2) 
+    			<input type="radio" name = "dealResult" value="已阅" checked="checked" />已阅
+    			#else
+    			<input type="radio" name = "dealResult" value="同意" />同意
+                <input type="radio" name = "dealResult" value="不同意" />不同意
+    			#end
+            </div>
+            <div class="shenpi_btn mt20">
+                <a href="javascript:;" class="active" id="submit">提交</a>
+                <a href="javascript:;" id = "cancel">取消</a>
+            </div>
+       </div>
+    </div>
+	
+	<!-- 流程start -->
+	<div class="new_tableBox">
+        <div class="liuchengBox">
+            <div class="liucheng_list clear">
+                <div class="list4">
+                    <ul class="clear fl">
+                        <li title="" ></li>
+                        <li title="" ></li>##<li title="" class="weikan"></li>
+                        <li title="" ></li>##<li title="" class="tongguo"></li>
+						<li title="" ></li>##<li title="" class="yikan"></li>
+                        <li title="" ></li>
+                    </ul>
+					#*
+                    <div class="fl">
+                        <div style="margin-bottom:75px;" class="caiwu">
+                            <div class="caiwu_list" style="display: none;">
+                                <h1>财务部</h1>
+                                <ul>
+                                    ##<li>田文强</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div style="margin-bottom:75px;" class="caiwu">
+							<div class="caiwu_list" style="display: none;">
+                                <h1>商务部</h1>
+                                <ul>
+                                    ##<li>田文强</li>
+                                </ul>
+                            </div>
+						</div>
+                    </div>
+					*#
+                </div>
+            </div>
+        </div>
+    </div>
+	<!-- 流程end -->
+	
+</div><!--new_tableWrap结束-->
+
+<!--下面3个</div>关闭的是layout中的div-->
+</div>
+<!--内容end-->
+</div>
+</div>
+<script>
+	$(document).ready(function() {
+		$('#cancel').click(function() {
+			window.location.href = "${pms.contextPath}/process/needDeal"
+		});
+		$('#submit').click(function() {
+			var spyj = $('#dealOpinion').val();
+			//验证有没有选择审批结果
+			var val=$('input:radio[name="dealResult"]:checked').val();
+            if (val == null) {
+                alert("请选择审批结果！");
+                return false;
+            } else {
+				layer.load(2);
+                var params = JSON.stringify({'dealOpinion': spyj,'dealResult':val,'processId':$process.id,'type':$needProcess.type,'needId':$needProcess.id});
+        		$.ajax({
+            		type: "POST",
+            	    url: "/processDeal/needDeal",
+            	    data: params,
+            	    error: function(){
+    					layer.closeAll('loading');
+            			alert("提交失败，服务器错误！")
+            	    },
+            	    success: function(res){
+            	    	layer.closeAll('loading');
+            			if(res.code === 0){
+            				layer.msg('提交成功', {icon:1,anim: 4 ,time: 2000},function(){
+								window.location.href = "${pms.contextPath}/process/needDeal";
+							});
+            			}else{
+            				alert("提交失败："+res.msg);
+            			}
+            		}
+            	});
+            }
+		});
+	})
+</script>

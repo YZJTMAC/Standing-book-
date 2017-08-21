@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.teacheredu.mapping.ProjectYearSummaryMapper" >
+  <resultMap id="BaseResultMap" type="cn.teacheredu.entity.ProjectYearSummaryEntity" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="project_id" property="projectId" jdbcType="INTEGER" />
+    <result column="year" property="year" jdbcType="INTEGER" />
+    <result column="incomeAmount" property="incomeamount" jdbcType="DECIMAL" />
+    <result column="overAmount" property="overamount" jdbcType="DECIMAL" />
+    <result column="paymentAmount" property="paymentamount" jdbcType="DECIMAL" />
+    <result column="fundsAmount" property="fundsamount" jdbcType="DECIMAL" />
+    <result column="invoiceAmount" property="invoiceamount" jdbcType="DECIMAL" />
+    <result column="budgetAmount" property="budgetamount" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, project_id, year, incomeAmount, overAmount, paymentAmount, fundsAmount, invoiceAmount, 
+    budgetAmount
+  </sql>
+  <sql id="Summary_Column_List" >
+    id, project_id, year, 
+<!--     incomeAmount,  -->
+    <!-- 年度到款额度 -->
+   	((SELECT IFNULL(sum(t2.amount),0) AS addAmount FROM process t1 LEFT JOIN payment t2 ON t1.object_id = t2.id WHERE t1.table_name = 'payment' AND t1.update_summary = 0 AND t2.`year` = p.year AND t1.project_id = p.project_id AND STATUS = 4) + IFNULL(paymentAmount,0)) paymentAmount,
+   	<!-- 年度经费金额 -->
+   	((SELECT IFNULL(sum(t2.apply_amount),0) AS applyAmount FROM process t1 LEFT JOIN funds t2 ON t1.object_id = t2.id WHERE	t1.table_name = 'funds' AND t1.update_summary = 0 AND YEAR (t2.create_time) = p.year AND t1.project_id = p.project_id AND STATUS = 4 AND t2.won_pay in (2,3)) + IFNULL(fundsAmount,0)) fundsAmount,
+	<!-- 年度发票金额 -->
+	((SELECT IFNULL(sum(t3.invoice_machine), 0) as invoiceAmount FROM process t1 LEFT JOIN invoice t2 ON t1.object_id = t2.id LEFT JOIN payment_invoice t3 ON t2.id = t3.invoice_id WHERE t1.table_name = 'invoice' AND t1.update_summary = 0 AND YEAR (t3.invoice_date) = p.year AND t1.project_id = p.project_id AND t1. STATUS = 4 )+ IFNULL(invoiceAmount, 0)) invoiceAmount,
+	<!-- 年度结转收入 -->
+	(SELECT IF ((YEAR(start_date) = p.year), IF((YEAR (start_date) = YEAR (end_date)), IF(MONTH (end_date) - MONTH (start_date) = 0,1,MONTH (end_date) - MONTH (start_date)),(12 - MONTH(start_date))),IF ((YEAR(end_date) = p.year),MONTH (end_date),if(year(start_date) > p.year || p.year>year(end_date),0,12)))*(total_money * (	1 - ((pro_fund_provincial + pro_fund_city + pro_fund_county + pro_fund_other)/100))  / if(TIMESTAMPDIFF(MONTH, start_date, end_date) = 0,1,TIMESTAMPDIFF(MONTH, start_date, end_date)))FROM project where id = p.project_id) incomeAmount,
+	<!-- 年度运营成本 -->
+   ((SELECT IFNULL(SUM(t3.pay_money),0) FROM process t1 LEFT JOIN funds t2 ON t1.object_id = t2.id LEFT JOIN funds_pay t3 ON t3.funds_id = t2.id WHERE t1.table_name = 'funds' AND t1.update_summary = 0 AND t1.project_id = p.project_id AND t1.STATUS = 4 AND t2.won_pay IN (2, 3) AND t2.type = 2 AND YEAR (t3.pay_time) = p. YEAR) + IFNULL(budgetAmount, 0)) budgetAmount,
+	<!-- 年度结转成本 -->
+	overAmount
+<!-- (SELECT sum(amount) - applyAmount FROM	payment left join (	select sum(apply_amount) as applyAmount,project_id,year(create_time) as year from funds where won_pay in (2,3) group by project_id,year(create_time)) funds on funds.project_id = payment.project_id and payment.year = funds.year WHERE payment.project_id = p.project_id AND payment. YEAR = p. YEAR AND (EXISTS (SELECT 1 FROM	process	WHERE	process.table_name = "payment" AND object_id = payment.id	AND STATUS = 4)	OR EXISTS (	SELECT 1 FROM	process	WHERE	process.table_name = "payment" AND object_id = payment.id	AND STATUS = 4) GROUP BY payment.project_id) incomeAmount -->
+<!-- (SELECT sum(amount) - applyAmount FROM	payment left join (	select sum(apply_amount) as applyAmount,project_id,year(create_time) as year from funds where won_pay in (2,3) group by project_id,year(create_time)) funds on funds.project_id = payment.project_id and payment.year = funds.year WHERE payment.project_id = p.project_id AND payment. YEAR = p. YEAR AND (EXISTS (SELECT 1 FROM	process	WHERE	process.table_name = "payment" AND object_id = payment.id	AND STATUS = 4)	OR EXISTS (	SELECT 1 FROM	process	WHERE	process.table_name = "payment" AND object_id = payment.id	AND STATUS = 4) GROUP BY payment.project_id) incomeAmount  -->
+<!-- (select sum(amount) from payment where  payment.project_id=p.project_id and payment.year=p.year and (EXISTS(select 1 from process where process.table_name="payment" and object_id=payment.id and STATUS=4) or not EXISTS(select 1 from process where process.table_name="payment" and object_id=payment.id)) GROUP BY project_id) paymentAmount, -->
+<!-- (select sum(invoice_machine) from payment_invoice where project_id=p.project_id and YEAR(invoice_date)=p.year and (EXISTS(select 1 from process where process.table_name="invoice" and object_id=payment_invoice.invoice_id and STATUS=4) or not EXISTS(select 1 from process where process.table_name="invoice" and object_id=payment_invoice.invoice_id))GROUP BY project_id) fundsAmount, -->
+<!-- (select sum(apply_amount) from funds where  project_id=p.project_id and YEAR(create_time)=p.year and (EXISTS(select 1 from process where process.table_name="funds" and object_id=funds.id and STATUS=4) or not EXISTS(select 1 from process where process.table_name="funds" and object_id=funds.id)) GROUP BY project_id) invoiceAmount,  -->
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from project_year_summary
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByProjectId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from project_year_summary
+    where project_id = #{projectId,jdbcType=INTEGER}
+  </select>
+  <select id="selectYearSummaryValue" resultMap="BaseResultMap">
+    select <include refid="Summary_Column_List" />
+    from project_year_summary p
+    where project_id = #{projectId,jdbcType=INTEGER} and year = #{year,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from project_year_summary
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.teacheredu.entity.ProjectYearSummaryEntity" >
+    insert into project_year_summary (id, project_id, year)
+    values (#{id,jdbcType=INTEGER}, #{projectId,jdbcType=INTEGER}, #{year,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.teacheredu.entity.ProjectYearSummaryEntity" >
+    insert into project_year_summary
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="projectId != null" >
+        project_id,
+      </if>
+      <if test="year != null" >
+        year,
+      </if>
+      <if test="incomeamount != null" >
+        incomeAmount,
+      </if>
+      <if test="overamount != null" >
+        overAmount,
+      </if>
+      <if test="paymentamount != null" >
+        paymentAmount,
+      </if>
+      <if test="fundsamount != null" >
+        fundsAmount,
+      </if>
+      <if test="invoiceamount != null" >
+        invoiceAmount,
+      </if>
+      <if test="budgetamount != null" >
+        budgetAmount,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="projectId != null" >
+        #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="year != null" >
+        #{year,jdbcType=INTEGER},
+      </if>
+      <if test="incomeamount != null" >
+        #{incomeamount,jdbcType=DECIMAL},
+      </if>
+      <if test="overamount != null" >
+        #{overamount,jdbcType=DECIMAL},
+      </if>
+      <if test="paymentamount != null" >
+        #{paymentamount,jdbcType=DECIMAL},
+      </if>
+      <if test="fundsamount != null" >
+        #{fundsamount,jdbcType=DECIMAL},
+      </if>
+      <if test="invoiceamount != null" >
+        #{invoiceamount,jdbcType=DECIMAL},
+      </if>
+      <if test="budgetamount != null" >
+        #{budgetamount,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.teacheredu.entity.ProjectYearSummaryEntity" >
+    update project_year_summary
+    <set >
+      <if test="projectId != null" >
+        project_id = #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="year != null" >
+        year = #{year,jdbcType=INTEGER},
+      </if>
+      <if test="incomeamount != null" >
+        incomeAmount = #{incomeamount,jdbcType=DECIMAL},
+      </if>
+      <if test="overamount != null" >
+        overAmount = #{overamount,jdbcType=DECIMAL},
+      </if>
+      <if test="paymentamount != null" >
+        paymentAmount = #{paymentamount,jdbcType=DECIMAL},
+      </if>
+      <if test="fundsamount != null" >
+        fundsAmount = #{fundsamount,jdbcType=DECIMAL},
+      </if>
+      <if test="invoiceamount != null" >
+        invoiceAmount = #{invoiceamount,jdbcType=DECIMAL},
+      </if>
+      <if test="budgetamount != null" >
+        budgetAmount = #{budgetamount,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.teacheredu.entity.ProjectYearSummaryEntity" >
+    update project_year_summary
+    set project_id = #{projectId,jdbcType=INTEGER},
+      year = #{year,jdbcType=INTEGER},
+      incomeAmount = #{incomeamount,jdbcType=DECIMAL},
+      overAmount = #{overamount,jdbcType=DECIMAL},
+      paymentAmount = #{paymentamount,jdbcType=DECIMAL},
+      fundsAmount = #{fundsamount,jdbcType=DECIMAL},
+      invoiceAmount = #{invoiceamount,jdbcType=DECIMAL},
+      budgetAmount = #{budgetamount,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,35 @@
+.m_auto{
+	margin-left: auto;
+	margin-right: auto;
+}
+.jfsq_operation_btn a{
+	margin-right: 10px;
+	display: inline-block;
+	*zoom: 1;
+	*display: block;
+	padding: 0 5px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	background: #f2f2f2;
+	color: #8d8d8d;
+}
+.jfsq_operation_btn a:hover{
+	color: #8d8d8d;
+}
+.jfsq_operation_btn a.orange{
+	border: 1px solid #f57c00;
+	background: #f57c00;
+	color: #fff;
+}
+.jfsq_operation_btn a.blue{
+	background: #4faae7;
+	color: #fff;
+	border: 1px solid #4faae7;
+}
+.jfsq_operation_btn a.orange:hover{
+	color: #fff;
+}
+
+.jfsq_operation_btn a.blue:hover{
+	color: #fff;
+}

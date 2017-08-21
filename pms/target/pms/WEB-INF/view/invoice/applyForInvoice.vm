@@ -1,0 +1,444 @@
+#set($layout = "/layout/layoutNew.vm") 
+##<script type="text/javascript" src="${pms.contextPath}/resources/js/cascade.js"></script>
+<script type="text/javascript" src="${pms.contextPath}/resources/js/calculate.js"></script>
+
+<script>
+	//添加行
+    var N=1;
+    $(document).ready(function (){
+		
+	 	$('.sub_btn').click(function(){
+			if(N == 1){
+				layer.msg("只剩一行了",{time: 1000})
+				return false;
+			}
+		 	confirm("确定删除最后一行吗？" , function(){
+				layer.close(layer.index)
+				$('.table_content').remove();
+				N--;
+				$('#tr'+N).addClass('table_content')
+        	})
+	 	})
+	 	
+		$(".NumDecText").unbind('keyup').bind('keyup',function(){
+    		 $(this).val($(this).val().replace(/[^0-9.]/g,'').replace(/^\./g,"").replace(/\.{2,}/g,".").replace(".","$#$").replace(/\./g,"").replace("$#$",".").replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'));
+			 countMachine();
+    	})
+    	$(".NumText").unbind('keyup').bind('keyup',function(){
+    		 $(this).val($(this).val().replace(/[^0-9.]/g,'').replace(/^\./g,"").replace(/\.{2,}/g,".").replace(".","$#$").replace(/\./g,"").replace("$#$",".").replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'));
+			 countMachine();
+    	})
+    	
+        $('.add_btn').click(function(){
+            N++;
+            var tr=$('<tr class="table_content" id="tr'+N+'"><td>'+N+'</td><td><input type="text" name="" value="" readonly="readonly" /></td><td><input type="text" name="" value=""  readonly="readonly" /></td><td><input type="text" name="" value="" readonly="readonly" /></td><td><input  type="text" name="paymentInvoiceList[][taxpayerNum]" value="" /></td><td><input type="text" name="paymentInvoiceList[][invoiceHeader]" value="" /></td><td><input type="text" name="paymentInvoiceList[][invoiceItem]" value="" /></td><td><input type="text" class="NumDecText" name="paymentInvoiceList[][unitPrice]" value="" /></td><td><input type="text" class="NumText" name="paymentInvoiceList[][count]" value="" /></td><td><input  type="text" class="NumDecTextForM" name="paymentInvoiceList[][invoiceMachine]" value=""  style="background: #ebebe4;" readonly /></td><td><input type="text" class="NumText" name="paymentInvoiceList[][invoiceNumber]" value="" /></td><td><input type="text"  name="paymentInvoiceList[][note]" value="" /></td></tr>');
+            $('.table_content').after(tr);
+            $('.table_content').eq(0).removeClass('table_content');
+			
+			$(".NumDecText").unbind('keyup').bind('keyup',function(){
+        		 $(this).val($(this).val().replace(/[^0-9.]/g,'').replace(/^\./g,"").replace(/\.{2,}/g,".").replace(".","$#$").replace(/\./g,"").replace("$#$",".").replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'));
+        	});
+        	/*限制文本框只能输入数字*/  
+        	$(".NumText").unbind('keyup').bind('keyup',function(){
+        		 $(this).val($(this).val().replace(/\D/gi,""));
+        	})
+		
+        	
+        	$(".NumDecText").unbind('keyup').bind('keyup',function(){
+    		 $(this).val($(this).val().replace(/[^0-9.]/g,'').replace(/^\./g,"").replace(/\.{2,}/g,".").replace(".","$#$").replace(/\./g,"").replace("$#$",".").replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'));
+			 countMachine();
+	    	})
+	    	$(".NumText").unbind('keyup').bind('keyup',function(){
+	    		 $(this).val($(this).val().replace(/[^0-9.]/g,'').replace(/^\./g,"").replace(/\.{2,}/g,".").replace(".","$#$").replace(/\./g,"").replace("$#$",".").replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'));
+				 countMachine();
+	    	})
+			
+        })
+    });
+	//计算机打发票总金额
+	function countMachine(){
+		var total = 0;
+		$(".NumText").each(function(i,element){
+			var unitPrice = $(this).parent().parent().find("input[name='paymentInvoiceList[][unitPrice]']").eq(0).val();
+				unitPrice = unitPrice==""?0:unitPrice*1;
+			var count = $(this).parent().parent().find("input[name='paymentInvoiceList[][count]']").eq(0).val();
+				count = count==""?0:count*1;
+				total = unitPrice.mul(count);
+			$(this).parent().parent().find("input[name='paymentInvoiceList[][invoiceMachine]']").eq(0).val(total);
+		})
+		countMachinetotal();
+	}
+	//计算机打发票总金额
+	function countMachinetotal(){
+		var totalMe=0;
+		
+		$(".NumDecTextForM").each(function(i,element){
+			
+			var num=$(element).val()==""?0:$(element).val()*1
+			totalMe=totalMe.add(num);
+		})
+		$('#invoiceMachineTotal').val(totalMe)
+		
+	}
+</script>
+
+
+
+<form id = "invoiceForm">
+	<input type="hidden"  name="projectId"  value="$!projectEntity.id">
+	<input type="hidden"  name="type"  value="$!type">
+    <div class="new_tableBox clear" style="display:block">
+        <div >
+            <div class="tablewrap" style="margin-right:185px;display:block">
+				#if($type == 2)
+                <input type="button" value="＋" class="add_btn" title="新增">
+    			<input type="button" value="–" class="sub_btn" title="删除最后一行">
+				#end
+                <div class="table_tit" >发票申请表</div>
+                <div class="clear" style="width: 1350px;">
+                    <table border="1" cellspacing="0" cellpadding="0" width="1300" class="table fl">
+                        <tr>
+                            <td colspan="2" width="13%" class="gray">单位名称</td>
+                            <td colspan="11"><input type="text" class="disabled" readonly value="$!projectEntity.collectMoneyCompany" name=""/></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="gray">项目编号</td>
+                            <td colspan="4"><input type="text" class="disabled" readonly value="$!projectEntity.serialNumber" name=""/></td>
+                            <td colspan="2" width="13%" class="gray">项目名称</td>
+                            <td colspan="5"><input type="text" class="disabled" readonly value="$!projectEntity.name" name=""/></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="gray">项目类型</td>
+                            <td colspan="4">
+    								
+    								#if($projectEntity.type== 1)
+    									<input type="text" class="disabled" readonly value="国培" name=""/>
+        							#else
+    									<input type="text" class="disabled" readonly value="地培" name=""/>
+    								#end
+    						</td>
+                            <td colspan="2" class="gray">培训形式</td>
+                            <td colspan="5">
+    							#if($projectEntity.format== 1)
+    								<input type="text" class="disabled" readonly value="在线" name=""/>
+        						#else
+    								<input type="text" class="disabled" readonly value="面授" name=""/>
+    							#end
+    						</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="4" colspan="2" class="gray">提前开发票情况说明</td>
+                            <td rowspan="2" colspan="2" width="15%" class="gray">回款日期</td>
+                            <td rowspan="2" colspan="2">
+								#if($type == 2)
+								<input id="layDateEnd" type="text" placeholder="请选择日期" readonly ="readonly" name="advancePaydate" value="" />
+								#end
+							</td>
+                            <td rowspan="4" colspan="2" class="gray">发票邮寄信息</td>
+                            <td class="gray">姓名</td>
+                            <td colspan="4"><input id="postName" type="text" name="postName" value="" /></td>
+                        </tr>
+                        <tr>
+                            <td class="gray" width="100">电话（手机）</td>
+                            <td colspan="4"><input id="postMobile" type="text" name="postMobile" value="" onkeyup="this.value=this.value.replace(/[^\d\-]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d\-]/g,'')" /></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="gray">培训起始时间</td>
+                            <td colspan="2"><input type="text" class="disabled" readonly value="$date.format("yyyy-MM-dd",$projectEntity.startDate)" name="" /></td>
+                            <td class="gray">单位名称</td>
+                            <td colspan="4"><input id="postCompany" type="text" name="postCompany" value="" /></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="gray">培训截止时间</td>
+                            <td colspan="2"><input type="text" class="disabled" readonly value="$date.format("yyyy-MM-dd",$projectEntity.endDate)" name=""/></td>
+                            <td class="gray">地址</td>
+                            <td colspan="4"><input id="postAddr" type="text" name="postAddr" value="" /></td>
+                        </tr>
+                        <tr class="gray1">
+                            <td rowspan="2" width="40">序号</td>
+                            <td rowspan="2" width="100">汇款日期</td>
+                            <td rowspan="2" width="100">汇款单位/个人</td>
+                            <td rowspan="2" width="100">汇款金额</td>
+                            <td rowspan="2" width="250">税务识别号</td>
+                            <td rowspan="2" width="300">发票抬头付款单位名称</td>
+                            <td rowspan="2" width="100">发票项目</td>
+                            <td rowspan="2" width="50">单价</td>
+                            <td rowspan="2" width="50">数量</td>
+                            <td colspan="5" width="500">发票种类</td>
+                        </tr>
+                        <tr class="gray1">
+                            <td width="100px">机打发票金额</td>
+                            <td width="100px">定额发票号</td>
+                            <td width="100px">备注</td>
+                        </tr>
+						#if($type==1)
+						#foreach($payment in $paymentList)
+						<tr class="table_content" id="tr$velocityCount">
+                            <td>$velocityCount
+							<input type="hidden" name="paymentInvoiceList[][paymentId]" value="$payment.id">
+							</td>
+                            <td><input  type="text" name="" value="$date.format($payment.traTime)" readonly="readonly" /></td>
+                            <td><input  type="text" name="" value="$!payment.remitter" readonly="readonly" /></td>
+                            <td><input  type="text" name="" value="$!payment.amount" readonly="readonly" /></td>
+                            <td><input  type="text" name="paymentInvoiceList[][taxpayerNum]" value="" /></td>
+                            <td><input  type="text" name="paymentInvoiceList[][invoiceHeader]" value="" /></td>
+                            <td><input  type="text" name="paymentInvoiceList[][invoiceItem]" value="" /></td>
+                            <td><input  type="text" class="NumDecText" name="paymentInvoiceList[][unitPrice]" value="" /></td>
+                            <td><input  type="text" class="NumText" name="paymentInvoiceList[][count]" value="" /></td>
+                            <td><input  type="text" class="NumDecTextForM" name="paymentInvoiceList[][invoiceMachine]" value="" style="background: #ebebe4;" readonly /></td>
+                            <td><input  type="text" class="NumText" name="paymentInvoiceList[][invoiceNumber]" value="" /></td>
+                            <td><input  type="text" name="paymentInvoiceList[][note]" value="" /></td>
+                        </tr>
+						#end
+						#else
+                         <tr class="table_content" id="tr1">
+                            <td>1</td>
+                            <td><input  type="text" name="" value="" readonly="readonly" /></td>
+                            <td><input  type="text" name="" value="" readonly="readonly" /></td>
+                            <td><input  type="text" name="" value="" readonly="readonly" /></td>
+                            <td><input  type="text" name="paymentInvoiceList[][taxpayerNum]" value="" /></td>
+                            <td><input  type="text" name="paymentInvoiceList[][invoiceHeader]" value="" /></td>
+                            <td><input  type="text" name="paymentInvoiceList[][invoiceItem]" value="" /></td>
+                            <td><input  type="text" class="NumDecText" name="paymentInvoiceList[][unitPrice]" value="" /></td>
+                            <td><input  type="text" class="NumText" name="paymentInvoiceList[][count]" value="" /></td>
+                            <td><input  type="text" class="NumDecTextForM" name="paymentInvoiceList[][invoiceMachine]" value=""  style="background: #ebebe4;" readonly /></td>
+                            <td><input  type="text" class="NumText" name="paymentInvoiceList[][invoiceNumber]" value="" /></td>
+                            <td><input  type="text" name="paymentInvoiceList[][note]" value="" /></td>
+                        </tr>
+						#end
+                        <tr>
+                            <td colspan="9" class="gray" style="text-align: right;">合计&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td><input id="invoiceMachineTotal" readonly type="text" name="" value="" style="background: #ebebe4;"/></td>
+                            <td style="background: #ebebe4;"></td>
+                            <td style="background: #ebebe4;"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="gray">办事处（分公司）负责人意见</td>
+                            <td colspan="3" style="background: #ebebe4;">
+                                <span>无需填写</span>
+                                ##<i style="color:#999; position:relative; top:3px; font-style:normal;">2017-02-25</i>
+                            </td>
+                            <td colspan="2" class="gray">分管领导意见</td>
+                            <td colspan="4" style="background: #ebebe4;">
+    							<span>无需填写</span>
+    						</td>
+                        </tr>
+                        <tr>
+							<td colspan="3" class="gray">商务负责人意见</td>
+                            <td colspan="3" style="background: #ebebe4;">
+                                <span>无需填写</span>
+                            </td>
+                            <td colspan="2" class="gray">主管副总裁意见</td>
+                            <td colspan="4" style="background: #ebebe4;">
+    							<span>无需填写</span>
+    						</td>
+                        </tr>
+						<tr>
+                            <td colspan="3" class="gray">财务负责人查阅</td>
+                            <td colspan="9" style="background: #ebebe4;">
+    							<span>无需填写</span>
+    						</td>
+                        </tr>
+                    </table>
+                    <div class="fr" style="width: 50px;"></div>
+                </div>
+                <div style="height: 50px;"></div>
+            </div>
+        </div>
+        <div class="new_beizhu fr mt10">
+            <div class="beizhu_btn">
+                <a href="javascript:;">备注</a>
+            </div>
+            <div class="beizhu_tex mr10">
+                <textarea name = "note"></textarea>
+            </div>
+        </div>
+	</div>
+ </form>
+<!--额外三个/div，关闭的是layoutNew未关闭的标签-->
+</div>
+<!--内容end-->
+</div>
+</div>
+
+<!--下面是弹窗div -->
+<!--查看流程-->
+<span style="display:none" id="cklcname">发票申请流程</span>
+<div class="liuchengBox" id="cklc" style="display:none">
+	<div class="liucheng_list clear" style="height:300px;width:950px">
+		<div class="list4">
+			<ul class="clear fl">
+				<li title=""></li>
+				<li title=""></li>
+				<li title=""></li>
+				<li title=""></li>
+				<li title=""></li>
+			</ul>
+			#*
+			<div class="fl">
+				<div style="margin-bottom:75px;" class="caiwu">
+					<div class="caiwu_list" style="display: none;">
+						<h1>财务部</h1>
+						<ul>
+							<li>田文强</li>
+							<li>田文</li>
+							<li>文强</li>
+							<li>田强</li>
+							<li>田文强</li>
+							<li>田文强</li>
+							<li>田文强</li>
+						</ul>
+					</div>
+				</div>
+				<div></div>
+			</div>
+			*#
+		</div>
+	</div>
+</div>
+
+<div class="prompt_cont_box" id="upload" style="display:none">
+	<div class="prompt_cont clear">
+		<div class="prompt_cont_text">
+			<p>您可以点击按钮上传文件或图片(文件大小为50MB以内)</p>
+			<div class="From mt10 mb10">
+				<div>
+					<input type="file" name="file" id = "file" lay-type="file"  class="layui-upload-file">
+					<span style="padding-left: 10px;color: red;font-size: 14px;" id="uploadMsg"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script >
+//保存待发
+function saveDraft(){
+	alert("暂存功能暂时未开发，请使用提交表单功能")
+}
+$(document).ready(function(){
+	//提交触发的方法
+	$("#submit_btn").click(function(){
+		var result = validateFrom();
+		if(result){
+			submitFrom();
+		}
+	});
+});
+
+//提交表格
+function submitFrom(){
+	var params = JSON.stringify($("#invoiceForm").serializeJSON());
+	layer.load(2);
+    $.ajax({
+    	type: "POST",
+        url: "/invoice/ajaxAddInvoice",
+        data: params,
+        error: function(){
+    		alert("服务器错误")
+    		layer.closeAll('loading');
+        },
+        success: function(res){
+    		if(res.code === 0){
+        		var attach =  $("#box").find("span").map(function(){
+                    	return $(this).html();
+                }).toArray();
+				var processName = $.trim($("input[name='processName']").val())
+        		var params2 = JSON.stringify({'processName': processName,'attachIds':attach,'objectId':res.objectId,'projectId':res.projectId,'shiCaogao':false});
+        		$.ajax({
+            		type: "POST",
+            	    url: "/invoice/ajaxAddProcess",
+            	    data: params2,
+            	    error: function(){
+    					layer.closeAll('loading');
+            			alert("表单数据已提交成功，但创建流程过程中出错：服务器错误，请联系管理员处理数据")
+            	    },
+            	    success: function(res){
+            	    	layer.closeAll('loading');
+            			if(res.code === 0){
+							layer.msg('提交成功', {icon:1,anim: 4 ,time: 1500},function(){
+								window.location.href = "${pms.contextPath}/process/alreadySend";
+							});
+            			}else{
+            				alert("表单数据已提交成功，但创建流程过程中出错，请联系管理员处理数据："+res.msg);
+							layer.closeAll('loading');
+            			}
+            		}
+            	});
+    		}else{
+				layer.closeAll('loading');
+    			alert("提交失败："+res.msg);
+    		}
+    	}
+    });
+}
+//表单验证
+function validateFrom(){
+	#if($type == 2)
+	var advancePaydate = $.trim($("input[name='advancePaydate']").val())
+	if(advancePaydate==""){
+		alert("请填写回款日期")
+		return false;
+	}
+	#end
+	var postName  = $.trim($("#postName").val())
+	var postMobile   = $.trim($("#postMobile").val())
+	var postAddr   = $.trim($("#postAddr").val())
+	if(postName  == ""){
+		alert("请填写姓名")
+		return false;
+	}
+	if(postMobile   == "" ){
+		alert("请填写手机或电话号码")
+		return false;
+	}
+	//if((!(/^1(3|4|5|7|8)\d{9}$/.test(postMobile)))||(!/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(postMobile))){ 
+    //    alert("手机或电话号码格式有误，请重填");  
+    //    return false; 
+    //} 
+	if(postAddr   == "" ){
+		alert("请填写地址")
+		return false;
+	}
+	
+	if(!validTd("invoiceHeader","请填写发票抬头")){
+		return false;
+	}
+	
+	if(!validTd("invoiceItem","请填写发票项目")){
+		return false;
+	}
+	 
+	if(!validTd("unitPrice","请填写发票单价")){
+		return false;
+	}
+	
+	if(!validTd("count","请填写数量")){
+		return false;
+	}
+	
+	if(!validTd("invoiceMachine","请填写机打发票金额")){
+		return false;
+	}
+	return true;
+}
+//验证抬头，项目非空
+function validTd(tag,msg){
+	var flag=true;
+	$("input[name='paymentInvoiceList[]["+tag+"]']").each(
+        function(i,ele){
+        	if($.trim($(ele).val())==""){
+    		 	alert("第"+(i+1)+"行"+msg);
+    			flag=false;
+    		 }
+        }
+    	
+	);
+	return flag;
+	
+}
+
+
+
+</script>
+  

@@ -1,0 +1,230 @@
+<div class="content_warp">
+    <div class="content_tit_box">
+    	<div class="w1230 clear">
+    		<div class="content_tit fl clear">
+    			<a href="javascript:;">工作台</a> <i></i>
+    			<a href="javascript:;">我的项目</a>
+    		</div>
+    	</div>
+    </div>
+    <!--内容star-->
+    <div class="content w1230">
+    	<div class="search_warp p10">
+    		<div class="clear">
+    			<div class="select_box fl">
+    				<h1>基础条件</h1>
+    				<div class="From">
+    					<div class="From_name">
+    						公司名称：
+    					</div>
+    					<div class="From_text">
+    						<select id="company">
+								<option value="all">全部</option>
+								#foreach($company in $companyList)
+        						<option value="$company.name">$company.name</option>
+								#end
+        					</select>
+    					</div>
+    				</div>
+    				<div class="From mt10">
+						<div class="From_name">
+    						部门名称：
+    					</div>
+    					<div class="From_text">
+    						<select id="dmId">
+								#foreach($prov in $dmListQuery)
+        						<option value="$prov.province">$prov.dmName</option>
+								#end
+        					</select>
+    					</div>
+						<div class="From_name">
+    						发起人名称：
+    					</div>
+    					<div class="From_text">
+    						<input type="text" style="width: 100px;" id="userName" #if(!$changeUser) placeholder="您没有权限筛选发起人" disabled="disabled" title="您没有权限筛选发起人" #end />
+    					</div>
+    				</div>
+    			</div>
+    			<div class="select_box fr">
+    				<h1>查询设置</h1>
+    				<div class="From">
+    					<div class="From_name">
+    						显示设置：
+    					</div>
+    					<div class="From_text">
+    						<input type="text" style="width: 300px;" value="项目编号、项目名称、发起时间，培训起始时间……" disabled/>
+    						<a href="javascript:;" class="btn_h set_btn" onclick="javascript:layer.tips('抱歉...功能暂时未开发', this, {tips: [1, '#78BA32']});">设置</a>
+    					</div>
+    				</div>
+    				<div class="From mt10">
+    					<div class="From_name">
+    						排序设置：
+    					</div>
+    					<div class="From_text">
+    						<input type="text" style="width: 300px;" value="默认以填表日期倒序排列" disabled/>
+    						<a href="javascript:;" class="btn_h set_btn" onclick="javascript:layer.tips('抱歉...功能暂时未开发', this, {tips: [1, '#78BA32']});">设置</a>
+    					</div>
+    				</div>
+    			</div>
+    		</div>
+    		<div class="From clear mt20">
+    			<div class="fr">
+    				<div class="From_text">
+    					<select id="type">
+							<option value="0">全部</option>
+    						<option value="1">项目编号</option>
+							<option value="2">项目名称</option>
+							<option value="3">项目类型</option>
+							<option value="4">项目状态</option>
+							<option value="5">培训起始时间</option>
+							<option value="6">培训结束时间</option>
+    					</select>
+    
+    					<span id="demo" style="display:none">
+    						<input type="text" placeholder="请选择起始日期" name="startDate" id="layDateStartForQuery" readonly="readonly" style="width: 100px"/>
+							<i>-</i><input type="text" placeholder="请选择结束日期" name="endDate" id="layDateEndForQuery" readonly="readonly" style="width: 100px"/>
+    					</span>
+						<input type="text" placeholder="输入内容进行查询" style="display:none" id = "value" />
+    					<select id="status" style="display:none;width: 100px">
+    						<option value = "">请选择</option>
+    						<option value = "1">进行中</option>
+    						<option value = "2">已结束</option>
+    					</select>
+						<select id="proType" style="display:none;width: 100px">
+    						<option value = "">请选择</option>
+    						<option value = "1">国培</option>
+    						<option value = "2">地培</option>
+    					</select>
+    				</div>
+    				<a href="javascript:;" class="btn fl" id="query">查询</a>
+    				<a href="javascript:;" class="btn fl" id="reset">重置</a>
+    				<a href="javascript:;" class="btn fl">导出</a>
+    				<a href="javascript:;" class="btn fl">打印</a>
+    			</div>
+    		</div>
+    	</div>
+    	<div id="contentforload">
+			
+		</div>
+    </div>
+    <!--内容end-->
+</div>
+</div>
+<script>
+$(function(){
+	$("#type").change(function(){
+		var type = $("#type").val();
+		if(type == '0') {
+			$("#value").val('');
+			$("#status").val('');
+			$("#proType").val('');
+			$("#layDateStartForQuery").val('');
+			$("#layDateEndForQuery").val('');
+			$("#value").css("display","none");
+			$("#status").css("display","none");
+			$("#proType").css("display","none");
+			$("#demo").css("display","none");
+		}  else if (type == '1' || type == '2') {
+			$("#value").val('');
+			$("#proType").css("display","none");
+			$("#demo").css("display","none");
+			$("#status").css("display","none");
+			$("#value").css("display","block");
+		} else if (type == '3') {
+			$("#value").css("display","none");
+			$("#status").css("display","none");
+			$("#demo").css("display","none");
+			$("#proType").val('');
+			$("#proType").css("display","block");
+		} else if (type == '4') {
+			$("#value").css("display","none");
+			$("#demo").css("display","none");
+			$("#proType").css("display","none");
+			$("#status").val('');
+			$("#status").css("display","block");
+		} else if (type == '5' || type == '6') {
+			$("#value").css("display","none");
+			$("#status").css("display","none");
+			$("#proType").css("display","none");
+			$("#layDateStartForQuery").val('');
+			$("#layDateEndForQuery").val('');
+			$("#demo").css("display","block");
+		}
+	})
+	reloadContent2("1");
+	$("#query").click(function(){
+		reloadContent2("1");
+	});
+	$("#reset").click(function(){
+		$("#type").val('0');
+		$("#value").val('');
+		$("#status").val('');
+		$("#proType").val('');
+		$("#layDateStartForQuery").val('');
+		$("#layDateEndForQuery").val('');
+		$("#value").css("display","none");
+		$("#status").css("display","none");
+		$("#proType").css("display","none");
+		$("#demo").css("display","none");
+	});
+});
+
+//封装请求后台的url（根据用户选择的查询条件）
+function reloadContent2(currPage){
+	var type = $("#type").val();
+	var base = encodeURI('&dmId='+$("#dmId").val()+'&userName='+$("#userName").val() + '&company=' + $("#company").val())
+	if(type == '0') {
+		reloadContent('contentforload','${pms.contextPath}/project/myProjectDataList?currPage='+currPage+base)
+	} else if (type == '1') {//项目编号
+		var param = encodeURI('&value='+$("#value").val());
+		reloadContent('contentforload','${pms.contextPath}/project/myProjectDataList?currPage='+currPage+'&type=1'+param+base)
+	} else if (type == '2') {//项目名称
+		var param = encodeURI('&value='+$("#value").val());
+		reloadContent('contentforload','${pms.contextPath}/project/myProjectDataList?currPage='+currPage+'&type=2'+param+base)
+	} else if (type == '3') {//项目类型
+		var param = encodeURI('&proType='+$("#proType").val());
+		reloadContent('contentforload','${pms.contextPath}/project/myProjectDataList?currPage='+currPage+'&type=3'+param+base)
+	} else if (type == '4') {//项目状态
+		var param = encodeURI('&status='+$("#status").val());
+		reloadContent('contentforload','${pms.contextPath}/project/myProjectDataList?currPage='+currPage+'&type=4'+param+base)
+	} else if (type == '5') {//培训起始时间
+		var startTime = $("#layDateStartForQuery").val();
+		if(startTime != ""){
+			startTime += " 08:00:00"
+		}
+		var endTime = $("#layDateEndForQuery").val();
+		if(endTime != ""){
+			endTime += " 08:00:00"
+		}
+		var param = encodeURI('&startDate='+startTime+'&endDate='+endTime);
+		reloadContent('contentforload','${pms.contextPath}/project/myProjectDataList?currPage='+currPage+'&type=5'+param+base)
+	} else if (type == '6') {//培训结束时间
+		var startTime = $("#layDateStartForQuery").val();
+		if(startTime != ""){
+			startTime += " 08:00:00"
+		}
+		var endTime = $("#layDateEndForQuery").val();
+		if(endTime != ""){
+			endTime += " 08:00:00"
+		}
+		var param = encodeURI('&startDate='+startTime+'&endDate='+endTime);
+		reloadContent('contentforload','${pms.contextPath}/project/myProjectDataList?currPage='+currPage+'&type=6'+param+base)
+	}
+}
+
+function reloadContent(contentId,url){
+    $.ajaxSetup ({
+    	cache:false
+    });
+	layui.use('layer', function(){
+  		layer = layui.layer; 
+		layer.load(0, {shade: false})
+	});
+	$("#"+contentId).html('');
+	$("#"+contentId).load(url,function(){
+		layer.closeAll('loading');
+		//layer.msg('查询成功', {icon:1,anim: 4 ,time: 1400});  
+	});
+}
+
+</script>

@@ -1,0 +1,827 @@
+#set($layout = "/layout/layoutNew.vm") 
+<script type="text/javascript" src="${pms.contextPath}/resources/js/cascade.js"></script>
+<script type="text/javascript" src="${pms.contextPath}/resources/js/calculate.js"></script>
+<script>
+	$(document).ready(function() {
+		//表切换
+		var num = 0;
+		$('.btn_left').click(function() {
+			num--;
+			$('.btn_right').show();
+			if(num == 0) {
+				//num=0;
+				$(this).hide();
+			}
+			$('.tablewrap').hide();
+			$('.tablewrap').eq(num).show();
+		});
+		$('.btn_right').click(function() {
+			qiehuan()
+			num++;
+			$('.btn_left').show();
+			if(num == $('.tablewrap').length - 1) {
+				//num=$('.tablewrap').length-1;
+				$(this).hide();
+			}
+			$('.tablewrap').hide();
+			$('.tablewrap').eq(num).show();
+		});
+		
+		//输入金额后的触发事件
+		$(".NumDecTextForCal").keyup(function(){
+		 	$(this).val($(this).val().replace(/[^0-9.]/g,'').replace(/^\./g,"").replace(/\.{2,}/g,".").replace(".","$#$").replace(/\./g,"").replace("$#$",".").replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'));
+			calHycb()
+		})
+		$(".NumDecTextForCal2").keyup(function(){
+		 	$(this).val($(this).val().replace(/[^0-9.]/g,'').replace(/^\./g,"").replace(/\.{2,}/g,".").replace(".","$#$").replace(/\./g,"").replace("$#$",".").replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'));
+			callwcb()
+		})
+		$(".NumDecTextForCal4").keyup(function(){
+		 	$(this).val($(this).val().replace(/[^0-9.]/g,'').replace(/^\./g,"").replace(/\.{2,}/g,".").replace(".","$#$").replace(/\./g,"").replace("$#$",".").replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'));
+			calqqjfbl()
+		})
+		$(".NumDecTextForCal5").keyup(function(){
+		 	$(this).val($(this).val().replace(/[^0-9.]/g,'').replace(/^\./g,"").replace(/\.{2,}/g,".").replace(".","$#$").replace(/\./g,"").replace("$#$",".").replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'));
+			calhqjfbl()
+		})
+		$(".RealNumText").keyup(function(){ //预估人数
+		 	 $(this).val($(this).val().replace(/\D/gi,""));
+		})
+		$(".NumTextForCalTotal").keyup(function(){
+		 	 $(this).val($(this).val().replace(/\D/gi,""));
+			calTotal()
+		})
+		$(".NumDecTextForCalTotal").keyup(function(){
+		 	$(this).val($(this).val().replace(/[^0-9.]/g,'').replace(/^\./g,"").replace(/\.{2,}/g,".").replace(".","$#$").replace(/\./g,"").replace("$#$",".").replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'));
+			calTotal()
+		})
+	});
+	//计算合计
+	function calqqjfbl(){ //计算前期合作经费比例之和
+		var proFundProvincial = $('#proFundProvincial').val() == "" ? 0 : $('#proFundProvincial').val() * 1;
+		var proFundCity = $('#proFundCity').val() == "" ? 0 : $('#proFundCity').val() * 1;
+		var proFundCounty = $('#proFundCounty').val() == "" ? 0 : $('#proFundCounty').val() * 1;
+		var proFundOther = $('#proFundOther').val() == "" ? 0 : $('#proFundOther').val() * 1;
+		$('#proFundTotal').val(proFundProvincial.add(proFundCity).add(proFundCounty).add(proFundOther));
+	}
+	function calhqjfbl(){ //计算后期合作经费比例之和
+		var laterFundProvincial = $('#laterFundProvincial').val() == "" ? 0 : $('#laterFundProvincial').val() * 1;
+		var laterFundCity = $('#laterFundCity').val() == "" ? 0 : $('#laterFundCity').val() * 1;
+		var laterFundCounty = $('#laterFundCounty').val() == "" ? 0 : $('#laterFundCounty').val() * 1;
+		var laterFundOther = $('#laterFundOther').val() == "" ? 0 : $('#laterFundOther').val() * 1;
+		$('#laterFundTotal').val(laterFundProvincial.add(laterFundCity).add(laterFundCounty).add(laterFundOther));
+	}
+	function calTotal(){ //计算项目总额
+		var expectedNum = $('#expectedNum').val() == "" ? 0 : $('#expectedNum').val() * 1;
+		var chargeStandard = $('#chargeStandard').val() == "" ? 0 : $('#chargeStandard').val() * 1;
+		$('#totalMoney').val(expectedNum.mul(chargeStandard));
+	}
+	function calHycb(){ //计算会议成本
+		var zjfy = $('#zjfy').val() == "" ? 0 : $('#zjfy').val() * 1;
+		var cljjt = $('#cljjt').val() == "" ? 0 : $('#cljjt').val() * 1;
+		var ssfy = $('#ssfy').val() == "" ? 0 : $('#ssfy').val() * 1;
+		var zdjlp = $('#zdjlp').val() == "" ? 0 : $('#zdjlp').val() * 1;
+		var bgjzl = $('#bgjzl').val() == "" ? 0 : $('#bgjzl').val() * 1;
+		var czfy = $('#czfy').val() == "" ? 0 : $('#czfy').val() * 1;
+		var kcfy = $('#kcfy').val() == "" ? 0 : $('#kcfy').val() * 1;
+		var qtzf = $('#qtzf').val() == "" ? 0 : $('#qtzf').val() * 1;
+		$('#hycb').val(zjfy.add(cljjt).add(ssfy).add(zdjlp).add(bgjzl).add(czfy).add(kcfy).add(qtzf));
+		calxmcb()
+	}
+	function callwcb(){ //计算劳务成本
+		var zjlw = $('#zjlw').val() == "" ? 0 : $('#zjlw').val() * 1;
+		var fdylw = $('#fdylw').val() == "" ? 0 : $('#fdylw').val() * 1;
+		$('#lwcb').val(zjlw.add(fdylw));
+		calxmcb()
+	}
+	function calxmcb(){ //计算项目成本
+		var hycb = $('#hycb').val() == "" ? 0 : $('#hycb').val() * 1;
+		var lwcb = $('#lwcb').val() == "" ? 0 : $('#lwcb').val() * 1;
+		var xmjf = $('#xmjf').val() == "" ? 0 : $('#xmjf').val() * 1;
+		$('#xmcb').val(hycb.add(lwcb).add(xmjf));
+		calml()
+	}
+	function calml(){//计算毛利
+		var ysbxmsr = $('#ysbxmsr').val() == "" ? 0 : $('#ysbxmsr').val() * 1;
+		var xmcb = $('#xmcb').val() == "" ? 0 : $('#xmcb').val() * 1;
+		$('#ysbml').val(ysbxmsr.sub(xmcb))
+		if(ysbxmsr != 0) { //计算毛利率
+			var ysbml = $('#ysbml').val() == "" ? 0 : $('#ysbml').val() * 1;
+			var ysbmll = ysbml.div(ysbxmsr);
+			$('#ysbmll').val(toDecimal4(ysbmll))
+		} else {
+			$('#ysbmll').val("0.0000")
+		}
+	}
+	//项目确认表-->项目预算表切换时 
+	function qiehuan(){
+		var collectMoneyCompany = $('#collectMoneyCompany').val();
+			var name = $('#name').val();
+		var provincial=$("#provincial").find("option:selected").text();
+			var city=$("#city").find("option:selected").text();
+			var county=$("#county").find("option:selected").text();
+		if(provincial == "请选择"){
+			provincial = "";
+		}
+		var temp = provincial+city+county+name;
+		var projectName = null;
+		if(temp!=""){
+			projectName = provincial+city+county+name+"项目"; //项目名称
+		}
+		var totalMoney = $('#totalMoney').val() == "" ? 0 : $('#totalMoney').val() * 1; //项目总额
+		var expectedNum = $('#expectedNum').val();
+		var chargeStandard = $('#chargeStandard').val();
+		var proFundTotal = $('#proFundTotal').val() == "" ? 0 : $('#proFundTotal').val() * 1;//前期合作经费所占比例
+		var laterFundTotal = $('#laterFundTotal').val() == "" ? 0 : $('#laterFundTotal').val() * 1;//后期合作经费所占比例
+		var proFundTotalM = totalMoney.mul((proFundTotal.div(100)))
+		var laterFundTotalM = totalMoney.mul((laterFundTotal.div(100)))
+		var xmsr = totalMoney.sub(proFundTotalM)
+		
+		//赋值
+		$('#ysbcompany').val(collectMoneyCompany)
+		$('#ysbname').val(projectName)
+		$('#ysbprocince').val(provincial)
+		$('#ysbxmsr').val(xmsr)
+		$('#ysbyjrs').val(expectedNum)
+		$('#ysbdj').val(chargeStandard)
+		$('#ysbsrze').val(totalMoney)
+		$('#ysbqqhz').val(proFundTotalM)
+		$('#ysbsrje').val(xmsr)
+		$('#xmjf').val(laterFundTotalM)
+		
+		calxmcb()
+		calml()
+	}
+</script>
+<form id = "projectForm">
+<div class="new_tableBox clear" style="display: block;">
+	<div class="tabList">
+		<div class="tablewrap" style="margin-right: 185px;display:block;">
+			<div style="color: #f00;">注：项目确认表需同预算表同时提交! 点击页面右侧中部向右的箭头可切换到项目预算表</div>
+			<div class="table_tit">项目确认表</div>
+			<table border="1" cellspacing="0" cellpadding="0" class="table">
+				<tr >
+					<td width="10%" class="gray">填写日期</td>
+					<td colspan="4"><input type="text" class="disabled" readonly value="$!writeTime" name="writeTime"/></td>
+					<td class="gray">项目编号</td>
+					<td colspan="4"><input type="text" class="disabled" readonly value="系统自动生成" /></td>
+				</tr>
+				<tr>
+					<td class="gray">项目类型</td>
+					<td colspan="4">
+						<select name="type" id="xmtype">
+							<option value = "0">请选择</option>
+							<option value = "1">国培</option>
+							<option value = "2">地培</option>
+						</select>
+					</td>
+					<td class="gray">培训形式</td>
+					<td colspan="4">
+						<select name="format" id="xmpxxs">
+							<option value = "0">请选择</option>
+							<option value = "2">面授</option>
+							<option value = "1">在线</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="gray">项目名称</td>
+					<td width="12%">
+						<select name="provincial" id="provincial">
+							<option value = "0">请选择</option>
+							#foreach($province in $provinceList)
+							#if($province.id > 0)
+							<option value = "$province.id" title="$province.name">$province.name</option>
+							#end
+							#end
+						</select>
+					</td>
+					<td width="5%" class="gray">省</td>
+					<td width="12%">
+						<select name="city" id = "city" disabled="disabled">
+							<option value='0'></option>
+						</select>
+					</td>
+					<td width="5%" class="gray">市</td>
+					<td width="12%">
+						<select name="county" id = "county" disabled="disabled">
+							<option value='0'></option>
+						</select>
+					</td>
+					<td width="5%" class="gray">县</td>
+					<td colspan="2"><input type="text" name="name" id = "name"></td>
+					<td width="8%">项目</td>
+				</tr>
+				<tr class="gray1">
+					<td colspan="10">合作单位信息</td>
+				</tr>
+				<tr >
+					<td width="10%" class="gray">合作单位名称</td>
+					<td colspan="4"><input type="text" name="cooperName"></td>
+					<td class="gray">第三方合作单位</td>
+					<td colspan="4">
+						<select name="thirdCooperName" id="thirdCooperName">
+							<option value = "">请选择</option>
+							<option value = "中国教育电视台">中国教育电视台</option>
+							<option value = "中央电教馆">中央电教馆</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="gray">通讯地址</td>
+					<td colspan="9"><input type="text" name="cooperAddr"></td>
+				</tr>
+				<tr>
+					<td class="gray">项目负责人</td>
+					<td><input type="text" name="cooperHeadNameFirst"></td>
+					<td class="gray">职务</td>
+					<td><input type="text" name="cooperHeadJobFirst"></td>
+					<td class="gray">联系电话</td>
+					<td colspan="2"><input type="text" name="cooperHeadMobileFirst"></td>
+					<td class="gray">邮箱</td>
+					<td colspan="2"><input type="text" name="cooperHeadEmailFirst"></td>
+				</tr>
+				<tr>
+					<td class="gray">项目联系人</td>
+					<td><input type="text" name="cooperHeadNameSecond"></td>
+					<td class="gray">职务</td>
+					<td><input type="text" name="cooperHeadJobSecond"></td>
+					<td class="gray">联系电话</td>
+					<td colspan="2"><input type="text" name="cooperHeadMobileSecond"></td>
+					<td class="gray">邮箱</td>
+					<td colspan="2"><input type="text" name="cooperHeadEmailSecond"></td>
+				</tr>
+				<tr>
+					<td colspan="10" class="gray1">项目描述</td>
+				</tr>
+				<tr>
+					<td class="gray">培训对象</td>
+					<td colspan="4">
+						<select name="trainObject" id="trainObject">
+							<option value = "">请选择</option>
+							<option value = "教师培训">教师培训</option>
+                            <option value = "校长培训">校长培训</option>
+                            <option value = "学历教育">学历教育</option>
+                            <option value = "研究生进修班">研究生进修班</option>
+							<option value = "职业教育">职业教育</option>
+							<option value = "教师资格认定">教师资格认定</option>
+                            <option value = "其他">其他</option>
+						</select>
+					</td>
+					<td class="gray">预估人数</td>
+					<td colspan="2"><input type="text" name="realNum" id="realNum" class="RealNumText"></td>
+					<td class="gray">报名人数</td>
+					<td><input type="text" name="expectedNum" id="expectedNum" class="NumTextForCalTotal"></td>
+				</tr>
+				<tr>
+					<td class="gray">收费标准</td>
+					<td><input type="text" name="chargeStandard" id="chargeStandard" class="NumDecTextForCalTotal"></td>
+					<td class="gray">元/人/年</td>
+					<td class="gray">学时</td>
+					<td><input type="text" name="studyTime" class="NumText"></td>
+					<td class="gray">培训平台</td>
+					<td colspan="4">
+						<select name="trainPlatform" id="trainPlatform">
+							<option value = "">请选择</option>
+							<option value = "教师网">教师网</option>
+							<option value = "果实网">果实网</option>
+							<option value = "韦国锋平台">韦国锋平台</option>
+                            <option value = "廖玉萍平台">廖玉萍平台</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td rowspan="2" class="gray" title="不需要填写%号，如果没有此级别下的经费比例那么填写：0">项目合作经费</td>
+					<td class="gray">项目前期经费所占比例<input type="hidden" value="" id="proFundTotal"/></td>
+					<td class="gray">省级</td>
+					<td><input type="text" name="proFundProvincial" id="proFundProvincial" value = "0" class="NumDecTextForCal4"></td>
+					<td class="gray">市级</td>
+					<td><input type="text" name="proFundCity" id="proFundCity" value = "0" class="NumDecTextForCal4"></td>
+					<td class="gray">县级</td>
+					<td width="12%"><input type="text" name="proFundCounty" id="proFundCounty" value = "0" class="NumDecTextForCal4"></td>
+					<td class="gray">其他</td>
+					<td><input type="text" name="proFundOther"  id="proFundOther" value = "0" class="NumDecTextForCal4"></td>
+				</tr>
+				<tr>
+					<td class="gray">项目后期经费所占比例<input type="hidden" value="" id="laterFundTotal"/></td>
+					<td class="gray">省级</td>
+					<td><input type="text" name="laterFundProvincial" id="laterFundProvincial"  value = "0" class="NumDecTextForCal5"></td>
+					<td class="gray">市级</td>
+					<td><input type="text" name="laterFundCity"  id="laterFundCity" value = "0" class="NumDecTextForCal5"></td>
+					<td class="gray">县级</td>
+					<td><input type="text" name="laterFundCounty"  id="laterFundCounty" value = "0" class="NumDecTextForCal5"></td>
+					<td width="8%" class="gray">其他</td>
+					<td><input type="text" name="laterFundOther"  id="laterFundOther" value = "0" class="NumDecTextForCal5"> </td>
+				</tr>
+				<tr>
+					<td class="gray">培训起始日期</td>
+					<td colspan="4"><input type="text" placeholder="请选择日期" name="startDate" id="layDateStart" readonly="readonly"></td>
+					<td class="gray">培训结束日期</td>
+					<td colspan="4"><input type="text" placeholder="请选择日期" name="endDate" id="layDateEnd" readonly="readonly"></td>
+				</tr>
+				<tr>
+					<td class="gray">项目协议书名称</td>
+					<td colspan="4"><input type="text" name="protocolName"></td>
+					<td class="gray">签署日期</td>
+					<td colspan="4"><input type="text" name="protocolTime" id="protocolTime" readonly="readonly" placeholder="请选择日期" onclick="layui.laydate({elem: this})"></td>
+				</tr>
+				<tr>
+					<td class="gray">预计项目总额</td>
+					<td colspan="4"><input type="text" name="totalMoney"  id="totalMoney"  placeholder="=报名人数*单价（系统自动计算）" class="disabled" readonly></td>
+					<td class="gray">预计收款日期</td>
+					<td colspan="4"><input type="text" name="collectMoneyDate" id="collectMoneyDate" readonly="readonly" placeholder="请选择日期" onclick="layui.laydate({elem: this})"></td>
+				</tr>
+				<tr>
+					<td class="gray">到款单位名称</td>
+					<td colspan="9">
+						<select name="collectMoneyCompany" id="collectMoneyCompany">
+							<option value="">请选择</option>
+							#foreach($company in $companyList)
+							<option value="$company.name">$company.name</option>
+							#end
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" class="gray">办事处（分公司）负责人意见</td>
+					<td colspan="3" style="background: #ebebe4;">
+						<span>无需填写</span>
+						##<span>方建星（同意）</span>
+						##<i style="color:#999; position:relative; top:3px; font-style:normal;">2017-02-25</i>
+					</td>
+					<td colspan="2" class="gray">分管领导意见</td>
+					<td colspan="3" style="background: #ebebe4;">
+						<span>无需填写</span>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" class="gray">商务负责人意见</td>
+					<td colspan="3" style="background: #ebebe4;">
+						<span>无需填写</span>
+					</td>
+					<td colspan="2" class="gray">主管副总裁意见</td>
+					<td colspan="3" style="background: #ebebe4;">
+						<span>无需填写</span>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" class="gray">平台链接</td>
+					<td colspan="8" style="background: #ebebe4;">
+						<span>由教务在之后填写</span>
+					</td>
+				</tr>
+			</table>
+			<div style="height:50px;"></div>
+		</div>
+		<div class="tablewrap" style="margin-right: 185px;">
+			<div style="color: #f00;">注：项目确认表需同预算表同时提交! 点击页面左侧中部向左的箭头可切换到项目确认表</div>
+			<div class="table_tit">项目预算表</div>
+			<table border="1" cellspacing="0" cellpadding="0" class="table">
+				<tr>
+					<td width="16%" class="gray">公司名称</td>
+					<td colspan="3"><input type="text" id="ysbcompany" placeholder="无需填写，来源于项目确认表的到款单位名称"  class="disabled" readonly></td>
+					<td width="16%" class="gray">项目编号</td>
+					<td><input type="text"  placeholder="无需填写，系统自动生成"  class="disabled" readonly></td>
+				</tr>
+				<tr>
+					<td class="gray">项目名称</td>
+					<td colspan="3"><input type="text" id="ysbname" placeholder="无需填写，来源于项目确认表的项目名称"  class="disabled" readonly></td>
+					<td class="gray">区域</td>
+					<td><input type="text" id="ysbprocince" placeholder="无需填写，来源于项目确认表的省份"  class="disabled" readonly></td>
+				</tr>
+				<tr class="gray1">
+					<td>科目</td>
+					<td width="11%">预算</td>
+					<td width="11%">科目</td>
+					<td width="11%">预算</td>
+					<td>计算依据</td>
+					<td>说明</td>
+				</tr>
+				<tr>
+					<td class="gray">项目收入</td>
+					<td><input type="text" id="ysbxmsr" placeholder="系统自动计算" class="disabled" readonly></td>
+					<td class="gray1">项目成本</td>
+					<td><input type="text" placeholder="系统自动计算" class="disabled" readonly id="xmcb"></td>
+					<td><input type="text" placeholder="见说明" class="disabled" readonly></td>
+					<td><input type="text" placeholder="=项目经费+会议成本+劳务成本" class="disabled" readonly></td>
+				</tr>
+				<tr>
+					<td class="gray">报名人数</td>
+					<td><input type="text" id="ysbyjrs" placeholder="系统自动计算" class="disabled" readonly></td>
+					<td class="gray">项目经费</td>
+					<td><input type="text" placeholder="系统自动计算" class="disabled" readonly id="xmjf"></td>
+					<td><input type="text" placeholder="见说明" class="disabled" readonly></td>
+					<td><input type="text" placeholder="=项目总额*后期合作经费所占比例" class="disabled" readonly></td>
+				</tr>
+				<tr>
+					<td class="gray">单价</td>
+					<td><input type="text" id="ysbdj" placeholder="系统自动计算" class="disabled" readonly></td>
+					<td class="gray1">会议成本</td>
+					<td><input type="text" placeholder="系统自动计算" class="disabled" readonly id="hycb"></td>
+					<td><input type="text" placeholder="见说明" class="disabled" readonly></td>
+					<td><input type="text" placeholder="=下面8项费用之和" class="disabled" readonly></td>
+				</tr>
+				<tr>
+					<td class="gray">收入总额</td>
+					<td><input type="text" id="ysbsrze" placeholder="系统自动计算" class="disabled" readonly></td>
+					<td class="gray">专家费用</td>
+					<td><input type="text" name="expertCostBudget" class="NumDecTextForCal" id="zjfy"></td>
+					<td><input type="text" name="expertCostBased" ></td>
+					<td><input type="text" name="expertCostExplain"></td>
+				</tr>
+				<tr>
+					<td class="gray">前期合作经费</td>
+					<td><input type="text" id="ysbqqhz" placeholder="系统自动计算" class="disabled" readonly></td>
+					<td class="gray">差旅及交通</td>
+					<td><input type="text" name="transportCostBudget" class="NumDecTextForCal" id="cljjt"></td>
+					<td><input type="text" name="transportCostBased"></td>
+					<td><input type="text" name="transportCostExplain"></td>
+				</tr>
+				<tr>
+					<td class="gray">收入净额</td>
+					<td><input type="text" id="ysbsrje" placeholder="系统自动计算" class="disabled" readonly></td>
+					<td class="gray">食宿</td>
+					<td><input type="text" name="accomCostBudget" class="NumDecTextForCal" id="ssfy"></td>
+					<td><input type="text" name="accomCostBased"></td>
+					<td><input type="text" name="accomCostExplain"></td>
+				</tr>
+				<tr>
+					<td class="gray">毛利</td>
+					<td><input type="text" id="ysbml" placeholder="系统自动计算" class="disabled" readonly></td>
+					<td class="gray">招待及礼品</td>
+					<td><input type="text" name="feteCostBudget" class="NumDecTextForCal" id="zdjlp"></td>
+					<td><input type="text" name="feteCostBased"></td>
+					<td><input type="text" name="feteCostExplain"></td>
+				</tr>
+				<tr>
+					<td class="gray">毛利率</td>
+					<td><input type="text" id="ysbmll" placeholder="系统自动计算"class="disabled" readonly></td>
+					<td class="gray">办公及资料</td>
+					<td><input type="text" name="officeCostBudget" class="NumDecTextForCal" id="bgjzl"></td>
+					<td><input type="text" name="officeCostBased"></td>
+					<td><input type="text" name="officeCostExplain"></td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td class="gray">场租费</td>
+					<td><input type="text" name="rentalCostBudget" class="NumDecTextForCal" id="czfy"></td>
+					<td><input type="text" name="rentalCostBased"></td>
+					<td><input type="text" name="rentalCostExplain"></td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td class="gray">考察费</td>
+					<td><input type="text" name="investCostBudget" class="NumDecTextForCal" id="kcfy"></td>
+					<td><input type="text" name="investCostBased"></td>
+					<td><input type="text" name="investCostExplain"></td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td class="gray">其他杂费</td>
+					<td><input type="text" name="otherCostBudget" class="NumDecTextForCal" id="qtzf"></td>
+					<td><input type="text" name="otherCostBased"></td>
+					<td><input type="text" name="otherCostExplain"></td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td class="gray1">劳务成本</td>
+					<td><input type="text" placeholder="系统自动计算" class="disabled" readonly id="lwcb"></td>
+					<td><input type="text" placeholder="见说明" class="disabled" readonly></td>
+					<td><input type="text" placeholder="=专家劳务+辅导员劳务" class="disabled" readonly></td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td class="gray">专家劳务</td>
+					<td><input type="text" name="expertLabourBudget" class="NumDecTextForCal2" id = "zjlw"></td>
+					<td><input type="text" name="expertLabourBased"></td>
+					<td><input type="text" name="expertLabourExplain"></td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td class="gray">辅导员劳务</td>
+					<td><input type="text" name="counsellorLabourBudget" class="NumDecTextForCal2" id = "fdylw"></td>
+					<td><input type="text" name="counsellorLabourBased"></td>
+					<td><input type="text" name="counsellorLabourExplain"></td>
+				</tr>
+			</table>
+			<div style="height:50px;"></div>
+		</div>
+	</div>
+	<div class="new_beizhu fr mt10">
+		<div class="beizhu_btn">
+			<a href="javascript:;" title="点击此处可以伸缩此框">备注</a>
+		</div>
+		<div class="beizhu_tex mr10">
+			<textarea name = "note"></textarea>
+		</div>
+	</div>
+	<a href="javascript:;" class="btn_left" style="display:none; left:0;" title="切换到项目确认表">&lt;</a>
+	<a href="javascript:;" class="btn_right" style="right:195px;" title="切换到项目预算表">&gt;</a>
+</div>
+</form>
+
+<!--额外三个/div，关闭的是layoutNew未关闭的标签-->
+</div>
+</div>
+</div>
+<!--下面是弹窗div -->
+<!--查看流程-->
+<span style="display:none" id="cklcname">项目备案流程</span>
+<div class="liuchengBox" id="cklc" style="display:none">
+	<div class="liucheng_list clear" style="height:300px;width:950px">
+		<div class="list1">
+			<ul class="clear fl">
+				<li title=""></li>
+				<li title=""></li>
+				<li title=""></li>
+				<li title=""></li>
+				<li title=""></li>
+			</ul>
+			#*
+			<div class="fl">
+				<div style="margin-bottom:75px;" class="caiwu">
+					<div class="caiwu_list" style="display: none;">
+						<h1>财务部</h1>
+						<ul>
+							<li>田文强</li>
+							<li>田文</li>
+							<li>文强</li>
+							<li>田强</li>
+							<li>田文强</li>
+							<li>田文强</li>
+							<li>田文强</li>
+						</ul>
+					</div>
+				</div>
+				<div></div>
+			</div>
+			*#
+		</div>
+	</div>
+</div>
+
+<div class="prompt_cont_box" id="upload" style="display:none">
+	<div class="prompt_cont clear">
+		<div class="prompt_cont_text">
+			<p>您可以点击按钮上传文件或图片(文件大小为50MB以内)</p>
+			<div class="From mt10 mb10">
+				<div>
+					<input type="file" name="file" id = "file" lay-type="file"  class="layui-upload-file">
+					<span style="padding-left: 10px;color: red;font-size: 14px;" id="uploadMsg"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+//保存待发
+function saveDraft(){
+	alert("暂存功能暂时未开发，请使用提交表单功能")
+}
+$(document).ready(function(){
+
+	$("#submit_btn").click(function(){
+	    layer.load(2);
+		var result = validateFrom();
+		if(result){
+			var res = checkysb();
+        	if(!res){
+        		confirm("检测到你没有填写预算表，确认此项目没有预算并立即提交表单吗？" , function(){
+                	layer.close(layer.index)
+        			submitFrom();
+            	})
+				layer.closeAll('loading');
+        	} else {
+				submitFrom();
+			}
+		}else{
+			layer.closeAll('loading');
+		}
+	});
+	
+});
+
+function submitFrom(){
+	var params = JSON.stringify($("#projectForm").serializeJSON());
+    
+    $.ajax({
+    	type: "POST",
+        url: "/project/ajaxAddProject",
+        data: params,
+        error: function(){
+    		alert("服务器错误")
+    		layer.closeAll('loading');
+        },
+        success: function(res){
+    		if(res.code === 0){
+    			var attach =  $("#box").find("span").map(function(){
+                        	return $(this).html();
+                    }).toArray();
+        		var processName = $.trim($("input[name='processName']").val())
+        		var params2 = JSON.stringify({'processName': processName,'attachIds':attach,'objectId':res.objectId,'projectId':res.objectId,'shiCaogao':false});
+        		$.ajax({
+            		type: "POST",
+            	    url: "/project/ajaxAddProcess",
+            	    data: params2,
+            	    error: function(){
+    					//layer.closeAll('loading');
+            			alert("表单数据已提交成功，但创建流程过程中出错：服务器错误，请联系管理员处理数据")
+            	    },
+            	    success: function(res){
+            			if(res.code === 0){
+							layer.closeAll('loading');
+            				layer.msg('提交成功', {icon:1,anim: 4 ,time: 1500},function(){
+								window.location.href = "${pms.contextPath}/process/alreadySend";
+							});
+            			}else{
+            				alert("表单数据已提交成功，但创建流程过程中出错，请联系管理员处理数据："+res.msg);
+            			}
+            		}
+            	});
+    		}else{
+				layer.closeAll('loading');
+    			alert("提交失败："+res.msg);
+    		}
+    	}
+    });
+}
+
+function validateFrom(){
+	if($("#trainObject").val() == ''){
+		alert("请选择培训对象")
+		return false;
+	}
+	if($.trim($("input[name='processName']").val()) == ''){
+		alert("请填写流程标题")
+		return false;
+	}
+	if($("#collectMoneyCompany").val() == ''){
+		alert("请选择到款单位名称")
+		return false;
+	}
+	if($.trim($("input[name='protocolName']").val()) == ''){
+		alert("请填写项目协议书名称")
+		return false;
+	}
+	if($("#collectMoneyDate").val() == ''){
+		alert("请选择预计收款日期")
+		return false;
+	}
+	if($("#layDateStart").val() == ''){
+		alert("请选择培训开始日期")
+		return false;
+	}
+	if($("#layDateEnd").val() == ''){
+		alert("请选择培训结束日期")
+		return false;
+	}
+	if($("#protocolTime").val() == ''){
+		alert("请选择签署日期")
+		return false;
+	}
+	var proFundProvincial = $.trim($("#proFundProvincial").val())
+	if(proFundProvincial == "" || isNaN(proFundProvincial)){
+		alert("项目前期经费所占比例填写有误，请检查！没有则填0，不需要填写%号")
+		return false;
+	}
+	var proFundCity = $.trim($("#proFundCity").val())
+	if(proFundCity == "" || isNaN(proFundCity)){
+		alert("项目前期经费所占比例填写有误，请检查！没有则填0，不需要填写%号")
+		return false;
+	}
+	var proFundCounty = $.trim($("#proFundCounty").val())
+	if(proFundCounty == "" || isNaN(proFundCounty)){
+		alert("项目前期经费所占比例填写有误，请检查！没有则填0，不需要填写%号")
+		return false;
+	}
+	var proFundOther = $.trim($("#proFundOther").val())
+	if(proFundOther == "" || isNaN(proFundOther)){
+		alert("项目前期经费所占比例填写有误，请检查！没有则填0，不需要填写%号")
+		return false;
+	}
+	var laterFundProvincial = $.trim($("#laterFundProvincial").val())
+	if(laterFundProvincial == "" || isNaN(laterFundProvincial)){
+		alert("项目后期经费所占比例填写有误，请检查！没有则填0，不需要填写%号")
+		return false;
+	}
+	var laterFundCity = $.trim($("#laterFundCity").val())
+	if(laterFundCity == "" || isNaN(laterFundCity)){
+		alert("项目后期经费所占比例填写有误，请检查！没有则填0，不需要填写%号")
+		return false;
+	}
+	var laterFundCounty = $.trim($("#laterFundCounty").val())
+	if(laterFundCounty == "" || isNaN(laterFundCounty)){
+		alert("项目后期经费所占比例填写有误，请检查！没有则填0，不需要填写%号")
+		return false;
+	}
+	var laterFundOther = $.trim($("#laterFundOther").val())
+	if(laterFundOther == "" || isNaN(laterFundOther)){
+		alert("项目后期经费所占比例填写有误，请检查！没有则填0，不需要填写%号")
+		return false;
+	}
+	
+	if($("#trainPlatform").val() == ''){
+		alert("请选择培训平台")
+		return false;
+	}
+	var studyTime = $.trim($("input[name='studyTime']").val())
+	if(studyTime == "" || isNaN(studyTime)){
+		alert("学时填写有误，请检查！")
+		return false;
+	}
+	var chargeStandard = $.trim($("#chargeStandard").val())
+	if(chargeStandard == "" || isNaN(chargeStandard)){
+		alert("收费标准填写有误，请检查！")
+		return false;
+	}
+	
+	var realNum = $.trim($("#realNum").val())
+	if(realNum == "" || isNaN(realNum)){
+		alert("预估人数填写有误，请检查！")
+		return false;
+	}
+	
+	var expectedNum = $.trim($("#expectedNum").val())
+	if(expectedNum.length > 0 && isNaN(expectedNum)){
+		alert("报名人数填写有误，请检查！")
+		return false;		
+	}
+	
+	var cooperHeadNameFirst = $.trim($("input[name='cooperHeadNameFirst']").val())
+	var cooperHeadNameSecond = $.trim($("input[name='cooperHeadNameSecond']").val())
+	var cooperHeadJobFirst = $.trim($("input[name='cooperHeadJobFirst']").val())
+	var cooperHeadJobSecond = $.trim($("input[name='cooperHeadJobSecond']").val())
+	var cooperHeadMobileFirst = $.trim($("input[name='cooperHeadMobileFirst']").val())
+	var cooperHeadMobileSecond = $.trim($("input[name='cooperHeadMobileSecond']").val())
+	var cooperHeadEmailFirst = $.trim($("input[name='cooperHeadEmailFirst']").val())
+	var cooperHeadEmailSecond = $.trim($("input[name='cooperHeadEmailSecond']").val())
+	if(cooperHeadNameFirst != ""){
+		if(cooperHeadJobFirst == "" || cooperHeadMobileFirst == "" || cooperHeadEmailFirst == ""){
+			alert("请补全项目负责人信息")
+			return false;
+		}
+	}
+	if(cooperHeadNameSecond != ""){
+		if(cooperHeadJobSecond == "" || cooperHeadMobileSecond == "" || cooperHeadEmailSecond == ""){
+			alert("请补全项目联系人信息")
+			return false;
+		}
+	}
+	if(cooperHeadNameFirst == "" && cooperHeadNameSecond==""){
+		alert("合作单位的项目负责人和联系人至少需填写一个")
+		return false;
+	}
+	if($.trim($("input[name='cooperAddr']").val()) == ''){
+		alert("请填写合作单位地址")
+		return false;
+	}
+	if($.trim($("input[name='cooperName']").val()) == ''){
+		alert("请填写合作单位名称")
+		return false;
+	}
+	if($.trim($("input[name='name']").val()) == ''){
+		alert("请填写项目名称")
+		return false;
+	}
+	if($("#xmtype").val() == '0'){
+		alert("请选择项目类型")
+		return false;
+	}
+	if($("#xmpxxs").val() == '0'){
+		alert("请选择项目培训形式")
+		return false;
+	}
+	if($("#provincial").val() == '0'){
+		alert("请选择项目所在省份")
+		return false;
+	}
+	return true;
+}
+
+
+function checkysb(){
+	var zjfy = $.trim($("#zjfy").val())
+	var cljjt = $.trim($("#cljjt").val())
+	var ssfy = $.trim($("#ssfy").val())
+	var zdjlp = $.trim($("#zdjlp").val())
+	var bgjzl = $.trim($("#bgjzl").val())
+	var czfy = $.trim($("#czfy").val())
+	var kcfy = $.trim($("#kcfy").val())
+	var qtzf = $.trim($("#qtzf").val())
+	var zjlw = $.trim($("#zjlw").val())
+	var fdylw = $.trim($("#fdylw").val())
+	if(zjfy == "" && cljjt == "" && ssfy == "" && zdjlp == "" && bgjzl == "" && czfy == "" && kcfy == "" && qtzf == "" && zjlw == "" && fdylw == "") {
+		return false;
+	} else {
+		return true;
+	}
+
+}
+
+</script>

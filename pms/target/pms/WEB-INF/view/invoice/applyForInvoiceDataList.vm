@@ -1,0 +1,59 @@
+#set($layout = "/layout/layoutAdmin.vm") 
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab_one">
+	<thead>
+		<tr>
+			<td class="Center p0">序号</td>
+			<td>发票抬头</td>
+			<td>数量</td>
+			<td>单价</td>
+			<td>发票金额</td>
+			<td>回款状态</td>
+			<td>税务识别号</td>
+			<td>开票状态</td>
+			<td>开票日期</td>
+		</tr>
+	</thead>
+	<tbody>
+		#foreach( $paymentInvoice in $paymentInvoiceList.list )
+    		<tr #if($velocityCount % 2 == 0) class="f9" #end>
+    			<td class="Center p0">$velocityCount</td>
+                <td><a target="_blank" href="${pms.contextPath}/processDetail/all?type=3&id=$paymentInvoice.extInfo.process.id"> $!paymentInvoice.invoiceHeader </a></td>
+    			<td>$!paymentInvoice.count</td>
+				<td>$!paymentInvoice.unitPrice</td>
+    			<td>$!paymentInvoice.invoiceMachine</td>
+    			#if($paymentInvoice.paymentId)
+					<td>已回款</td>
+				#else
+					<td>未回款</td>	
+				#end
+    			<td>$!paymentInvoice.taxpayerNum</td>
+				#if($paymentInvoice.result == 1)
+					<td>已开票</td>
+				#else
+					<td>未开票</td>	
+				#end
+				<td>#if($paymentInvoice.invoiceDate)$date.format($paymentInvoice.invoiceDate)#end</td>
+    		</tr>
+		 #end
+	</tbody>
+</table>
+<div class="Center">共 $!paymentInvoiceList.totalCount 条<div id="alfenye" style="display:inline-block;margin:0 10px;"></div></div>
+
+<script >
+layui.use('laypage', function(){
+  	var laypage = layui.laypage;
+    laypage({
+        cont: 'alfenye'
+        ,pages: $!paymentInvoiceList.totalPage
+		,curr: $!paymentInvoiceList.currPage
+        ,skin: '#1E9FFF'
+		,jump: function(obj, first){
+          	if(!first){
+				reloadContent2(obj.curr);
+          	}
+        }
+  	});
+})
+
+</script>

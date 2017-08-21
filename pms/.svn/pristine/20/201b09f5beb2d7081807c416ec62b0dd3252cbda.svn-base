@@ -1,0 +1,137 @@
+#set($layout = "/layout/layoutAdmin.vm") 
+<script type="text/javascript" src="${pms.contextPath}/resources/js/common.js"></script>
+<script>
+	$(function(){
+		$.ajaxSetup ({
+        	cache:false
+        });
+		var projectId=$("#projectId").val();
+		$("#contentforload").html("正在加载数据……")
+		$("#contentforload").load('${pms.contextPath}/applyForInvoiceList/applyForInvoiceDataList?currPage=1&pageSize=8&projectId='+projectId);
+		$("#type").change(function(){
+    		var type = $("#type").val();
+    		if(type == '0') {//全部
+    			$("#head").val('');
+    			$("#layTimeStart").val('');
+    			$("#layTimeEnd").val('');
+				
+				$("#state").css("display","none");
+    			$("#head").css("display","none");
+    			$("#layTimeStart").css("display","none");
+    			$("#layTimeEnd").css("display","none");
+    		}  else if (type == '1') {//开票日期
+				$("#head").val('');
+    			$("#layTimeStart").val('');
+    			$("#layTimeEnd").val('');
+				
+				$("#state").css("display","none");
+    			$("#head").css("display","none");
+    			$("#layTimeStart").css("display","block");
+    			$("#layTimeEnd").css("display","block");
+    			
+    		} else if (type == '2') {//回款状态
+				$("#head").val('');
+    			$("#layTimeStart").val('');
+    			$("#layTimeEnd").val('');
+				
+				$("#state").css("display","block");
+    			$("#head").css("display","none");
+    			$("#layTimeStart").css("display","none");
+    			$("#layTimeEnd").css("display","none");
+    			
+    		}else if (type == '3') {//发票抬头
+				$("#head").val('');
+    			$("#layTimeStart").val('');
+    			$("#layTimeEnd").val('');
+				
+				$("#state").css("display","none");
+    			$("#head").css("display","block");
+    			$("#layTimeStart").css("display","none");
+    			$("#layTimeEnd").css("display","none");
+    			
+    		}
+    	});
+		
+		$("#query").click(function(){
+			reloadContent2("1");
+		});
+	});
+	function reloadContent2(currPage){
+		var projectId=$("#projectId").val();
+    	var type = $("#type").val();
+    	if(type == '0') {
+    		reloadContent('contentforload','${pms.contextPath}/applyForInvoiceList/applyForInvoiceDataList?currPage='+currPage+'&pageSize=8&projectId='+projectId)
+    	}  else if (type == '1') {//开票日期
+    		var startTime = $("#layTimeStart").val();
+    		var endTime = $("#layTimeEnd").val();
+    		var param = encodeURI('&startDate='+startTime+'&endDate='+endTime+'&projectId='+projectId);
+    		reloadContent('contentforload','${pms.contextPath}/applyForInvoiceList/applyForInvoiceDataList?currPage='+currPage+'&type=1&pageSize=8'+param)
+    	} else if (type == '2') {//回款状态
+    		var state = $("#state").val();
+    		var param = encodeURI('&value='+state+'&projectId='+projectId);
+    		reloadContent('contentforload','${pms.contextPath}/applyForInvoiceList/applyForInvoiceDataList?currPage='+currPage+'&type=2&pageSize=8'+param)
+    	}else if (type == '3') {//发票抬头
+    		var head = $("#head").val();
+			var param = encodeURI('&value='+$("#head").val()+'&projectId='+projectId);
+    		reloadContent('contentforload','${pms.contextPath}/applyForInvoiceList/applyForInvoiceDataList?currPage='+currPage+'&type=3&pageSize=8'+param)
+    	}
+    }
+	function reloadContent(contentId,url){
+        $.ajaxSetup ({
+        	cache:false
+        });
+    	layer.load(0, {shade: false})
+    	$("#"+contentId).html('');
+    	$("#"+contentId).load(url,function(){
+    		layer.closeAll('loading');
+    		//layer.msg('查询成功', {icon:1,anim: 4 ,time: 1400});  
+    	});
+    }
+	function submit(e){
+        var keynum = 0;
+        if (window.event) {
+          keynum = e.keyCode
+        } else if(e.which) {
+          keynum = e.which
+        }
+        if(keynum == 13){
+    		$("#query").click();
+    	}
+    }
+	
+</script>
+
+
+
+
+
+
+<!---->
+<div class="content">
+	<div class="search_warp p10">
+		<div class="From clear">
+			<div class="From_text">
+				<select id="type">
+					<option value = "0">全部</option>
+					<option value = "1">开票日期</option>
+					<option value = "2">回款状态</option>
+					<option value = "3">发票抬头</option>
+				</select>
+				<input type="text" placeholder="输入发票抬头查询" style="display:none" id = "head" onkeydown="submit(event)"/>
+				<input type="text" placeholder="请选择起始日期" name="startDate" id="layTimeStart" readonly="readonly" style="display:none;width: 140px"/>
+				<input type="text" placeholder="请选择结束日期" name="endDate" id="layTimeEnd" readonly="readonly" style="display:none;width: 140px"/>
+				<select id="state" style="display:none">
+					<option value = "0">已回款</option>
+					<option value = "1">未回款</option>
+				</select>
+			</div>
+			<a href="javascript:;" class="btn fl" id="query" >查询</a>
+		</div>
+	</div>
+	<div id="contentforload" class="content_list_wrap mt10">
+
+	</div>
+</div>
+<!---->						
+
+

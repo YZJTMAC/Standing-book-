@@ -1,0 +1,74 @@
+#set($layout = "/layout/layoutAdmin.vm")
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab_one">
+	<thead>
+		<tr>
+			<td class="Center p0" style="width:6%;"><input type="checkbox" id="checkAll"/></td>
+			<td class="Center p0" style="width:6%;">序号</td>
+			<td style="width:15%;">交易日期</td>
+			<td>汇款人</td>
+			<td>到账银行</td>
+			<td style="width:10%;">到款金额</td>
+			<td style="width:8%;">开票状态</td>
+		</tr>
+	</thead>
+	<tbody id="pml">
+		#foreach($payment in $paymentList)
+		<tr #if($velocityCount % 2 == 0) class="f9" #end onclick="checked(this)">
+			<td class="Center p0"><input type="checkbox" value="$payment.id" name="items" /></td>
+			<td class="Center p0">$velocityCount</td>
+			<td>$date.format($payment.traTime)</td>
+			<td>$!payment.remitter</td>
+			<td>$!payment.payBank</td>
+			<td>$!payment.amount</td>
+			<td>#if($payment.advancePay == 2) 未开发票 #elseif($payment.advancePay == 1) 已开发票 #else 未知！ #end</td>
+		</tr>
+		#end
+	</tbody>
+</table>
+<script>
+$(document).ready(function() {
+	$('#checkAll').on('click',function(){
+		$("input[name=items]:checkbox").prop("checked",this.checked);
+		if(this.checked){
+			$('#pml tr').css("background","#e0e3ff")
+		} else {
+			$('#pml tr').css("background","#FFFFFF")
+		}
+	})
+	$("input[name=items]:checkbox").click(function(){
+		var el = $(this).parent().parent();
+        if($(this).is(':checked')) {
+    		$(this).prop('checked',false)
+    		if($(el).hasClass("f9")){
+    			$(el).css("background","#f9f9f9")
+    		} else {
+    			$(el).css("background","#FFFFFF")
+    		}
+    	} else {
+        	$(this).prop('checked',true)
+        	$(el).css("background","#e0e3ff")
+    	}
+		$("#checkAll").prop("checked",false);
+	})
+});
+function checked(el) {
+	var checkbox = $(el).find('td:eq(0) input');
+	if($(checkbox).is(':checked')) {
+		$(checkbox).prop('checked',false)
+		if($(el).hasClass("f9")){
+			$(el).css("background","#f9f9f9")
+		} else {
+			$(el).css("background","#FFFFFF")
+		}
+	} else {
+    	$(checkbox).prop('checked',true)
+    	$(el).css("background","#e0e3ff")
+	}
+}
+
+</script>
+<style >
+.checked {
+  background: #e0e3ff;
+}
+</style>

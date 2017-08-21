@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.teacheredu.mapping.PaymentInvoiceMapper">
+<cache type = "org.mybatis.caches.memcached.MemcachedCache"/>
+  <resultMap id="BaseResultMap" type="cn.teacheredu.entity.PaymentInvoiceEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="invoice_id" jdbcType="INTEGER" property="invoiceId" />
+    <result column="payment_id" jdbcType="INTEGER" property="paymentId" />
+    <result column="invoice_header" jdbcType="VARCHAR" property="invoiceHeader" />
+    <result column="invoice_item" jdbcType="VARCHAR" property="invoiceItem" />
+    <result column="unit_price" jdbcType="DECIMAL" property="unitPrice" />
+    <result column="count" jdbcType="INTEGER" property="count" />
+    <result column="invoice_machine" jdbcType="DECIMAL" property="invoiceMachine" />
+    <result column="invoice_hundred" jdbcType="DECIMAL" property="invoiceHundred" />
+    <result column="invoice_fifty" jdbcType="DECIMAL" property="invoiceFifty" />
+    <result column="invoice_number" jdbcType="VARCHAR" property="invoiceNumber" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+    <result column="result" jdbcType="TINYINT" property="result" />
+    <result column="invoice_date" jdbcType="TIMESTAMP" property="invoiceDate" />
+    <result column="available" jdbcType="INTEGER" property="available" />
+    <result column="taxpayer_num" jdbcType="VARCHAR" property="taxpayerNum" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <if test="projectId != null">
+      	and project_id = #{projectId,jdbcType=INTEGER}
+      </if>
+      <if test="invoiceId != null">
+      	and invoice_id = #{invoiceId,jdbcType=INTEGER}
+      </if>
+      <if test="paymentId != null">
+    	and payment_id = #{paymentId,jdbcType=INTEGER}
+      </if>
+      <!-- 通过是否已回款查询开票明细，paymentId是null的话就是未回款（提前开发票） -->
+   	  <if test="paymentState ==0"><!-- 已回款-->
+      	and payment_id is not null
+      </if>
+      <if test="paymentState ==1"><!-- 未回款-->
+      	and payment_id is null
+      </if>
+      <if test="invoiceHeader != null">
+      	and invoice_header like '${invoiceHeader}%'
+      </if>
+      <if test="invoiceItem != null">
+      	and invoice_item = #{invoiceItem,jdbcType=VARCHAR}
+      </if>
+      <if test="unitPrice != null">
+      	and unit_price = #{unitPrice,jdbcType=DECIMAL}
+      </if>
+      <if test="count != null">
+      	and count = #{count,jdbcType=INTEGER}
+      </if>
+      <if test="invoiceMachine != null">
+      	and invoice_machine = #{invoiceMachine,jdbcType=DECIMAL}
+      </if>
+      <if test="invoiceHundred != null">
+      	and invoice_hundred = #{invoiceHundred,jdbcType=DECIMAL}
+      </if>
+      <if test="invoiceFifty != null">
+      	and invoice_fifty = #{invoiceFifty,jdbcType=DECIMAL}
+      </if>
+      <if test="invoiceNumber != null">
+      	and invoice_number = #{invoiceNumber,jdbcType=VARCHAR}
+      </if>
+      <if test="note != null">
+      	and note = #{note,jdbcType=VARCHAR}
+      </if>
+      <if test="result != null">
+      	and result = #{result,jdbcType=TINYINT}
+      </if>
+      <if test="invoiceDate != null">
+	     <if test="fromDate != null">
+	      	and invoice_date &gt;= #{fromDate,jdbcType=TIMESTAMP}
+	     </if>
+	     <if test="toDate != null">
+	      	and invoice_date &lt;= #{toDate,jdbcType=TIMESTAMP}
+	     </if>
+      </if>
+      <if test="available != null">
+        and available = #{available,jdbcType=INTEGER}
+      </if>
+      <if test="taxpayerNum != null">
+      	and taxpayer_num = #{taxpayerNum,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </sql>
+  
+  <sql id="Base_Column_List">
+    id, project_id, invoice_id, payment_id, invoice_header, invoice_item, unit_price, 
+    count, invoice_machine, invoice_hundred, invoice_fifty, invoice_number, note, result,invoice_date,available,taxpayer_num
+  </sql>
+  
+  <select id="selectByExample" parameterType="cn.teacheredu.vo.PaymentInvoiceQueryVo" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from payment_invoice
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderProperty != null">
+      	order by ${orderProperty} ${orderType}
+    </if>
+    <if test="isPaged == true">
+		limit #{startPosition} ,#{pageSize}
+	</if>
+  </select>
+  
+  <select id="selectInvoiceByProjectId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select payment_id from payment_invoice where project_id = #{projectId,jdbcType=INTEGER} and available = 0 and payment_id is not null;
+  </select>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from payment_invoice
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from payment_invoice
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insertSelective" parameterType="cn.teacheredu.entity.PaymentInvoiceEntity">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into payment_invoice
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="projectId != null">
+        project_id,
+      </if>
+      <if test="invoiceId != null">
+        invoice_id,
+      </if>
+      <if test="paymentId != null">
+        payment_id,
+      </if>
+      <if test="invoiceHeader != null">
+        invoice_header,
+      </if>
+      <if test="invoiceItem != null">
+        invoice_item,
+      </if>
+      <if test="unitPrice != null">
+        unit_price,
+      </if>
+      <if test="count != null">
+        count,
+      </if>
+      <if test="invoiceMachine != null">
+        invoice_machine,
+      </if>
+      <if test="invoiceHundred != null">
+        invoice_hundred,
+      </if>
+      <if test="invoiceFifty != null">
+        invoice_fifty,
+      </if>
+      <if test="invoiceNumber != null">
+        invoice_number,
+      </if>
+      <if test="note != null">
+        note,
+      </if>
+      <if test="result != null">
+        result,
+      </if>
+      <if test="invoiceDate != null">
+        invoice_date,
+      </if>
+      <if test="available != null">
+        available,
+      </if>
+      <if test="taxpayerNum != null">
+        taxpayer_num,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="projectId != null">
+        #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="invoiceId != null">
+        #{invoiceId,jdbcType=INTEGER},
+      </if>
+      <if test="paymentId != null">
+        #{paymentId,jdbcType=INTEGER},
+      </if>
+      <if test="invoiceHeader != null">
+        #{invoiceHeader,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceItem != null">
+        #{invoiceItem,jdbcType=VARCHAR},
+      </if>
+      <if test="unitPrice != null">
+        #{unitPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="count != null">
+        #{count,jdbcType=INTEGER},
+      </if>
+      <if test="invoiceMachine != null">
+        #{invoiceMachine,jdbcType=DECIMAL},
+      </if>
+      <if test="invoiceHundred != null">
+        #{invoiceHundred,jdbcType=DECIMAL},
+      </if>
+      <if test="invoiceFifty != null">
+        #{invoiceFifty,jdbcType=DECIMAL},
+      </if>
+      <if test="invoiceNumber != null">
+        #{invoiceNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="result != null">
+        #{result,jdbcType=TINYINT},
+      </if>
+      <if test="invoiceDate != null">
+        #{invoiceDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="available != null">
+        #{available,jdbcType=INTEGER},
+      </if>
+      <if test="taxpayerNum != null">
+        #{taxpayerNum,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <select id="countByExample" parameterType="cn.teacheredu.vo.PaymentInvoiceQueryVo" resultType="java.lang.Long">
+    select count(*) from payment_invoice
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="cn.teacheredu.entity.PaymentInvoiceEntity">
+    update payment_invoice
+    <set>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="invoiceId != null">
+        invoice_id = #{invoiceId,jdbcType=INTEGER},
+      </if>
+      <if test="paymentId != null">
+        payment_id = #{paymentId,jdbcType=INTEGER},
+      </if>
+      <if test="invoiceHeader != null">
+        invoice_header = #{invoiceHeader,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceItem != null">
+        invoice_item = #{invoiceItem,jdbcType=VARCHAR},
+      </if>
+      <if test="unitPrice != null">
+        unit_price = #{unitPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="count != null">
+        count = #{count,jdbcType=INTEGER},
+      </if>
+      <if test="invoiceMachine != null">
+        invoice_machine = #{invoiceMachine,jdbcType=DECIMAL},
+      </if>
+      <if test="invoiceHundred != null">
+        invoice_hundred = #{invoiceHundred,jdbcType=DECIMAL},
+      </if>
+      <if test="invoiceFifty != null">
+        invoice_fifty = #{invoiceFifty,jdbcType=DECIMAL},
+      </if>
+      <if test="invoiceNumber != null">
+        invoice_number = #{invoiceNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        note = #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="result != null">
+        result = #{result,jdbcType=TINYINT},
+      </if>
+      <if test="invoiceDate != null">
+        invoice_date = #{invoiceDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="available != null">
+        available = #{available,jdbcType=INTEGER},
+      </if>
+      <if test="taxpayerNum != null">
+        taxpayer_num = #{taxpayerNum,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="editResultByInvoiceId" parameterType="java.lang.Integer">
+    update payment_invoice set result = 1, invoice_date = now()
+    where invoice_id = #{invoiceId,jdbcType=INTEGER}
+  </update>
+  <update id="editAvailableByInvoiceId" parameterType="java.lang.Integer">
+    update payment_invoice set available = 1
+    where invoice_id = #{invoiceId,jdbcType=INTEGER}
+  </update>
+</mapper>

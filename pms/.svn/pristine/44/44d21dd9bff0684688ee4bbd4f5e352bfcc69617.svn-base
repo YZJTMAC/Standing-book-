@@ -1,0 +1,171 @@
+<div class="content_warp">
+	<div class="content_tit_box">
+		<div class="w1230 clear">
+			<div class="content_tit fl clear">
+				<a href="javascript:;">协同工作</a> <i></i>
+				<a href="javascript:;">已办事项</a>
+			</div>
+		</div>
+	</div>
+	<!--内容star-->
+	<div class="content w1230">
+		<div class="search_warp p20">
+			<div class="From clear">
+				<div class="From_text">
+					<select id="type">
+						<option value = "0">全部</option>
+						<option value = "1">标题</option>
+						<option value = "2">发起人</option>
+						<option value = "3">发起时间</option>
+						<option value = "4">处理时间</option>
+					</select>
+					<input type="text" placeholder="输入内容进行查询" style="display:none" id = "value" onkeydown="submit(event)"/>
+					<input type="text" placeholder="请选择起始日期" name="startDate" id="layTimeStart" readonly="readonly" style="display:none;width: 140px"/>
+					<input type="text" placeholder="请选择结束日期" name="endDate" id="layTimeEnd" readonly="readonly" style="display:none;width: 140px"/>
+				</div>
+				<a href="javascript:;" class="btn fl" id="query" >查询</a>
+			</div>
+		</div>
+		<div id="contentforload">
+			
+		</div>
+	</div>
+	<!--内容end-->
+</div>
+</div>
+<div id="logMsg" style="display:none;">
+    <ul id="logMsgUl" style="font-size: 14px;padding: 10px 10px 10px 10px;">
+        
+    </ul>
+</div>
+<script>
+$(function(){
+	$.ajaxSetup ({
+    	cache:false
+    });
+	$("#contentforload").html("正在加载数据……")
+	$("#contentforload").load('${pms.contextPath}/process/alreadyDealDataList?currPage=1');
+	
+	$("#type").change(function(){
+		var type = $("#type").val();
+		if(type == '0') {
+			$("#value").val('');
+			$("#layTimeStart").val('');
+			$("#layTimeEnd").val('');
+			$("#value").css("display","none");
+			$("#layTimeStart").css("display","none");
+			$("#layTimeEnd").css("display","none");
+		}  else if (type == '1') {
+			$("#value").val('');
+			$("#layTimeStart").css("display","none");
+			$("#layTimeEnd").css("display","none");
+			$("#value").css("display","block");
+		} else if (type == '2') {
+			$("#value").val('');
+			$("#layTimeStart").css("display","none");
+			$("#layTimeEnd").css("display","none");
+			$("#value").css("display","block");
+		} else if (type == '4') {
+			$("#layTimeStart").val('');
+			$("#layTimeEnd").val('');
+			$("#value").css("display","none");
+			$("#layTimeStart").css("display","block");
+			$("#layTimeEnd").css("display","block");
+		} else if (type == '3') {
+			$("#layTimeStart").val('');
+			$("#layTimeEnd").val('');
+			$("#value").css("display","none");
+			$("#layTimeStart").css("display","block");
+			$("#layTimeEnd").css("display","block");
+		}
+	})
+	
+	$("#query").click(function(){
+		reloadContent2("1");
+	});
+	
+});
+function alertLog(id){
+	$('#logMsgUl').children().filter('li').remove();
+	layer.load(2);
+	$.ajax({
+		type: "POST",
+	    url: "/common/getProcessLogById",
+	    data: JSON.stringify({'id': id}),
+	    error: function(){
+			layer.closeAll('loading');
+			alert("服务器错误")
+	    },
+	    success: function(res){
+	    	layer.closeAll('loading');
+			if(res.code === 0){
+				$.each(res.list,function(i,n){
+					$('#logMsgUl').append("<li>"+n+"</li>")
+				})
+				layer.open({
+            		type :1,
+            		title:false,
+            		shade:0,
+					area: ['600px', '200px'],
+            		skin:'logcontentbg',
+            		offset: ['100px', '700px'],
+            		content: $('#logMsg')
+            	})
+				
+			}else{
+				alert(res.msg);
+			}
+		}
+	});
+	
+}
+function reloadContent2(currPage){
+	var type = $("#type").val();
+	if(type == '0') {
+		reloadContent('contentforload','${pms.contextPath}/process/alreadyDealDataList?currPage='+currPage)
+	}  else if (type == '1') {
+		var param = encodeURI('&value='+$("#value").val());
+		reloadContent('contentforload','${pms.contextPath}/process/alreadyDealDataList?currPage='+currPage+'&type=1'+param)
+	} else if (type == '2') {
+		var param = encodeURI('&value='+$("#value").val());
+		reloadContent('contentforload','${pms.contextPath}/process/alreadyDealDataList?currPage='+currPage+'&type=2'+param)
+	} else if (type == '3') {
+		var startTime = $("#layTimeStart").val();
+		var endTime = $("#layTimeEnd").val();
+		var param = encodeURI('&startDate='+startTime+'&endDate='+endTime);
+		reloadContent('contentforload','${pms.contextPath}/process/alreadyDealDataList?currPage='+currPage+'&type=3'+param)
+	} else if (type == '4') {
+		var startTime = $("#layTimeStart").val();
+		var endTime = $("#layTimeEnd").val();
+		var param = encodeURI('&startDate='+startTime+'&endDate='+endTime);
+		reloadContent('contentforload','${pms.contextPath}/process/alreadyDealDataList?currPage='+currPage+'&type=4'+param)
+	}
+}
+
+function reloadContent(contentId,url){
+    $.ajaxSetup ({
+    	cache:false
+    });
+	layer.load(0, {shade: false})
+	$("#"+contentId).html('');
+	$("#"+contentId).load(url,function(){
+		layer.closeAll('loading');
+		//layer.msg('查询成功', {icon:1,anim: 4 ,time: 1400});  
+	});
+}
+
+function submit(e){
+    var keynum = 0;
+    if (window.event) {
+      keynum = e.keyCode
+    } else if(e.which) {
+      keynum = e.which
+    }
+    if(keynum == 13){
+		$("#query").click();
+	}
+}
+</script>
+<style >
+	.logcontentbg{background: #faebd7;}
+</style>

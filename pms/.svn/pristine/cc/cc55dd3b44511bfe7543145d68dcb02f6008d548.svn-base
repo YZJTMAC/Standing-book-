@@ -1,0 +1,21 @@
+#set($layout = "/layout/layoutAdmin.vm")
+<div class="prompt_cont h360" id = "fund_pay_table">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab_one">
+    	<thead>
+    		<tr>
+    			<td>时间</td>
+    			<td>金额</td>
+    			<td>操作人</td>
+    		</tr>
+    	</thead>
+    	<tbody>
+			#foreach($fund in $funds)
+    		<tr #if($velocityCount % 2 == 0) class="f9" #end>
+    			<td>$date.format($!fund.payTime)</td>
+    			<td>$!fund.payMoney</td>
+    			<td>$!fund.payOperatorRealName</td>
+    		</tr>
+    		#end
+    	</tbody>
+    </table>
+</div>

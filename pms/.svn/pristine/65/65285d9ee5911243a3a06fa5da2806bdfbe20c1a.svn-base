@@ -1,0 +1,7 @@
+#mysql
+mysql.driverClassName = com.mysql.jdbc.Driver
+mysql.url = jdbc:mysql://192.168.0.230:3306/dsy-pms?useUnicode=true&characterEncoding=UTF-8
+mysql.username = root
+mysql.password = password
+
+validationQuery=SELECT 1

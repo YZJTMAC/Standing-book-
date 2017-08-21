@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.teacheredu.mapping.ProjectBudgetMapper">
+<cache type = "org.mybatis.caches.memcached.MemcachedCache"/>
+  <resultMap id="BaseResultMap" type="cn.teacheredu.entity.ProjectBudgetEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="expert_cost_budget" jdbcType="DECIMAL" property="expertCostBudget" />
+    <result column="expert_cost_based" jdbcType="VARCHAR" property="expertCostBased" />
+    <result column="expert_cost_explain" jdbcType="VARCHAR" property="expertCostExplain" />
+    <result column="transport_cost_budget" jdbcType="DECIMAL" property="transportCostBudget" />
+    <result column="transport_cost_based" jdbcType="VARCHAR" property="transportCostBased" />
+    <result column="transport_cost_explain" jdbcType="VARCHAR" property="transportCostExplain" />
+    <result column="accom_cost_budget" jdbcType="DECIMAL" property="accomCostBudget" />
+    <result column="accom_cost_based" jdbcType="VARCHAR" property="accomCostBased" />
+    <result column="accom_cost_explain" jdbcType="VARCHAR" property="accomCostExplain" />
+    <result column="fete_cost_budget" jdbcType="DECIMAL" property="feteCostBudget" />
+    <result column="fete_cost_based" jdbcType="VARCHAR" property="feteCostBased" />
+    <result column="fete_cost_explain" jdbcType="VARCHAR" property="feteCostExplain" />
+    <result column="office_cost_budget" jdbcType="DECIMAL" property="officeCostBudget" />
+    <result column="office_cost_based" jdbcType="VARCHAR" property="officeCostBased" />
+    <result column="office_cost_explain" jdbcType="VARCHAR" property="officeCostExplain" />
+    <result column="rental_cost_budget" jdbcType="DECIMAL" property="rentalCostBudget" />
+    <result column="rental_cost_based" jdbcType="VARCHAR" property="rentalCostBased" />
+    <result column="rental_cost_explain" jdbcType="VARCHAR" property="rentalCostExplain" />
+    <result column="invest_cost_budget" jdbcType="DECIMAL" property="investCostBudget" />
+    <result column="invest_cost_based" jdbcType="VARCHAR" property="investCostBased" />
+    <result column="invest_cost_explain" jdbcType="VARCHAR" property="investCostExplain" />
+    <result column="other_cost_budget" jdbcType="DECIMAL" property="otherCostBudget" />
+    <result column="other_cost_based" jdbcType="VARCHAR" property="otherCostBased" />
+    <result column="other_cost_explain" jdbcType="VARCHAR" property="otherCostExplain" />
+    <result column="expert_labour_budget" jdbcType="DECIMAL" property="expertLabourBudget" />
+    <result column="expert_labour_based" jdbcType="VARCHAR" property="expertLabourBased" />
+    <result column="expert_labour_explain" jdbcType="VARCHAR" property="expertLabourExplain" />
+    <result column="counsellor_labour_budget" jdbcType="DECIMAL" property="counsellorLabourBudget" />
+    <result column="counsellor_labour_based" jdbcType="VARCHAR" property="counsellorLabourBased" />
+    <result column="counsellor_labour_explain" jdbcType="VARCHAR" property="counsellorLabourExplain" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <if test="projectId != null">
+        and project_id = #{projectId,jdbcType=INTEGER}
+      </if>
+      <if test="expertCostBudget != null">
+        and expert_cost_budget = #{expertCostBudget,jdbcType=DECIMAL}
+      </if>
+      <if test="expertCostBased != null">
+        and expert_cost_based = #{expertCostBased,jdbcType=VARCHAR}
+      </if>
+      <if test="expertCostExplain != null">
+        and expert_cost_explain = #{expertCostExplain,jdbcType=VARCHAR}
+      </if>
+      <if test="transportCostBudget != null">
+        and transport_cost_budget = #{transportCostBudget,jdbcType=DECIMAL}
+      </if>
+      <if test="transportCostBased != null">
+        and transport_cost_based = #{transportCostBased,jdbcType=VARCHAR}
+      </if>
+      <if test="transportCostExplain != null">
+        and transport_cost_explain = #{transportCostExplain,jdbcType=VARCHAR}
+      </if>
+      <if test="accomCostBudget != null">
+        and accom_cost_budget = #{accomCostBudget,jdbcType=DECIMAL}
+      </if>
+      <if test="accomCostBased != null">
+        and accom_cost_based = #{accomCostBased,jdbcType=VARCHAR}
+      </if>
+      <if test="accomCostExplain != null">
+        and accom_cost_explain = #{accomCostExplain,jdbcType=VARCHAR}
+      </if>
+      <if test="feteCostBudget != null">
+        and fete_cost_budget = #{feteCostBudget,jdbcType=DECIMAL}
+      </if>
+      <if test="feteCostBased != null">
+        and fete_cost_based = #{feteCostBased,jdbcType=VARCHAR}
+      </if>
+      <if test="feteCostExplain != null">
+        and fete_cost_explain = #{feteCostExplain,jdbcType=VARCHAR}
+      </if>
+      <if test="officeCostBudget != null">
+        and office_cost_budget = #{officeCostBudget,jdbcType=DECIMAL}
+      </if>
+      <if test="officeCostBased != null">
+        and office_cost_based = #{officeCostBased,jdbcType=VARCHAR}
+      </if>
+      <if test="officeCostExplain != null">
+        and office_cost_explain = #{officeCostExplain,jdbcType=VARCHAR}
+      </if>
+      <if test="rentalCostBudget != null">
+        and rental_cost_budget = #{rentalCostBudget,jdbcType=DECIMAL}
+      </if>
+      <if test="rentalCostBased != null">
+        and rental_cost_based = #{rentalCostBased,jdbcType=VARCHAR}
+      </if>
+      <if test="rentalCostExplain != null">
+        and rental_cost_explain = #{rentalCostExplain,jdbcType=VARCHAR}
+      </if>
+      <if test="investCostBudget != null">
+        and invest_cost_budget = #{investCostBudget,jdbcType=DECIMAL}
+      </if>
+      <if test="investCostBased != null">
+        and invest_cost_based = #{investCostBased,jdbcType=VARCHAR}
+      </if>
+      <if test="investCostExplain != null">
+        and invest_cost_explain = #{investCostExplain,jdbcType=VARCHAR}
+      </if>
+      <if test="otherCostBudget != null">
+        and other_cost_budget = #{otherCostBudget,jdbcType=DECIMAL}
+      </if>
+      <if test="otherCostBased != null">
+        and other_cost_based = #{otherCostBased,jdbcType=VARCHAR}
+      </if>
+      <if test="otherCostExplain != null">
+        and other_cost_explain = #{otherCostExplain,jdbcType=VARCHAR}
+      </if>
+      <if test="expertLabourBudget != null">
+        and expert_labour_budget = #{expertLabourBudget,jdbcType=DECIMAL}
+      </if>
+      <if test="expertLabourBased != null">
+        and expert_labour_based = #{expertLabourBased,jdbcType=VARCHAR}
+      </if>
+      <if test="expertLabourExplain != null">
+        and expert_labour_explain = #{expertLabourExplain,jdbcType=VARCHAR}
+      </if>
+      <if test="counsellorLabourBudget != null">
+        and counsellor_labour_budget = #{counsellorLabourBudget,jdbcType=DECIMAL}
+      </if>
+      <if test="counsellorLabourBased != null">
+        and counsellor_labour_based = #{counsellorLabourBased,jdbcType=VARCHAR}
+      </if>
+      <if test="counsellorLabourExplain != null">
+        and counsellor_labour_explain = #{counsellorLabourExplain,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </sql>
+  
+  <sql id="Base_Column_List">
+    id, project_id, expert_cost_budget, expert_cost_based, expert_cost_explain, transport_cost_budget, 
+    transport_cost_based, transport_cost_explain, accom_cost_budget, accom_cost_based, 
+    accom_cost_explain, fete_cost_budget, fete_cost_based, fete_cost_explain, office_cost_budget, 
+    office_cost_based, office_cost_explain, rental_cost_budget, rental_cost_based, rental_cost_explain, 
+    invest_cost_budget, invest_cost_based, invest_cost_explain, other_cost_budget, other_cost_based, 
+    other_cost_explain, expert_labour_budget, expert_labour_based, expert_labour_explain, 
+    counsellor_labour_budget, counsellor_labour_based, counsellor_labour_explain
+  </sql>
+  
+  <select id="selectByExample" parameterType="cn.teacheredu.vo.ProjectBudgetQueryVo" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from project_budget
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderProperty != null">
+      	order by ${orderProperty} ${orderType}
+    </if>
+    <if test="isPaged == true">
+		limit #{startPosition} ,#{pageSize}
+	</if>
+  </select>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from project_budget
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from project_budget
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insertSelective" parameterType="cn.teacheredu.entity.ProjectBudgetEntity">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into project_budget
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="projectId != null">
+        project_id,
+      </if>
+      <if test="expertCostBudget != null">
+        expert_cost_budget,
+      </if>
+      <if test="expertCostBased != null">
+        expert_cost_based,
+      </if>
+      <if test="expertCostExplain != null">
+        expert_cost_explain,
+      </if>
+      <if test="transportCostBudget != null">
+        transport_cost_budget,
+      </if>
+      <if test="transportCostBased != null">
+        transport_cost_based,
+      </if>
+      <if test="transportCostExplain != null">
+        transport_cost_explain,
+      </if>
+      <if test="accomCostBudget != null">
+        accom_cost_budget,
+      </if>
+      <if test="accomCostBased != null">
+        accom_cost_based,
+      </if>
+      <if test="accomCostExplain != null">
+        accom_cost_explain,
+      </if>
+      <if test="feteCostBudget != null">
+        fete_cost_budget,
+      </if>
+      <if test="feteCostBased != null">
+        fete_cost_based,
+      </if>
+      <if test="feteCostExplain != null">
+        fete_cost_explain,
+      </if>
+      <if test="officeCostBudget != null">
+        office_cost_budget,
+      </if>
+      <if test="officeCostBased != null">
+        office_cost_based,
+      </if>
+      <if test="officeCostExplain != null">
+        office_cost_explain,
+      </if>
+      <if test="rentalCostBudget != null">
+        rental_cost_budget,
+      </if>
+      <if test="rentalCostBased != null">
+        rental_cost_based,
+      </if>
+      <if test="rentalCostExplain != null">
+        rental_cost_explain,
+      </if>
+      <if test="investCostBudget != null">
+        invest_cost_budget,
+      </if>
+      <if test="investCostBased != null">
+        invest_cost_based,
+      </if>
+      <if test="investCostExplain != null">
+        invest_cost_explain,
+      </if>
+      <if test="otherCostBudget != null">
+        other_cost_budget,
+      </if>
+      <if test="otherCostBased != null">
+        other_cost_based,
+      </if>
+      <if test="otherCostExplain != null">
+        other_cost_explain,
+      </if>
+      <if test="expertLabourBudget != null">
+        expert_labour_budget,
+      </if>
+      <if test="expertLabourBased != null">
+        expert_labour_based,
+      </if>
+      <if test="expertLabourExplain != null">
+        expert_labour_explain,
+      </if>
+      <if test="counsellorLabourBudget != null">
+        counsellor_labour_budget,
+      </if>
+      <if test="counsellorLabourBased != null">
+        counsellor_labour_based,
+      </if>
+      <if test="counsellorLabourExplain != null">
+        counsellor_labour_explain,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="projectId != null">
+        #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="expertCostBudget != null">
+        #{expertCostBudget,jdbcType=DECIMAL},
+      </if>
+      <if test="expertCostBased != null">
+        #{expertCostBased,jdbcType=VARCHAR},
+      </if>
+      <if test="expertCostExplain != null">
+        #{expertCostExplain,jdbcType=VARCHAR},
+      </if>
+      <if test="transportCostBudget != null">
+        #{transportCostBudget,jdbcType=DECIMAL},
+      </if>
+      <if test="transportCostBased != null">
+        #{transportCostBased,jdbcType=VARCHAR},
+      </if>
+      <if test="transportCostExplain != null">
+        #{transportCostExplain,jdbcType=VARCHAR},
+      </if>
+      <if test="accomCostBudget != null">
+        #{accomCostBudget,jdbcType=DECIMAL},
+      </if>
+      <if test="accomCostBased != null">
+        #{accomCostBased,jdbcType=VARCHAR},
+      </if>
+      <if test="accomCostExplain != null">
+        #{accomCostExplain,jdbcType=VARCHAR},
+      </if>
+      <if test="feteCostBudget != null">
+        #{feteCostBudget,jdbcType=DECIMAL},
+      </if>
+      <if test="feteCostBased != null">
+        #{feteCostBased,jdbcType=VARCHAR},
+      </if>
+      <if test="feteCostExplain != null">
+        #{feteCostExplain,jdbcType=VARCHAR},
+      </if>
+      <if test="officeCostBudget != null">
+        #{officeCostBudget,jdbcType=DECIMAL},
+      </if>
+      <if test="officeCostBased != null">
+        #{officeCostBased,jdbcType=VARCHAR},
+      </if>
+      <if test="officeCostExplain != null">
+        #{officeCostExplain,jdbcType=VARCHAR},
+      </if>
+      <if test="rentalCostBudget != null">
+        #{rentalCostBudget,jdbcType=DECIMAL},
+      </if>
+      <if test="rentalCostBased != null">
+        #{rentalCostBased,jdbcType=VARCHAR},
+      </if>
+      <if test="rentalCostExplain != null">
+        #{rentalCostExplain,jdbcType=VARCHAR},
+      </if>
+      <if test="investCostBudget != null">
+        #{investCostBudget,jdbcType=DECIMAL},
+      </if>
+      <if test="investCostBased != null">
+        #{investCostBased,jdbcType=VARCHAR},
+      </if>
+      <if test="investCostExplain != null">
+        #{investCostExplain,jdbcType=VARCHAR},
+      </if>
+      <if test="otherCostBudget != null">
+        #{otherCostBudget,jdbcType=DECIMAL},
+      </if>
+      <if test="otherCostBased != null">
+        #{otherCostBased,jdbcType=VARCHAR},
+      </if>
+      <if test="otherCostExplain != null">
+        #{otherCostExplain,jdbcType=VARCHAR},
+      </if>
+      <if test="expertLabourBudget != null">
+        #{expertLabourBudget,jdbcType=DECIMAL},
+      </if>
+      <if test="expertLabourBased != null">
+        #{expertLabourBased,jdbcType=VARCHAR},
+      </if>
+      <if test="expertLabourExplain != null">
+        #{expertLabourExplain,jdbcType=VARCHAR},
+      </if>
+      <if test="counsellorLabourBudget != null">
+        #{counsellorLabourBudget,jdbcType=DECIMAL},
+      </if>
+      <if test="counsellorLabourBased != null">
+        #{counsellorLabourBased,jdbcType=VARCHAR},
+      </if>
+      <if test="counsellorLabourExplain != null">
+        #{counsellorLabourExplain,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <select id="countByExample" parameterType="cn.teacheredu.vo.ProjectBudgetQueryVo" resultType="java.lang.Long">
+    select count(*) from project_budget
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="cn.teacheredu.entity.ProjectBudgetEntity">
+    update project_budget
+    <set>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="expertCostBudget != null">
+        expert_cost_budget = #{expertCostBudget,jdbcType=DECIMAL},
+      </if>
+      <if test="expertCostBased != null">
+        expert_cost_based = #{expertCostBased,jdbcType=VARCHAR},
+      </if>
+      <if test="expertCostExplain != null">
+        expert_cost_explain = #{expertCostExplain,jdbcType=VARCHAR},
+      </if>
+      <if test="transportCostBudget != null">
+        transport_cost_budget = #{transportCostBudget,jdbcType=DECIMAL},
+      </if>
+      <if test="transportCostBased != null">
+        transport_cost_based = #{transportCostBased,jdbcType=VARCHAR},
+      </if>
+      <if test="transportCostExplain != null">
+        transport_cost_explain = #{transportCostExplain,jdbcType=VARCHAR},
+      </if>
+      <if test="accomCostBudget != null">
+        accom_cost_budget = #{accomCostBudget,jdbcType=DECIMAL},
+      </if>
+      <if test="accomCostBased != null">
+        accom_cost_based = #{accomCostBased,jdbcType=VARCHAR},
+      </if>
+      <if test="accomCostExplain != null">
+        accom_cost_explain = #{accomCostExplain,jdbcType=VARCHAR},
+      </if>
+      <if test="feteCostBudget != null">
+        fete_cost_budget = #{feteCostBudget,jdbcType=DECIMAL},
+      </if>
+      <if test="feteCostBased != null">
+        fete_cost_based = #{feteCostBased,jdbcType=VARCHAR},
+      </if>
+      <if test="feteCostExplain != null">
+        fete_cost_explain = #{feteCostExplain,jdbcType=VARCHAR},
+      </if>
+      <if test="officeCostBudget != null">
+        office_cost_budget = #{officeCostBudget,jdbcType=DECIMAL},
+      </if>
+      <if test="officeCostBased != null">
+        office_cost_based = #{officeCostBased,jdbcType=VARCHAR},
+      </if>
+      <if test="officeCostExplain != null">
+        office_cost_explain = #{officeCostExplain,jdbcType=VARCHAR},
+      </if>
+      <if test="rentalCostBudget != null">
+        rental_cost_budget = #{rentalCostBudget,jdbcType=DECIMAL},
+      </if>
+      <if test="rentalCostBased != null">
+        rental_cost_based = #{rentalCostBased,jdbcType=VARCHAR},
+      </if>
+      <if test="rentalCostExplain != null">
+        rental_cost_explain = #{rentalCostExplain,jdbcType=VARCHAR},
+      </if>
+      <if test="investCostBudget != null">
+        invest_cost_budget = #{investCostBudget,jdbcType=DECIMAL},
+      </if>
+      <if test="investCostBased != null">
+        invest_cost_based = #{investCostBased,jdbcType=VARCHAR},
+      </if>
+      <if test="investCostExplain != null">
+        invest_cost_explain = #{investCostExplain,jdbcType=VARCHAR},
+      </if>
+      <if test="otherCostBudget != null">
+        other_cost_budget = #{otherCostBudget,jdbcType=DECIMAL},
+      </if>
+      <if test="otherCostBased != null">
+        other_cost_based = #{otherCostBased,jdbcType=VARCHAR},
+      </if>
+      <if test="otherCostExplain != null">
+        other_cost_explain = #{otherCostExplain,jdbcType=VARCHAR},
+      </if>
+      <if test="expertLabourBudget != null">
+        expert_labour_budget = #{expertLabourBudget,jdbcType=DECIMAL},
+      </if>
+      <if test="expertLabourBased != null">
+        expert_labour_based = #{expertLabourBased,jdbcType=VARCHAR},
+      </if>
+      <if test="expertLabourExplain != null">
+        expert_labour_explain = #{expertLabourExplain,jdbcType=VARCHAR},
+      </if>
+      <if test="counsellorLabourBudget != null">
+        counsellor_labour_budget = #{counsellorLabourBudget,jdbcType=DECIMAL},
+      </if>
+      <if test="counsellorLabourBased != null">
+        counsellor_labour_based = #{counsellorLabourBased,jdbcType=VARCHAR},
+      </if>
+      <if test="counsellorLabourExplain != null">
+        counsellor_labour_explain = #{counsellorLabourExplain,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

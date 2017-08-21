@@ -1,0 +1,74 @@
+#set($layout = "/layout/layoutAdmin.vm")
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab_one">
+	<thead>
+		<tr>
+			<td class="Center p0" style="width:6%;"><input type="checkbox" id="checkAll"/></td>
+			<td class="Center p0" style="width:10%;">表单编号</td>
+			<td style="width:15%;">开票日期</td>
+			<td>发票抬头</td>
+			<td>税务识别号</td>
+			<td style="width:10%;">金额</td>
+		</tr>
+	</thead>
+	<tbody id="imt">
+		#foreach($pi in $paymentInvoice)
+		<tr #if($velocityCount % 2 == 0) class="f9" #end onclick="checked(this)">
+			<td class="Center p0"><input type="checkbox" value="$pi.id" name="items" /></td>
+			<td>$pi.id</td>
+			<td>$!date.format($pi.invoiceDate)</td>
+			<td>$!pi.invoiceHeader</td>
+			<td>$!pi.taxpayerNum</td>
+			#set($template = $pi.unitPrice*$pi.count)
+			<td>$template</td>
+		</tr>
+		#end
+	</tbody>
+</table>
+<script>
+
+$(document).ready(function() {
+	$('#checkAll').on('click',function(){
+		$("input[name=items]:checkbox").prop("checked",this.checked);
+		if(this.checked){
+			$('#imt tr').css("background","#e0e3ff")
+		} else {
+			$('#imt tr').css("background","#FFFFFF")
+		}
+	})
+	$("input[name=items]:checkbox").click(function(){
+		var el = $(this).parent().parent();
+        if($(this).is(':checked')) {
+    		$(this).prop('checked',false)
+    		if($(el).hasClass("f9")){
+    			$(el).css("background","#f9f9f9")
+    		} else {
+    			$(el).css("background","#FFFFFF")
+    		}
+    	} else {
+        	$(this).prop('checked',true)
+        	$(el).css("background","#e0e3ff")
+    	}
+		$("#checkAll").prop("checked",false);
+	})
+});
+function checked(el) {
+	var checkbox = $(el).find('td:eq(0) input');
+	if($(checkbox).is(':checked')) {
+		$(checkbox).prop('checked',false)
+		if($(el).hasClass("f9")){
+			$(el).css("background","#f9f9f9")
+		} else {
+			$(el).css("background","#FFFFFF")
+		}
+	} else {
+    	$(checkbox).prop('checked',true)
+    	$(el).css("background","#e0e3ff")
+	}
+}
+
+</script>
+<style >
+.checked {
+  background: #e0e3ff;
+}
+</style>

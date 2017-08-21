@@ -1,0 +1,239 @@
+package cn.teacheredu.controller.project;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import cn.teacheredu.controller.Base2Controller;
+import cn.teacheredu.entity.CompanyEntity;
+import cn.teacheredu.entity.DepartmentEntity;
+import cn.teacheredu.entity.OrganizationEntity;
+import cn.teacheredu.entity.ProjectEntity;
+import cn.teacheredu.entity.ProjectSummariesEntity;
+import cn.teacheredu.entity.UserEntity;
+import cn.teacheredu.form.QueryTermsForm;
+import cn.teacheredu.service.CompanyService;
+import cn.teacheredu.service.DepartmentService;
+import cn.teacheredu.service.FundsService;
+import cn.teacheredu.service.OrganizationService;
+import cn.teacheredu.service.PaymentInvoiceService;
+import cn.teacheredu.service.PaymentService;
+import cn.teacheredu.service.ProjectBudgetService;
+import cn.teacheredu.service.ProjectService;
+import cn.teacheredu.service.ProjectSummaryService;
+import cn.teacheredu.utils.CommonUtils;
+import cn.teacheredu.utils.MyMathUtil;
+import cn.teacheredu.utils.PageUtils;
+import cn.teacheredu.utils.SystemConst;
+import cn.teacheredu.vo.CompanyQueryVo;
+import cn.teacheredu.vo.ProjectEntityQueryVo;
+
+@Controller
+@RequestMapping(value = "/project")
+public class ProjectSummaryController extends Base2Controller{
+	
+	private static Logger logger = LoggerFactory.getLogger(ProjectSummaryController.class);
+
+	@Autowired
+	private OrganizationService organizationService;
+	@Autowired
+	private ProjectService projectService;
+	@Autowired
+	private ProjectBudgetService projectBudgetService;
+	@Autowired
+	private PaymentInvoiceService paymentInvoiceService;
+	@Autowired
+	private PaymentService paymentService;
+	@Autowired
+	private FundsService fundsService;
+	@Autowired
+	private ProjectSummaryService projectSummaryService;
+	@Autowired
+	private DepartmentService departmentService;
+	@Autowired
+	private CompanyService companyService;
+	
+	/**
+	 * 项目汇总页面
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value="/summary",method=RequestMethod.GET)
+	public String projectSummaryPage(ModelMap modelMap, HttpServletRequest request) throws Exception{
+		List<String> psList =  (List<String>) modelMap.get("psList");
+		if (!CommonUtils.hasPriByFunCode(SystemConst.PERMISSION_PROJECT_SUMMARY, psList)) {
+			modelMap.put("tipMsg", "抱歉...你没有查看项目汇总的权限");
+			return "tip";
+		}
+		
+		//1.列出基础条件中的部门列表
+		List<DepartmentEntity> dmListQuery = null;
+		boolean hasOtherPri = CommonUtils.hasPriByFunCode(SystemConst.PERMISSION_PROJECT_SUMMARY_OTHERPRIVINCE, psList);
+		boolean hasCompany = CommonUtils.hasPriByFunCode(SystemConst.PERMISSION_PROJECT_SUMMARY_COMPANY, psList);
+		if (hasOtherPri || hasCompany) { //用户拥有查询所有项目或者查询指定公司的项目的权限，这个时候部门列表要给用户列出所有的业务部门（渠道服务中心）
+			dmListQuery = this.departmentService.getLocalDepartmentList("4");//部门类型，0 研发 1 教务 2 商务 3 财务 4 办事处、分公司、子公司 5 总经理办公室 6 分管部门
+			DepartmentEntity dm = new DepartmentEntity();
+			dm.setDmName("部门名称(全部)");
+			dm.setProvince(-8);//我们用-8代表查询全部省份的项目，查询project时前端页面如果传来的是-8那sql的where里就不用拼province这列了
+			dmListQuery.add(0, dm);
+		} else { //只要不是查询全部部门的，那就是只查询自己部门的
+			dmListQuery = (List<DepartmentEntity>) modelMap.get("dmList");
+		}
+		modelMap.put("dmListQuery", dmListQuery);
+		//2.列出基础条件中的公司列表
+		List<CompanyEntity> companyList = new ArrayList<CompanyEntity>();
+		if (hasOtherPri) {//如果用户的权限是查询所有的项目，那么要给用户列出所有的公司
+			companyList = this.companyService.getCompanyByVo(new CompanyQueryVo());
+		} else if (hasCompany) {//如果用户的权限是查询指定公司的项目，那么要给用户列出他能查询的公司列表
+			// 从psList中就能得到，看着：
+			for (String perms : psList) {
+				if (perms.contains(SystemConst.PERMISSION_QUERY_COMPANY) && !perms.equals(SystemConst.PERMISSION_QUERY_COMPANY)) {
+					CompanyEntity companyEntity = this.companyService.getCompanyById(Integer.parseInt(perms.substring(SystemConst.PERMISSION_QUERY_COMPANY.length()+1)));
+					if (companyEntity != null)
+						companyList.add(companyEntity);
+				}
+			}
+		}
+		//   其它情况，比如用户只能查询自己发起的项目或者只能查询本部门所在省份的项目，那么不给他列出公司列表
+		//   因为要得到这些人发起的项目都属于哪些公司还需要去project表分类并去重，太麻烦了！
+		modelMap.put("companyList", companyList);
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+		String strYear = sdf.format(new Date());
+		int intYear = Integer.parseInt(strYear);
+		List<String> years = new ArrayList<String>();
+		for(int i = 2012; i <= intYear; i++){
+			years.add(i+"");
+		}
+		modelMap.put("years", years);
+		modelMap.put("colNum", intYear - 2012 + 2);
+		//查询所有省份
+		List<OrganizationEntity> provinceList = this.organizationService.getListByParentId(0);
+		modelMap.put("provinceList", provinceList);
+		return "project/projectSummary";
+	}
+	
+	/**
+	 * 项目汇总页面列表数据
+	 */
+	@RequestMapping(value="/projectSummaryList",method=RequestMethod.GET)
+	public String projectSummaryListPage(QueryTermsForm form, ModelMap modelMap, HttpServletRequest request) throws Exception{
+
+		@SuppressWarnings("unchecked")
+		List<String> psList =  (List<String>) modelMap.get("psList");
+		if (!CommonUtils.hasPriByFunCode(SystemConst.PERMISSION_PROJECT_SUMMARY, psList)) {
+			modelMap.put("tipMsg", "抱歉...你没有查看项目汇总的权限");
+			return "tip";
+		}
+		boolean hasOtherPri = CommonUtils.hasPriByFunCode(SystemConst.PERMISSION_PROJECT_SUMMARY_OTHERPRIVINCE, psList);
+		boolean hasOtherPer = CommonUtils.hasPriByFunCode(SystemConst.PERMISSION_PROJECT_SUMMARY_OTHERPERSION, psList);
+		boolean hasCompany = CommonUtils.hasPriByFunCode(SystemConst.PERMISSION_PROJECT_SUMMARY_COMPANY, psList);
+		if (!(hasOtherPri || hasOtherPer || hasCompany)) {//只能查询自己发起的项目
+			UserEntity user = (UserEntity) modelMap.get("user");
+			form.setUserId(user.getId());
+		} else {
+			List<String> companyList = new ArrayList<String>();//定义一个list存放用户要查询哪些公司的项目
+			if ("all".equals(form.getCompany())) { //如果用户要查询他所能查询的所有公司的项目
+				if (hasCompany) { //用户只能查询指定的公司
+					for (String perms : psList) {
+						if (perms.contains(SystemConst.PERMISSION_PROJECT_SUMMARY_COMPANY) && !perms.equals(SystemConst.PERMISSION_PROJECT_SUMMARY_COMPANY)) {
+							CompanyEntity companyEntity = this.companyService.getCompanyById(Integer.parseInt(perms.substring(SystemConst.PERMISSION_PROJECT_SUMMARY_COMPANY.length()+1)));
+							if (companyEntity != null)
+								companyList.add(companyEntity.getName());
+						}
+					}
+				}
+				//其它情况，用户可以查询全部项目和本部门所属省份的项目，这两个情况的查询“全部”公司都不用在sql中拼公司名称
+			} else { //用户要查询某一个公司的项目
+				companyList.add(form.getCompany());
+			}
+			form.setCompanyList(companyList);
+		}
+		
+		form.setPageSize(10);
+		PageUtils<ProjectSummariesEntity> projectSummaryList = projectSummaryService.getProjectSummaryList(form);
+		modelMap.put("projectSummaryList", projectSummaryList);
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+		String strYear = sdf.format(new Date());
+		int intYear = Integer.parseInt(strYear);
+		List<String> years = new ArrayList<String>();
+		int j = 0;
+		for(int i = 2012; i <= intYear; i++){
+			j = i- 2000;
+			years.add(j+"");//zk1从哪一年开始？
+		}
+		modelMap.put("years", years);
+		modelMap.put("colNum", intYear - 2012 + 2);
+		
+		
+		return "project/projectSummaryList";
+	}
+	
+	/**
+	 * 项目汇总数据计算
+	 */
+	public String projectSummaryData(Integer id, ModelMap modelMap) throws Exception{
+		UserEntity user = (UserEntity) modelMap.get("user");
+		logger.info("user " + user.getLoginName() + " project summary " + id);
+		ProjectEntityQueryVo vo = new ProjectEntityQueryVo();
+		vo.setId(id);
+		List<ProjectEntity> projectList = projectService.getProjectByVo(vo);
+		for (ProjectEntity project : projectList) {
+			
+			String company = project.getCollectMoneyCompany(); // 公司名称
+			Byte type = project.getType(); // 项目类型
+			String provincial = this.organizationService.getNameById(project.getProvincial()); // 省份
+			String serialNumber = project.getSerialNumber(); // 项目编号
+			String name = project.getName(); // 项目名称
+			String cooperName = project.getCooperName(); // 合作单位
+			Date startDate = project.getStartDate(); // 培训起始时间
+			Date endDate = project.getEndDate(); // 培训截止时间
+			int month = CommonUtils.getMonthDiff(endDate, startDate); // 培训期限（月）
+			BigDecimal chargeStandard = project.getChargeStandard(); // 培训单价
+			Integer expectedNum = project.getExpectedNum(); // 报名人数
+			Integer realNum = project.getRealNum(); // 上线人数
+			Integer predictAmount = (expectedNum) * (realNum); // 预计项目总额
+			// 实际项目总额
+			Byte status = project.getStatus(); // 项目运营状态
+			String protocolName = project.getProtocolName(); // 是否有协议    null 无  else 有
+			BigDecimal qb = MyMathUtil.div(MyMathUtil.addStringToBigDecimal(project.getProFundCity(),project.getProFundCounty(),project.getProFundOther(),project.getProFundProvincial()), new BigDecimal("100.00"), 4); 
+			BigDecimal hb = MyMathUtil.div(MyMathUtil.addStringToBigDecimal(project.getLaterFundCity(),project.getLaterFundCounty(),project.getLaterFundOther(),project.getLaterFundProvincial()), new BigDecimal("100.00"), 4); 
+			BigDecimal qj = MyMathUtil.mul(project.getTotalMoney(),qb); // 应付经费总额-前期
+			BigDecimal hj = MyMathUtil.mul(project.getTotalMoney(),hb); // 应付经费总额-后期
+			BigDecimal yzf = fundsService.getTotalWonPayByProject(project.getId()); // 已支付经费
+			BigDecimal wzf = MyMathUtil.sub(hj, yzf); // 未支付经费金额
+			
+			BigDecimal amount = paymentService.getRealPayTotalByProjectId(project.getId()); // 到款总额
+			Integer year = 2000; // 年份
+			
+			// 预计后期到款
+			// 应收到款
+			// 已转收入
+			// 运营成本
+			
+			BigDecimal ykp = this.paymentInvoiceService.getTotalInvoiceByProjectId(project.getId()); // 已开票
+			BigDecimal ydk = this.paymentService.getRealPayTotalByProjectId(id); // 以到款
+			BigDecimal wkp = MyMathUtil.sub(ydk, ykp); // 未开发票金额
+			BigDecimal wdz = MyMathUtil.sub(project.getTotalMoney(), ydk); // 未到帐款
+			// 经费支付异常（已到款应付经费-已付经费）
+			
+		}
+		
+		// 返回 项目汇总实体类
+		return null;
+		
+	}
+	
+}

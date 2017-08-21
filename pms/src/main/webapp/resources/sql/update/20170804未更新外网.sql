@@ -1,0 +1,3 @@
+ALTER TABLE `process` ADD COLUMN `update_summary`  int(11) NULL DEFAULT 0 AFTER `step_id`;
+
+

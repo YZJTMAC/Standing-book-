@@ -1,0 +1,371 @@
+#set($layout = "/layout/layoutNew.vm") 
+##<script type="text/javascript" src="${pms.contextPath}/resources/js/cascade.js"></script>
+<script type="text/javascript" src="${pms.contextPath}/resources/js/calculate.js"></script>
+<script >
+	$(document).ready(function() {
+    	// 只允许输入数字金额
+		$(".NumDecTextForCalTotal").keyup(function(){
+		 	$(this).val($(this).val().replace(/[^0-9.]/g,'').replace(/^\./g,"").replace(/\.{2,}/g,".").replace(".","$#$").replace(/\./g,"").replace("$#$",".").replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'));
+			calTotal()
+		})
+	});
+	function calTotal(){
+		var hj = $('#ysbhqhz').val() == "" ? 0 : rmoney($('#ysbhqhz').val());
+		var yzf = $('#ysbyfhz').val() == "" ? 0 : rmoney($('#ysbyfhz').val());
+		var bc = $('#applyAmount').val() == "" ? 0 : rmoney($('#applyAmount').val());
+		var wzf = hj.sub(yzf) * 1;
+		var zz = wzf.sub(bc);
+		$('#ysbwfhz').val(""+fmoney(zz,2))
+	}
+</script>
+
+<form id="fundsForm">
+	<input type="hidden" name="projectId"  value="$!{project.id}">
+    <div class="new_tableBox clear" style="display: block;">
+    	<div class="tabList">
+    		<div class="tablewrap" style="margin-right: 185px;display:block;">	
+    			<div class="table_tit">经费申请表</div>
+            	<table border="1"  width="100%" cellspacing="0" cellpadding="0" class="table">
+                    <tr>
+                        <td width="17%" class="gray">单位名称</td>
+                        <td colspan="4" width="33%"><input type="text" class="disabled" readonly name="" value="$!{project.collectMoneyCompany}" /></td>
+                        <td width="17%" class="gray">项目编号</td>
+                        <td colspan="4"><input type="text" class="disabled" readonly name="" value="$!{project.serialNumber}" /></td>
+                    </tr>
+                    <tr>
+                        <td class="gray">项目名称</td>
+                        <td colspan="4"><input type="text" class="disabled" readonly name="" value="$!{project.name}" /></td>
+                        <td class="gray">经费类型</td>
+                        <td colspan="4">
+                            <select name="type" id="type">
+                                <option value = "0">请选择</option>
+    							<option value = "1">借款</option>
+    							<option value = "2">报销</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="gray">招生人数</td>
+                        <td colspan="4"><input type="text" class="disabled" readonly name="" value="$!{project.expectedNum}" /></td>
+                        <td class="gray">收费标准</td>
+                        <td colspan="2"><input type="text" class="disabled" readonly name="" value="$!{project.chargeStandard}" /></td>
+                        <td class="gray" colspan="2">元 /人（校）</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="4" class="gray">项目合作经费前期占比例及金额</td>
+                        <td width="10%" class="gray">省级比例</td>
+                        <td width="10%"><input type="text" class="disabled" readonly name="" id="proFundProvincial" value="$!{project.proFundProvincial}%" /></td>
+                        <td width="5%" class="gray">金额</td>
+                        <td width="8%"><input type="text" class="disabled" readonly name="" value="#if(${q_province}) $myUtil.parseMoney(${q_province}) #end" /></td>
+						<td rowspan="4" class="gray">项目合作经费后期占比例及金额</td>
+                        <td width="10%" class="gray">省级比例</td>
+                        <td><input type="text" class="disabled" readonly name="" id="laterFundProvincial" value="$!{project.laterFundProvincial}%" /></td>
+						<td width="5%" class="gray">金额</td>
+                        <td><input type="text" class="disabled" readonly name="" value="#if(${h_province}) $myUtil.parseMoney(${h_province}) #end" /></td>
+                    </tr>
+                    <tr>
+                        <td class="gray">市级比例</td>
+                        <td><input type="text" class="disabled" readonly name="" id="proFundCity" value="$!{project.proFundCity}%" /></td>
+						<td width="5%" class="gray">金额</td>
+                        <td><input type="text" class="disabled" readonly name="" value="#if(${q_city}) $myUtil.parseMoney(${q_city}) #end" /></td>
+                        <td class="gray">市级比例</td>
+                        <td><input type="text" class="disabled" readonly name="" id="laterFundCity" value="$!{project.laterFundCity}%" /></td>
+						<td width="5%" class="gray">金额</td>
+                        <td><input type="text" class="disabled" readonly name="" value="#if(${h_city}) $myUtil.parseMoney(${h_city}) #end" /></td>
+                    </tr>
+                    <tr>
+                        <td class="gray">县级比例</td>
+                        <td><input type="text" class="disabled" readonly name="" id="proFundCounty" value="$!{project.proFundCounty}%" /></td>
+						<td width="5%" class="gray">金额</td>
+                        <td><input type="text" class="disabled" readonly name="" value="#if(${q_county}) $myUtil.parseMoney(${q_county}) #end" /></td>
+                        <td class="gray">县级比例</td>
+                        <td><input type="text" class="disabled" readonly name="" id="laterFundCounty" value="$!{project.laterFundCounty}%" /></td>
+						<td width="5%" class="gray">金额</td>
+                        <td><input type="text" class="disabled" readonly name="" value="#if(${h_county}) $myUtil.parseMoney(${h_county}) #end" /></td>
+                    </tr>
+                    <tr>
+                        <td class="gray">其他比例</td>
+                        <td><input type="text" class="disabled" readonly name="" id="proFundOther" value="$!{project.proFundOther}%" /></td>
+						<td width="5%" class="gray">金额</td>
+                        <td><input type="text" class="disabled" readonly name="" value="#if(${q_other}) $myUtil.parseMoney(${q_other}) #end" /></td>
+                        <td class="gray">其他比例</td>
+                        <td><input type="text" class="disabled" readonly name="" id="laterFundOther" value="$!{project.laterFundOther}%" /></td>
+						<td width="5%" class="gray">金额</td>
+                        <td><input type="text" class="disabled" readonly name="" id="" value="#if(${h_other}) $myUtil.parseMoney(${h_other}) #end" /></td>
+                    </tr>
+                    <tr>
+                        <td class="gray">销售总额</td>
+                        <td colspan="4"><input type="text" class="disabled" readonly name="" id="totalMoney" value="#if(${project.totalMoney}) $myUtil.parseMoney(${project.totalMoney}) #end" /></td>
+                        <td class="gray">应收总额</td><!--zk-->
+                        <td colspan="4"><input type="text" class="disabled" readonly value="#if($ssje) $myUtil.parseMoney($ssje) #end"/></td>
+                    </tr>
+					<tr>
+                        <td class="gray">实际到款金额</td>
+                        <td colspan="4"><input type="text" class="disabled" readonly value="#if($ydk) $myUtil.parseMoney($ydk) #end" /></td>
+                        <td class="gray">已到款可支付经费金额</td><!--zk-->
+                        <td colspan="4"><input type="text" class="disabled" readonly value="#if($fj) $myUtil.parseMoney($fj) #end"/></td>
+                    </tr>
+                    <tr>
+                        <td class="gray">后期合作经费总额</td>
+                        <td colspan="4"><input type="text" id="ysbhqhz" class="disabled" readonly value="#if($hj) $myUtil.parseMoney($hj) #end"/></td>
+                        <td class="gray">已支付合作经费金额</td>
+                        <td colspan="4"><input type="text" id="ysbyfhz" class="disabled" readonly value="#if($yzf) $myUtil.parseMoney($yzf) #end"/></td>
+                    </tr>
+                    <tr>
+                        <td class="gray">本次申请合作经费金额</td>
+                        <td colspan="4" style="padding: 0 0 0 3px;"><input type="text" class="NumDecTextForCalTotal" name="applyAmount" id="applyAmount" /></td>
+                        <td class="gray">剩余未支付合作经费金额</td>
+                        <td colspan="4"><input type="text" id="ysbwfhz" class="disabled" readonly value="#if($wzf) $myUtil.parseMoney($wzf) #end"/></td>
+                    </tr>
+                    <tr>
+                        <td class="gray">合作经费发票内容</td>
+                        <td colspan="4"><input type="text" name="invoiceContent" id="invoiceContent" style="background: #FFF;" /></td><!--zk-->
+                        <td class="gray">合作经费发票金额</td>
+                        <td colspan="4">
+							<input type="text" class="NumDecText" name="invoiceAmount" id="invoiceAmount" style="background: #FFF;" />
+						</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="4" class="gray">收款单位（个人）账户信息</td>
+                        <td colspan="4" class="gray">账户名称(个人姓名)</td>
+                        <td colspan="5"><input type="text" name="recName" id="recName" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="gray">开户银行(注明银行网点)</td>
+                        <td colspan="5"><input type="text" name="recBank" id="recBank" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="gray">账号</td>
+                        <td colspan="5"><input type="text" name="recAccount" id="recAccount" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="gray">银行行号</td>
+                        <td colspan="5"><input type="text" name="recBankNum" id="recBankNum" /></td>
+                    </tr>
+    				<tr>
+                        <td colspan="" class="gray">办事处（分公司）负责人意见</td>
+    					<td colspan="4" style="background: #ebebe4;"><span>无需填写</span></td>
+                        
+                        <td colspan="1" class="gray">分管领导意见</td>
+                        <td colspan="4" style="background: #ebebe4;"><span>无需填写</span></td>
+                    </tr>
+					<tr>
+                        <td colspan="" class="gray">商务负责人意见</td>
+    					<td colspan="4" style="background: #ebebe4;"><span>无需填写</span></td>
+                        
+                        <td colspan="1" class="gray">主管副总裁意见</td>
+                        <td colspan="4" style="background: #ebebe4;"><span>无需填写</span></td>
+                    </tr>
+                </table>
+    			<div style="border:1px dashed #000; margin:30px 0;"></div>
+                <table  border="1" cellspacing="0" cellpadding="0" class="table" width="100%">
+                    <tr>
+                        <td rowspan="4" width="17%" class="gray">收款单位（个人）账户信息</td>
+                        <td colspan="4" width="33%" class="gray">账户名称(个人姓名)</td>
+                        <td colspan="5" class="disabled" width="50%" id="recName2" style="text-align:left;padding: 0 0 0 5px;"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="gray">开户银行(注明银行网点)</td>
+                        <td colspan="5" class="disabled" width="50%" id="recBank2" style="text-align:left;padding: 0 0 0 5px;"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="gray">账号</td>
+                        <td colspan="5" class="disabled" width="50%" id="recAccount2" style="text-align:left;padding: 0 0 0 5px;"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="gray">银行行号</td>
+                        <td colspan="5" class="disabled" width="50%" id="recBankNum2" style="text-align:left;padding: 0 0 0 5px;"></td>
+                    </tr>
+                </table>
+                <div style="height:50px;"></div>
+    		</div>
+    		<div class="new_beizhu fr mt10">
+        		<div class="beizhu_btn">
+        			<a href="javascript:;" title="点击此处可以伸缩此框">备注</a>
+        		</div>
+        		<div class="beizhu_tex mr10">
+        			<textarea name="note"></textarea>
+        		</div>
+        	</div>
+    	</div>
+    </div>
+</form>
+
+<!--额外三个/div，关闭的是layoutNew未关闭的标签-->
+</div>
+</div>
+</div>
+<!--下面是弹窗div -->
+<!--查看流程-->
+<span style="display:none" id="cklcname">经费申请流程</span>
+<div class="liuchengBox" id="cklc" style="display:none">
+	<div class="liucheng_list clear" style="height:300px;width:950px">
+		<div class="list4">
+			<ul class="clear fl">
+				<li title=""></li>
+				<li title=""></li>
+				<li title=""></li>
+				<li title=""></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div class="prompt_cont_box" id="upload" style="display:none">
+	<div class="prompt_cont clear">
+		<div class="prompt_cont_text">
+			<p>您可以点击按钮上传文件或图片(文件大小为50MB以内)</p>
+			<div class="From mt10 mb10">
+				<div>
+					<input type="file" name="file" id = "file" lay-type="file"  class="layui-upload-file">
+					<span style="padding-left: 10px;color: red;font-size: 14px;" id="uploadMsg"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+// 保存待发
+function saveDraft(){
+	alert("暂存功能暂时未开发，请使用提交表单功能")
+}
+
+$(document).ready(function(){
+	$('#type').change(function(){
+  		var fundsType = $('#type').val();
+		if(fundsType == '1' ){ //借款或不选择   
+    		$('#invoiceAmount').val('');
+    		$('#invoiceAmount').attr('readonly', 'readonly');
+    		$('#invoiceAmount').css('background-color','#ebebe4');
+    		$('#invoiceContent').val('');
+    		$('#invoiceContent').attr('readonly', 'readonly');
+    		$('#invoiceContent').css('background-color','#ebebe4');
+		} else {
+    		$('#invoiceAmount').removeAttr('readonly');
+    		$('#invoiceAmount').val('');
+    		$('#invoiceAmount').css('background-color','#FFF');
+    		$('#invoiceContent').removeAttr('readonly');
+    		$('#invoiceContent').val('');
+    		$('#invoiceContent').css('background-color','#FFF');
+		}
+	});
+
+	// 显示附表信息
+	$('#recName').keyup(function(){
+		$('#recName2').text($("#recName").val());
+	});
+	$('#recBank').keyup(function(){
+		$('#recBank2').text($("#recBank").val());
+	});
+	$('#recAccount').keyup(function(){
+		$('#recAccount2').text($("#recAccount").val());
+	});
+	$('#recBankNum').keyup(function(){
+		$('#recBankNum2').text($("#recBankNum").val());
+	});
+	
+	// 表单提交
+	$("#submit_btn").click(function(){
+		var result = validateForm();
+		if(result){
+			submitForm();
+		}
+	});
+	
+});
+
+// 表单提交
+function submitForm(){
+	var params = JSON.stringify($("#fundsForm").serializeJSON());
+	layer.load(2);
+	$.ajax({
+		type: "POST",
+	    url: "/funds/ajaxAddFunds",
+	    data: params,
+		error : function() {
+			alert("发生错误！")
+			layer.closeAll('loading');
+		},
+		success : function(res) {
+			if(res.code === 0){
+    			var attach =  $("#box").find("span").map(function(){
+                        	return $(this).html();
+                    }).toArray();
+        		var processName = $.trim($("input[name='processName']").val())
+        		var params2 = JSON.stringify({'processName': processName,'attachIds':attach,'objectId':res.objectId,'projectId':res.projectId,'shiCaogao':false});
+        		$.ajax({
+            		type: "POST",
+            	    url: "/funds/ajaxAddProcess",
+            	    data: params2,
+            	    error: function(){
+    					layer.closeAll('loading');
+            			alert("表单数据已提交成功，但创建流程过程中出错：服务器错误，请联系管理员处理数据！")
+            	    },
+            	    success: function(res){
+            	    	layer.closeAll('loading');
+            			if(res.code === 0){
+            				alert("提交成功")
+							layer.msg('提交成功', {icon:1,anim: 4 ,time: 1500},function(){
+								window.location.href = "${pms.contextPath}/process/alreadySend";
+							});
+            			}else{
+            				alert("表单数据已提交成功，但创建流程过程中出错："+res.msg);
+            			}
+            		}
+            	});
+    		}else{
+    			alert("提交失败："+res.msg);
+				layer.closeAll('loading');
+    		}
+		}
+	});
+}
+
+// 验证表单-提交
+function validateForm(){
+	var type = $("#type").val();
+	if(type == '0'){
+		alert("请选择经费类型！")
+		return false;
+	}
+	
+	var applyAmount = $.trim($("#applyAmount").val())
+	if(applyAmount == "" || isNaN(applyAmount)){
+		alert("请填写本次申请合作经费的金额！")
+		return false;
+	}
+	if($("#invoiceContent").val() == '' && type == 2){
+		alert("请填写合作经费发票内容！")
+		return false;
+	}
+	var invoiceAmount = $.trim($("#invoiceAmount").val())
+	if((invoiceAmount == "" || isNaN(invoiceAmount)) && type == 2){
+		alert("请填写合作经费发票金额！")
+		return false;
+	}
+	
+	// 银行信息验证待完善
+	if($.trim($("#recName").val()) == ''){
+		alert("请填写账户名称！")
+		return false;
+	}
+	if($.trim($("#recBank").val()) == ''){
+		alert("请填写开户银行！")
+		return false;
+	}
+	var recAccount = $.trim($("#recAccount").val())
+	//if(recAccount == '' || isNaN(recAccount) || (!(/^(\d{16}|\d{19})$/.test(recAccount)))){
+	if(recAccount == '' || isNaN(recAccount)){
+		alert("账号为空或者填写错误，请重新填写！")
+		return false;
+	}
+	var recBankNum = $.trim($("#recBankNum").val())
+	if(recBankNum == '' || isNaN(recBankNum)){
+		alert("银行行号为空或者填写错误，请重新填写！")
+		return false;
+	}
+	return true;
+}
+
+</script>

@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.teacheredu.mapping.PaymentMapper">
+<cache type = "org.mybatis.caches.memcached.MemcachedCache"/>
+  <resultMap id="BaseResultMap" type="cn.teacheredu.entity.PaymentEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="num" jdbcType="INTEGER" property="num" />
+    <result column="year" jdbcType="INTEGER" property="year" />
+    <result column="month" jdbcType="TINYINT" property="month" />
+    <result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
+    <result column="tra_time" jdbcType="TIMESTAMP" property="traTime" />
+    <result column="remitter" jdbcType="VARCHAR" property="remitter" />
+    <result column="remitter_account" jdbcType="VARCHAR" property="remitterAccount" />
+    <result column="pay_bank" jdbcType="VARCHAR" property="payBank" />
+    <result column="transfer_form" jdbcType="VARCHAR" property="transferForm" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="province" jdbcType="INTEGER" property="province" />
+    <result column="city" jdbcType="INTEGER" property="city" />
+    <result column="county" jdbcType="INTEGER" property="county" />
+    <result column="advance_pay" jdbcType="TINYINT" property="advancePay" />
+    <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="company" jdbcType="VARCHAR" property="company" />
+    <result column="has_invoice" jdbcType="INTEGER" property="hasInvoice" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+    <result column="note_yw" jdbcType="VARCHAR" property="noteYw" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <if test="num != null">
+        and num = #{num,jdbcType=INTEGER}
+      </if>
+      <if test="year != null">
+        and year = #{year,jdbcType=INTEGER}
+      </if>
+      <if test="month != null">
+        and month = #{month,jdbcType=INTEGER}
+      </if>
+      <if test="serialNumber != null">
+        and serial_number = #{serialNumber,jdbcType=VARCHAR}
+      </if>
+      <if test="traTime != null">
+         <if test="fromDate != null">
+	      	and tra_time &gt;= #{fromDate,jdbcType=TIMESTAMP}
+	     </if>
+	     <if test="toDate != null">
+	      	and tra_time &lt;= #{toDate,jdbcType=TIMESTAMP}
+	     </if>
+      </if>
+      <if test="remitter != null">
+        	and remitter like '${remitter}%'
+      </if>
+      <if test="remitterAccount != null">
+        and remitter_account = #{remitterAccount,jdbcType=VARCHAR}
+      </if>
+      <if test="payBank != null">
+        and pay_bank = #{payBank,jdbcType=VARCHAR}
+      </if>
+      <if test="transferForm != null">
+        and transfer_form = #{transferForm,jdbcType=VARCHAR}
+      </if>
+      <if test="amount != null">
+        and amount = #{amount,jdbcType=DECIMAL}
+      </if>
+      <if test="province != null">
+        and province = #{province,jdbcType=INTEGER}
+      </if>
+      <if test="city != null">
+        and city = #{city,jdbcType=INTEGER}
+      </if>
+      <if test="county != null">
+        and county = #{county,jdbcType=INTEGER}
+      </if>
+      <if test="advancePay != null">
+        and advance_pay = #{advancePay,jdbcType=TINYINT}
+      </if>
+      <if test="projectId != null">
+        and project_id = #{projectId,jdbcType=INTEGER}
+      </if>
+      <if test="company != null">
+        and company = #{company,jdbcType=VARCHAR}
+      </if>
+      <if test="hasInvoice != null">
+        and has_invoice = #{hasInvoice,jdbcType=INTEGER}
+      </if>
+      <if test="note != null">
+        and note = #{note,jdbcType=VARCHAR}
+      </if>
+      <if test="noteYw != null">
+        and note_yw = #{noteYw,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </sql>
+  
+  <sql id="Base_Column_List">
+    id, num, year, month, serial_number, tra_time, remitter, remitter_account, pay_bank, 
+    transfer_form, amount, province, city, county, advance_pay, project_id, company, has_invoice,
+    note,note_yw
+  </sql>
+  
+  <select id="selectByExample" parameterType="cn.teacheredu.vo.PaymentQueryVo" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from payment
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderProperty != null">
+      	order by ${orderProperty} ${orderType}
+    </if>
+    <if test="isPaged == true">
+		limit #{startPosition} ,#{pageSize}
+	</if>
+  </select>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from payment
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from payment
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insertSelective" parameterType="cn.teacheredu.entity.PaymentEntity">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into payment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="num != null">
+        num,
+      </if>
+      <if test="year != null">
+        year,
+      </if>
+      <if test="month != null">
+        month,
+      </if>
+      <if test="serialNumber != null">
+        serial_number,
+      </if>
+      <if test="traTime != null">
+        tra_time,
+      </if>
+      <if test="remitter != null">
+        remitter,
+      </if>
+      <if test="remitterAccount != null">
+        remitter_account,
+      </if>
+      <if test="payBank != null">
+        pay_bank,
+      </if>
+      <if test="transferForm != null">
+        transfer_form,
+      </if>
+      <if test="amount != null">
+        amount,
+      </if>
+      <if test="province != null">
+        province,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="county != null">
+        county,
+      </if>
+      <if test="advancePay != null">
+        advance_pay,
+      </if>
+      <if test="projectId != null">
+        project_id,
+      </if>
+      <if test="company != null">
+        company,
+      </if>
+      <if test="hasInvoice != null">
+        has_invoice,
+      </if>
+      <if test="note != null">
+        note,
+      </if>
+      <if test="noteYw != null">
+        note_yw,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="num != null">
+        #{num,jdbcType=INTEGER},
+      </if>
+      <if test="year != null">
+        #{year,jdbcType=INTEGER},
+      </if>
+      <if test="month != null">
+        #{month,jdbcType=TINYINT},
+      </if>
+      <if test="serialNumber != null">
+        #{serialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="traTime != null">
+        #{traTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remitter != null">
+        #{remitter,jdbcType=VARCHAR},
+      </if>
+      <if test="remitterAccount != null">
+        #{remitterAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="payBank != null">
+        #{payBank,jdbcType=VARCHAR},
+      </if>
+      <if test="transferForm != null">
+        #{transferForm,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="province != null">
+        #{province,jdbcType=INTEGER},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=INTEGER},
+      </if>
+      <if test="county != null">
+        #{county,jdbcType=INTEGER},
+      </if>
+      <if test="advancePay != null">
+        #{advancePay,jdbcType=TINYINT},
+      </if>
+      <if test="projectId != null">
+        #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="company != null">
+        #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="hasInvoice != null">
+        #{hasInvoice,jdbcType=INTEGER},
+      </if>
+      <if test="note != null">
+        #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="noteYw != null">
+        #{noteYw,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <select id="countByExample" parameterType="cn.teacheredu.vo.PaymentQueryVo" resultType="java.lang.Long">
+    select count(*) from payment
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="cn.teacheredu.entity.PaymentEntity">
+    update payment
+    <set>
+      <if test="num != null">
+        num = #{num,jdbcType=INTEGER},
+      </if>
+      <if test="year != null">
+        year = #{year,jdbcType=INTEGER},
+      </if>
+      <if test="month != null">
+        month = #{month,jdbcType=TINYINT},
+      </if>
+      <if test="serialNumber != null">
+        serial_number = #{serialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="traTime != null">
+        tra_time = #{traTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remitter != null">
+        remitter = #{remitter,jdbcType=VARCHAR},
+      </if>
+      <if test="remitterAccount != null">
+        remitter_account = #{remitterAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="payBank != null">
+        pay_bank = #{payBank,jdbcType=VARCHAR},
+      </if>
+      <if test="transferForm != null">
+        transfer_form = #{transferForm,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null">
+        amount = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="province != null">
+        province = #{province,jdbcType=INTEGER},
+      </if>
+      <if test="city != null">
+        city = #{city,jdbcType=INTEGER},
+      </if>
+      <if test="county != null">
+        county = #{county,jdbcType=INTEGER},
+      </if>
+      <if test="advancePay != null">
+        advance_pay = #{advancePay,jdbcType=TINYINT},
+      </if>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="company != null">
+        company = #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="hasInvoice != null">
+        has_invoice = #{hasInvoice,jdbcType=INTEGER},
+      </if>
+      <if test="note != null">
+        note = #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="noteYw != null">
+        note_yw = #{noteYw,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="editHasInvoiceById" parameterType="java.lang.Integer">
+    update payment set has_invoice = 1 where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

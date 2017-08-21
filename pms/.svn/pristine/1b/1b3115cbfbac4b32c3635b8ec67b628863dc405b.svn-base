@@ -1,0 +1,790 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.teacheredu.mapping.ProjectMapper">
+<cache type = "org.mybatis.caches.memcached.MemcachedCache"/>
+  <resultMap id="BaseResultMap" type="cn.teacheredu.entity.ProjectEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
+    <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="format" jdbcType="TINYINT" property="format" />
+    <result column="provincial" jdbcType="INTEGER" property="provincial" />
+    <result column="city" jdbcType="INTEGER" property="city" />
+    <result column="county" jdbcType="INTEGER" property="county" />
+    <result column="charge_area" jdbcType="INTEGER" property="chargeArea" />
+    <result column="train_object" jdbcType="VARCHAR" property="trainObject" />
+    <result column="train_platform" jdbcType="VARCHAR" property="trainPlatform" />
+    <result column="start_date" jdbcType="TIMESTAMP" property="startDate" />
+    <result column="end_date" jdbcType="TIMESTAMP" property="endDate" />
+    <result column="expected_num" jdbcType="INTEGER" property="expectedNum" />
+    <result column="charge_standard" jdbcType="DECIMAL" property="chargeStandard" />
+    <result column="study_time" jdbcType="INTEGER" property="studyTime" />
+    <result column="real_num" jdbcType="INTEGER" property="realNum" />
+    <result column="cooper_name" jdbcType="VARCHAR" property="cooperName" />
+    <result column="third_cooper_name" jdbcType="VARCHAR" property="thirdCooperName" />
+    <result column="cooper_addr" jdbcType="VARCHAR" property="cooperAddr" />
+    <result column="cooper_head_name_first" jdbcType="VARCHAR" property="cooperHeadNameFirst" />
+    <result column="cooper_head_mobile_first" jdbcType="VARCHAR" property="cooperHeadMobileFirst" />
+    <result column="cooper_head_job_first" jdbcType="VARCHAR" property="cooperHeadJobFirst" />
+    <result column="cooper_head_email_first" jdbcType="VARCHAR" property="cooperHeadEmailFirst" />
+    <result column="cooper_head_name_second" jdbcType="VARCHAR" property="cooperHeadNameSecond" />
+    <result column="cooper_head_mobile_second" jdbcType="VARCHAR" property="cooperHeadMobileSecond" />
+    <result column="cooper_head_job_second" jdbcType="VARCHAR" property="cooperHeadJobSecond" />
+    <result column="cooper_head_email_second" jdbcType="VARCHAR" property="cooperHeadEmailSecond" />
+    <result column="pro_fund_provincial" jdbcType="VARCHAR" property="proFundProvincial" />
+    <result column="pro_fund_city" jdbcType="VARCHAR" property="proFundCity" />
+    <result column="pro_fund_county" jdbcType="VARCHAR" property="proFundCounty" />
+    <result column="pro_fund_other" jdbcType="VARCHAR" property="proFundOther" />
+    <result column="later_fund_provincial" jdbcType="VARCHAR" property="laterFundProvincial" />
+    <result column="later_fund_city" jdbcType="VARCHAR" property="laterFundCity" />
+    <result column="later_fund_county" jdbcType="VARCHAR" property="laterFundCounty" />
+    <result column="later_fund_other" jdbcType="VARCHAR" property="laterFundOther" />
+    <result column="protocol_name" jdbcType="VARCHAR" property="protocolName" />
+    <result column="protocol_time" jdbcType="TIMESTAMP" property="protocolTime" />
+    <result column="collect_money_company" jdbcType="VARCHAR" property="collectMoneyCompany" />
+    <result column="collect_money_date" jdbcType="TIMESTAMP" property="collectMoneyDate" />
+    <result column="total_money" jdbcType="DECIMAL" property="totalMoney" />
+    <result column="write_time" jdbcType="TIMESTAMP" property="writeTime" />
+    <result column="gen_time" jdbcType="TIMESTAMP" property="genTime" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+        <if test="userId != null">
+        	and a.user_id = #{userId,jdbcType=INTEGER}
+        </if>
+        <if test="status != null">
+	      	<if test="status == 1"> and a.status = 1 </if>
+	      	<if test="status == 2"> and a.status = 2 </if>
+	      	<if test="status == 3"> and a.status = 3 </if>
+	      	<if test="status == 0"> and a.status = 0 </if>
+	      	<!-- <if test="status == -2"> and a.status &lt; 3 </if> -->
+	      	<if test="status == -1"> and a.status &gt; 0 </if>
+        </if>
+        <if test="name != null">
+        	and a.name like '${name}%'
+        </if>
+        <if test="serialNumber != null">
+        	and a.serial_number = #{serialNumber,jdbcType=VARCHAR}
+        </if>
+        <if test="type != null">
+	        and a.type = #{type,jdbcType=TINYINT}
+      	</if>
+      	<if test="format != null">
+	        and a.format = #{format,jdbcType=TINYINT}
+      	</if>
+      	<if test="provincial != null">
+	        and a.provincial = #{provincial,jdbcType=INTEGER}
+      	</if>
+      	<if test="provincialList != null">
+	        and a.provincial in 
+	        <foreach item="item" collection="provincialList" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+        </if>
+      	<if test="city != null">
+	        and a.city = #{city,jdbcType=INTEGER}
+      	</if>
+      	<if test="county != null">
+	        and a.county = #{county,jdbcType=INTEGER}
+      	</if>
+      	<if test="chargeArea != null">
+	        and a.charge_area = #{chargeArea,jdbcType=INTEGER}
+      	</if>
+        <if test="trainObject != null">
+        	and a.train_object = #{trainObject,jdbcType=VARCHAR}
+        </if>
+        <if test="trainPlatform != null">
+        	and a.train_platform = #{trainPlatform,jdbcType=VARCHAR}
+        </if>
+        <if test="startDate != null">
+         	<if test="fromDate != null">
+	      		and a.start_date &gt;= #{fromDate,jdbcType=TIMESTAMP}
+	     	</if>
+	     	<if test="toDate != null">
+	      		and a.start_date &lt;= #{toDate,jdbcType=TIMESTAMP}
+	     	</if>
+        </if>
+        <if test="endDate != null">
+	        <if test="fromDate != null">
+	      		and a.end_date &gt;= #{fromDate,jdbcType=TIMESTAMP}
+	     	</if>
+	     	<if test="toDate != null">
+	      		and a.end_date &lt;= #{toDate,jdbcType=TIMESTAMP}
+	     	</if>
+        </if>
+       	 <!-- 一般查询条件里没有的字段这里就注释了 -->
+        <!-- <if test="expectedNum != null">
+        	and a.expected_num = #{expectedNum,jdbcType=INTEGER}
+        </if>
+        <if test="chargeStandard != null">
+        	and a.charge_standard = #{chargeStandard,jdbcType=DECIMAL}
+        </if>
+        <if test="studyTime != null">
+        	and a.study_time = #{studyTime,jdbcType=INTEGER}
+        </if>
+        <if test="realNum != null">
+        	and a.real_num = #{realNum,jdbcType=INTEGER}
+        </if>
+        <if test="cooperName != null">
+        	and a.cooper_name = #{cooperName,jdbcType=VARCHAR}
+        </if>
+        <if test="cooperAddr != null">
+        	and a.cooper_addr = #{cooperAddr,jdbcType=VARCHAR}
+        </if>
+        <if test="cooperHeadNameFirst != null">
+        	and a.cooper_head_name_first = #{cooperHeadNameFirst,jdbcType=VARCHAR}
+        </if>
+        <if test="cooperHeadMobileFirst != null">
+        	and a.cooper_head_mobile_first = #{cooperHeadMobileFirst,jdbcType=VARCHAR}
+        </if>
+        <if test="cooperHeadJobFirst != null">
+        	and a.cooper_head_job_first = #{cooperHeadJobFirst,jdbcType=VARCHAR}
+        </if>
+        <if test="cooperHeadEmailFirst != null">
+        	and a.cooper_head_email_first = #{cooperHeadEmailFirst,jdbcType=VARCHAR}
+        </if>
+        <if test="cooperHeadNameSecond != null">
+        	and a.cooper_head_name_second = #{cooperHeadNameSecond,jdbcType=VARCHAR}
+        </if>
+        <if test="cooperHeadMobileSecond != null">
+        	and a.cooper_head_mobile_second = #{cooperHeadMobileSecond,jdbcType=VARCHAR}
+        </if>
+        <if test="cooperHeadJobSecond != null">
+        	and a.cooper_head_job_second = #{cooperHeadJobSecond,jdbcType=VARCHAR}
+        </if>
+        <if test="cooperHeadEmailSecond != null">
+        	and a.cooper_head_email_second = #{cooperHeadEmailSecond,jdbcType=VARCHAR}
+        </if>
+        <if test="proFundProvincial != null">
+        	and a.pro_fund_provincial = #{proFundProvincial,jdbcType=VARCHAR}
+        </if>
+        <if test="proFundCity != null">
+        	and a.pro_fund_city = #{proFundCity,jdbcType=VARCHAR}
+        </if>
+        <if test="proFundCounty != null">
+        	and a.pro_fund_county = #{proFundCounty,jdbcType=VARCHAR}
+        </if>
+        <if test="proFundOther != null">
+        	and a.pro_fund_other = #{proFundOther,jdbcType=VARCHAR}
+        </if>
+        <if test="laterFundProvincial != null">
+        	and a.later_fund_provincial = #{laterFundProvincial,jdbcType=VARCHAR}
+        </if>
+        <if test="laterFundCity != null">
+        	and a.later_fund_city = #{laterFundCity,jdbcType=VARCHAR}
+        </if>
+        <if test="laterFundCounty != null">
+        	and a.later_fund_county = #{laterFundCounty,jdbcType=VARCHAR}
+        </if>
+        <if test="laterFundOther != null">
+        	and a.later_fund_other = #{laterFundOther,jdbcType=VARCHAR}
+        </if> -->
+        <if test="protocolName != null">
+        	and a.protocol_name = #{protocolName,jdbcType=VARCHAR}
+        </if>
+        <if test="protocolTime != null">
+	       	and a.protocol_time = #{protocolTime,jdbcType=TIMESTAMP}
+      	</if>
+        <if test="collectMoneyCompany != null">
+        	and a.collect_money_company = #{collectMoneyCompany,jdbcType=VARCHAR}
+        </if>
+        <if test="collectMoneyCompanyList != null">
+	        and a.collect_money_company in 
+	        <foreach item="item" collection="collectMoneyCompanyList" open="(" separator="," close=")">
+				#{item,jdbcType=VARCHAR}
+			</foreach>
+        </if>
+        <if test="collectMoneyDate != null">
+        	and a.collect_money_date = #{collectMoneyDate,jdbcType=TIMESTAMP}
+        </if>
+        <if test="totalMoney != null">
+        	and a.total_money = #{totalMoney,jdbcType=DECIMAL}
+        </if>
+        <if test="writeTime != null">
+        	and a.write_time = #{writeTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="genTime != null">
+        	and a.gen_time = #{genTime,jdbcType=TIMESTAMP}
+        </if>
+        <!-- <if test="url != null">
+        	and a.url = #{url,jdbcType=VARCHAR}
+        </if>
+        <if test="note != null">
+        	and a.note = #{note,jdbcType=VARCHAR}
+        </if> -->
+        <if test="userName != null">
+        	and b.realname = #{userName,jdbcType=VARCHAR}
+        </if>
+    </where>
+  </sql>
+  
+  <sql id="Base_Column_List">
+  	a.id, a.user_id, a.name, a.serial_number, a.type, a.format, a.provincial, a.city, a.county, a.charge_area, a.train_object, 
+    a.train_platform, a.start_date, a.end_date, a.expected_num, a.charge_standard, a.study_time, 
+    a.real_num, a.cooper_name, a.third_cooper_name, a.cooper_addr, a.cooper_head_name_first, a.cooper_head_mobile_first, 
+    a.cooper_head_job_first, a.cooper_head_email_first, a.cooper_head_name_second, a.cooper_head_mobile_second, 
+    a.cooper_head_job_second, a.cooper_head_email_second, a.pro_fund_provincial, a.pro_fund_city, 
+    a.pro_fund_county, a.pro_fund_other, a.later_fund_provincial, a.later_fund_city, a.later_fund_county, 
+    a.later_fund_other, a.protocol_name, a.protocol_time, a.collect_money_company, a.collect_money_date, 
+    a.total_money, a.write_time, a.gen_time, a.status, a.url, a.note
+  </sql>
+  <sql id="Summary_Column_List">
+  	(select id from project_summaries where project_id = a.id) id,a.id projectId, a.collect_money_company projectCompany, a.type projectType, YEAR(a.write_time) projectYear, a.provincial projectProvincialId,
+	(select organization.`name` from organization where organization.id=a.provincial) projectProvincial, a.serial_number projectSerialNumber, 
+	a.`name` projectName, a.cooper_name projectCooperName, a.start_date projectStartDate, a.end_date projectEndDate, 
+	a.charge_standard projectCharge, a.expected_num projectExpectedNum, a.format projectFormat,
+	(select sum(real_num) from project_end where project_id = a.id and (exists(select 1 from process where object_id = project_end.id and table_name='project_end' and status=4) or not exists(select 1 from process where object_id = project_end.id and table_name='project_end'))) projectLiveNum,
+	a.total_money predictTotalAmount, a.`status` projectStatus, a.protocol_name projectProtocolName, 
+	(select sum(paymentAmount) from project_year_summary where project_id = a.id) realPaymentAmount,
+	(select sum(incomeAmount) from project_year_summary where project_id = a.id) realIncomeAmount,
+	(pro_fund_provincial+pro_fund_city+pro_fund_county+pro_fund_other) proFundProportion, 
+	(later_fund_provincial+later_fund_city+later_fund_county+later_fund_other) laterFundProportion, 
+	(select sum(fundsAmount) from project_year_summary where project_id = a.id) realFundAmount,
+	(select IFNULL(expert_cost_budget,0)+IFNULL(transport_cost_budget,0)+IFNULL(accom_cost_budget,0)+IFNULL(fete_cost_budget,0)+IFNULL(office_cost_budget,0)+IFNULL(rental_cost_budget,0)+IFNULL(invest_cost_budget,0)+IFNULL(other_cost_budget,0)+IFNULL(expert_labour_budget,0)+IFNULL(counsellor_labour_budget,0) from project_budget where project_id = a.id) predictBudget, 
+	(select sum(budgetAmount) from project_year_summary where project_id = a.id) realBudgetAmount,
+	(select sum(overAmount) from project_year_summary where id = a.id) realCostAmount,
+	(select sum(invoiceAmount) from project_year_summary where project_id = a.id) realInvoiceAmount, note, url, charge_area projectChargeArea,
+	(select min(tra_time) from payment where project_id = a.id and (EXISTS (select 1 from process where process.object_id = payment.id and process.status = 4 and process.table_name="payment") or not EXISTS (select 1 from process where process.object_id = payment.id and process.table_name="payment"))) paymentFirstTime,
+  	(select max(tra_time) from payment where project_id = a.id and (EXISTS (select 1 from process where process.object_id = payment.id and process.status = 4 and process.table_name="payment") or not EXISTS (select 1 from process where process.object_id = payment.id and process.table_name="payment"))) paymentLastTime,
+  	(select max(create_time) from funds where project_id = a.id and (EXISTS (select 1 from process where process.object_id = funds.id and process.status = 4 and process.table_name="funds") or not EXISTS (select 1 from process where process.object_id = funds.id and process.table_name="funds"))) fundsFirstTime,
+  	(select max(create_time) from funds where project_id = a.id and (EXISTS (select 1 from process where process.object_id = funds.id and process.status = 4 and process.table_name="funds") or not EXISTS (select 1 from process where process.object_id = funds.id and process.table_name="funds"))) fundsLastTime
+  </sql>
+  <select id="selectByExample" parameterType="cn.teacheredu.vo.ProjectEntityQueryVo" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from project a
+    <if test="needJoin == true">
+      left join user b on a.user_id = b.id 
+    </if>
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderProperty != null">
+      	order by ${orderProperty} ${orderType}
+    </if>
+    <if test="isPaged == true">
+		limit #{startPosition} ,#{pageSize}
+	</if>
+  </select>
+  
+  <select id="selectProjectForEnd" parameterType="cn.teacheredu.vo.ProjectEntityQueryVo" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from project a
+    <where>
+    <if test="userId != null">
+    	and a.user_id = #{userId,jdbcType=INTEGER}
+    </if>
+    <if test="provincial != null">
+        and a.provincial = #{provincial,jdbcType=INTEGER}
+   	</if>
+   	<if test="provincialList != null">
+        and a.provincial in 
+        <foreach item="item" collection="provincialList" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+    </if>
+    <if test="status != null">
+	   	<if test="status == 1"> and a.status = 1 </if>
+	   	<if test="status == 2"> and a.status = 2 </if>
+	   	<if test="status == 3"> and a.status = 3 </if>
+	   	<if test="status == 4"> and a.status = 4 </if>
+	   	<if test="status == 0"> and a.status = 0 </if>
+	   	<!-- <if test="status == -2"> and a.status &lt; 3 </if> -->
+	   	<if test="status == -1"> and a.status &gt; 0 </if>
+    </if>
+    <if test="fromDate != null">
+   		and a.end_date &gt;= #{fromDate,jdbcType=TIMESTAMP}
+   	</if>
+   	<if test="toDate != null">
+   		and a.end_date &lt;= #{toDate,jdbcType=TIMESTAMP}
+   	</if>
+    <if test="collectMoneyCompany != null">
+       	and a.collect_money_company = #{collectMoneyCompany,jdbcType=VARCHAR}
+    </if>
+    <if test="orderProperty != null">
+      	order by ${orderProperty} ${orderType}
+    </if>
+    <if test="isPaged == true">
+		limit #{startPosition} ,#{pageSize}
+	</if>
+	</where>
+  </select>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from project a
+    where a.id = #{id,jdbcType=INTEGER}
+  </select>
+  
+   <select id="summariesProject" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from project a
+    <if test="_parameter != null">
+    where exists(select 1 from process where process.project_id=a.id and process.status=4 and process.last_step_time &gt;= #{summariesStartDate,jdbcType=TIMESTAMP})
+    </if>
+  </select>
+  
+  <select id="summaryById" parameterType="java.lang.Integer"  resultType="cn.teacheredu.entity.ProjectSummariesEntity">
+    select 
+    <include refid="Summary_Column_List" /> 
+    from project a
+    where a.id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from project
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insertSelective" parameterType="cn.teacheredu.entity.ProjectEntity">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into project
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="serialNumber != null">
+        serial_number,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="format != null">
+        format,
+      </if>
+      <if test="provincial != null">
+        provincial,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="county != null">
+        county,
+      </if>
+      <if test="chargeArea != null">
+        charge_area,
+      </if>
+      <if test="trainObject != null">
+        train_object,
+      </if>
+      <if test="trainPlatform != null">
+        train_platform,
+      </if>
+      <if test="startDate != null">
+        start_date,
+      </if>
+      <if test="endDate != null">
+        end_date,
+      </if>
+      <if test="expectedNum != null">
+        expected_num,
+      </if>
+      <if test="chargeStandard != null">
+        charge_standard,
+      </if>
+      <if test="studyTime != null">
+        study_time,
+      </if>
+      <if test="realNum != null">
+        real_num,
+      </if>
+      <if test="cooperName != null">
+        cooper_name,
+      </if>
+      <if test="thirdCooperName != null">
+        third_cooper_name,
+      </if>
+      <if test="cooperAddr != null">
+        cooper_addr,
+      </if>
+      <if test="cooperHeadNameFirst != null">
+        cooper_head_name_first,
+      </if>
+      <if test="cooperHeadMobileFirst != null">
+        cooper_head_mobile_first,
+      </if>
+      <if test="cooperHeadJobFirst != null">
+        cooper_head_job_first,
+      </if>
+      <if test="cooperHeadEmailFirst != null">
+        cooper_head_email_first,
+      </if>
+      <if test="cooperHeadNameSecond != null">
+        cooper_head_name_second,
+      </if>
+      <if test="cooperHeadMobileSecond != null">
+        cooper_head_mobile_second,
+      </if>
+      <if test="cooperHeadJobSecond != null">
+        cooper_head_job_second,
+      </if>
+      <if test="cooperHeadEmailSecond != null">
+        cooper_head_email_second,
+      </if>
+      <if test="proFundProvincial != null">
+        pro_fund_provincial,
+      </if>
+      <if test="proFundCity != null">
+        pro_fund_city,
+      </if>
+      <if test="proFundCounty != null">
+        pro_fund_county,
+      </if>
+      <if test="proFundOther != null">
+        pro_fund_other,
+      </if>
+      <if test="laterFundProvincial != null">
+        later_fund_provincial,
+      </if>
+      <if test="laterFundCity != null">
+        later_fund_city,
+      </if>
+      <if test="laterFundCounty != null">
+        later_fund_county,
+      </if>
+      <if test="laterFundOther != null">
+        later_fund_other,
+      </if>
+      <if test="protocolName != null">
+        protocol_name,
+      </if>
+   	  <if test="protocolTime != null">
+        protocol_time,
+      </if>
+      <if test="collectMoneyCompany != null">
+        collect_money_company,
+      </if>
+      <if test="collectMoneyDate != null">
+        collect_money_date,
+      </if>
+      <if test="totalMoney != null">
+        total_money,
+      </if>
+      <if test="writeTime != null">
+        write_time,
+      </if>
+      <if test="genTime != null">
+        gen_time,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="note != null">
+        note,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="serialNumber != null">
+        #{serialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=TINYINT},
+      </if>
+      <if test="format != null">
+        #{format,jdbcType=TINYINT},
+      </if>
+      <if test="provincial != null">
+        #{provincial,jdbcType=INTEGER},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=INTEGER},
+      </if>
+      <if test="county != null">
+        #{county,jdbcType=INTEGER},
+      </if>
+      <if test="chargeArea != null">
+        #{chargeArea,jdbcType=INTEGER},
+      </if>
+      <if test="trainObject != null">
+        #{trainObject,jdbcType=VARCHAR},
+      </if>
+      <if test="trainPlatform != null">
+        #{trainPlatform,jdbcType=VARCHAR},
+      </if>
+      <if test="startDate != null">
+        #{startDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endDate != null">
+        #{endDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expectedNum != null">
+        #{expectedNum,jdbcType=INTEGER},
+      </if>
+      <if test="chargeStandard != null">
+        #{chargeStandard,jdbcType=DECIMAL},
+      </if>
+      <if test="studyTime != null">
+        #{studyTime,jdbcType=INTEGER},
+      </if>
+      <if test="realNum != null">
+        #{realNum,jdbcType=INTEGER},
+      </if>
+      <if test="cooperName != null">
+        #{cooperName,jdbcType=VARCHAR},
+      </if>
+      <if test="thirdCooperName != null">
+        #{thirdCooperName,jdbcType=VARCHAR},
+      </if>
+      <if test="cooperAddr != null">
+        #{cooperAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="cooperHeadNameFirst != null">
+        #{cooperHeadNameFirst,jdbcType=VARCHAR},
+      </if>
+      <if test="cooperHeadMobileFirst != null">
+        #{cooperHeadMobileFirst,jdbcType=VARCHAR},
+      </if>
+      <if test="cooperHeadJobFirst != null">
+        #{cooperHeadJobFirst,jdbcType=VARCHAR},
+      </if>
+      <if test="cooperHeadEmailFirst != null">
+        #{cooperHeadEmailFirst,jdbcType=VARCHAR},
+      </if>
+      <if test="cooperHeadNameSecond != null">
+        #{cooperHeadNameSecond,jdbcType=VARCHAR},
+      </if>
+      <if test="cooperHeadMobileSecond != null">
+        #{cooperHeadMobileSecond,jdbcType=VARCHAR},
+      </if>
+      <if test="cooperHeadJobSecond != null">
+        #{cooperHeadJobSecond,jdbcType=VARCHAR},
+      </if>
+      <if test="cooperHeadEmailSecond != null">
+        #{cooperHeadEmailSecond,jdbcType=VARCHAR},
+      </if>
+      <if test="proFundProvincial != null">
+        #{proFundProvincial,jdbcType=VARCHAR},
+      </if>
+      <if test="proFundCity != null">
+        #{proFundCity,jdbcType=VARCHAR},
+      </if>
+      <if test="proFundCounty != null">
+        #{proFundCounty,jdbcType=VARCHAR},
+      </if>
+      <if test="proFundOther != null">
+        #{proFundOther,jdbcType=VARCHAR},
+      </if>
+      <if test="laterFundProvincial != null">
+        #{laterFundProvincial,jdbcType=VARCHAR},
+      </if>
+      <if test="laterFundCity != null">
+        #{laterFundCity,jdbcType=VARCHAR},
+      </if>
+      <if test="laterFundCounty != null">
+        #{laterFundCounty,jdbcType=VARCHAR},
+      </if>
+      <if test="laterFundOther != null">
+        #{laterFundOther,jdbcType=VARCHAR},
+      </if>
+      <if test="protocolName != null">
+        #{protocolName,jdbcType=VARCHAR},
+      </if>
+      <if test="protocolTime != null">
+        #{protocolTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="collectMoneyCompany != null">
+        #{collectMoneyCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="collectMoneyDate != null">
+        #{collectMoneyDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="totalMoney != null">
+        #{totalMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="writeTime != null">
+        #{writeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="genTime != null">
+        #{genTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        #{note,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <select id="countByExample" parameterType="cn.teacheredu.vo.ProjectEntityQueryVo" resultType="java.lang.Long">
+    select count(*) from project a
+    <if test="needJoin == true">
+      left join user b on a.user_id = b.id 
+    </if>
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="cn.teacheredu.entity.ProjectEntity">
+    update project
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="serialNumber != null">
+        serial_number = #{serialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=TINYINT},
+      </if>
+      <if test="format != null">
+        format = #{format,jdbcType=TINYINT},
+      </if>
+      <if test="provincial != null">
+        provincial = #{provincial,jdbcType=INTEGER},
+      </if>
+      <if test="city != null">
+        city = #{city,jdbcType=INTEGER},
+      </if>
+      <if test="county != null">
+        county = #{county,jdbcType=INTEGER},
+      </if>
+      <if test="chargeArea != null">
+        charge_area = #{chargeArea,jdbcType=INTEGER},
+   	  </if>
+      <if test="trainObject != null">
+        train_object = #{trainObject,jdbcType=VARCHAR},
+      </if>
+      <if test="trainPlatform != null">
+        train_platform = #{trainPlatform,jdbcType=VARCHAR},
+      </if>
+      <if test="startDate != null">
+        start_date = #{startDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endDate != null">
+        end_date = #{endDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expectedNum != null">
+        expected_num = #{expectedNum,jdbcType=INTEGER},
+      </if>
+      <if test="chargeStandard != null">
+        charge_standard = #{chargeStandard,jdbcType=DECIMAL},
+      </if>
+      <if test="studyTime != null">
+        study_time = #{studyTime,jdbcType=INTEGER},
+      </if>
+      <if test="realNum != null">
+        real_num = #{realNum,jdbcType=INTEGER},
+      </if>
+      <if test="cooperName != null">
+        cooper_name = #{cooperName,jdbcType=VARCHAR},
+      </if>
+      <if test="thirdCooperName != null">
+        third_cooper_name = #{thirdCooperName,jdbcType=VARCHAR},
+      </if>
+      <if test="cooperAddr != null">
+        cooper_addr = #{cooperAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="cooperHeadNameFirst != null">
+        cooper_head_name_first = #{cooperHeadNameFirst,jdbcType=VARCHAR},
+      </if>
+      <if test="cooperHeadMobileFirst != null">
+        cooper_head_mobile_first = #{cooperHeadMobileFirst,jdbcType=VARCHAR},
+      </if>
+      <if test="cooperHeadJobFirst != null">
+        cooper_head_job_first = #{cooperHeadJobFirst,jdbcType=VARCHAR},
+      </if>
+      <if test="cooperHeadEmailFirst != null">
+        cooper_head_email_first = #{cooperHeadEmailFirst,jdbcType=VARCHAR},
+      </if>
+      <if test="cooperHeadNameSecond != null">
+        cooper_head_name_second = #{cooperHeadNameSecond,jdbcType=VARCHAR},
+      </if>
+      <if test="cooperHeadMobileSecond != null">
+        cooper_head_mobile_second = #{cooperHeadMobileSecond,jdbcType=VARCHAR},
+      </if>
+      <if test="cooperHeadJobSecond != null">
+        cooper_head_job_second = #{cooperHeadJobSecond,jdbcType=VARCHAR},
+      </if>
+      <if test="cooperHeadEmailSecond != null">
+        cooper_head_email_second = #{cooperHeadEmailSecond,jdbcType=VARCHAR},
+      </if>
+      <if test="proFundProvincial != null">
+        pro_fund_provincial = #{proFundProvincial,jdbcType=VARCHAR},
+      </if>
+      <if test="proFundCity != null">
+        pro_fund_city = #{proFundCity,jdbcType=VARCHAR},
+      </if>
+      <if test="proFundCounty != null">
+        pro_fund_county = #{proFundCounty,jdbcType=VARCHAR},
+      </if>
+      <if test="proFundOther != null">
+        pro_fund_other = #{proFundOther,jdbcType=VARCHAR},
+      </if>
+      <if test="laterFundProvincial != null">
+        later_fund_provincial = #{laterFundProvincial,jdbcType=VARCHAR},
+      </if>
+      <if test="laterFundCity != null">
+        later_fund_city = #{laterFundCity,jdbcType=VARCHAR},
+      </if>
+      <if test="laterFundCounty != null">
+        later_fund_county = #{laterFundCounty,jdbcType=VARCHAR},
+      </if>
+      <if test="laterFundOther != null">
+        later_fund_other = #{laterFundOther,jdbcType=VARCHAR},
+      </if>
+      <if test="protocolName != null">
+        protocol_name = #{protocolName,jdbcType=VARCHAR},
+      </if>
+      <if test="protocolTime != null">
+        protocol_time = #{protocolTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="collectMoneyCompany != null">
+        collect_money_company = #{collectMoneyCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="collectMoneyDate != null">
+        collect_money_date = #{collectMoneyDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="totalMoney != null">
+        total_money = #{totalMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="writeTime != null">
+        write_time = #{writeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="genTime != null">
+        gen_time = #{genTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        note = #{note,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

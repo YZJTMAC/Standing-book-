@@ -1,0 +1,51 @@
+#set($layout = "/layout/layoutAdmin.vm")
+<div class="content_list_wrap mt10">
+
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab_one">
+		<thead>
+			<tr>
+				<td class="Center p0">序号</td>
+				<td>标题</td>
+				<td>发起时间</td>
+				<td>当前待办人</td>
+				<td>流程期限</td>
+				<td>流程日志</td>
+			</tr>
+		</thead>
+		<tbody>
+			#foreach($asprocess in $alreadySend.list)
+			<tr #if($velocityCount % 2 == 0) class="f9" #end>
+				<td class="Center p0">$velocityCount</td>
+				<td>
+					<a target="_blank" href="${pms.contextPath}/processDetail/all?type=3&id=$asprocess.id">$asprocess.title</a>
+				</td>
+				<td>$date.format($asprocess.startTime)</td>
+				<td>#if($asprocess.status == 4) 已结束   #else $asprocess.extInfo.realName #end </td>
+				<td>------</td>
+
+				<td>
+					<a href="javascript:;" onclick="alertLog('$asprocess.id')">点击查看</a>
+				</td>
+			</tr>
+			#end
+		</tbody>
+	</table>
+	<div class="Center">共 $!alreadySend.totalCount 条<div id="alfenye" style="display:inline-block;margin:0 10px;"></div></div>
+</div>
+<script >
+layui.use('laypage', function(){
+  	var laypage = layui.laypage;
+    laypage({
+        cont: 'alfenye'
+        ,pages: $!alreadySend.totalPage
+		,curr: $!alreadySend.currPage
+        ,skin: '#1E9FFF'
+		,jump: function(obj, first){
+          	if(!first){
+				reloadContent2(obj.curr);
+          	}
+        }
+  	});
+})
+
+</script>

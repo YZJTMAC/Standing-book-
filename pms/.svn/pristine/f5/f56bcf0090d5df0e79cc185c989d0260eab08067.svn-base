@@ -1,0 +1,11 @@
+#server1  
+memcached.servers=192.168.0.230:11211
+memcached.protocol=BINARY
+memcached.opTimeout=3000
+memcached.timeoutExceptionThreshold=1998
+memcached.locatorType=CONSISTENT
+memcached.failureMode=Redistribute
+memcached.useNagleAlgorithm=false
+org.mybatis.caches.memcached.servers=192.168.0.230:11211
+org.mybatis.caches.memcached.expiration=120
+

@@ -1,0 +1,51 @@
+#set($layout = "/layout/layoutAdmin.vm")
+<div class="content_list_wrap mt10">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab_one">
+		<thead>
+			<tr>
+				<td class="Center"><input type="checkbox" /></td>
+				<td>项目编号</td>
+				<td>项目名称</td>
+				<td>培训起始时间</td>
+				<td>培训结束时间</td>
+				<td>所属省份</td>
+				<td>项目发起人</td>
+				<td>项目状态</td>
+			</tr>
+		</thead>
+		<tbody>
+			#foreach($project in $projectList.list)
+			<tr>
+				<td class="Center"><input type="checkbox" /></td>
+				<td><a target="_blank" href="${pms.contextPath}/project/page?id=$project.id">$project.serialNumber</a></td>
+				<td>
+					<a target="_blank" href="${pms.contextPath}/project/page?id=$project.id">$project.name</a>
+				</td>
+				<td>$date.format("yyyy-MM-dd",$project.startDate)</td>
+				<td>$date.format("yyyy-MM-dd",$project.endDate)</td>
+				<td>$!project.extInfo.provName</td>
+				<td>$!project.extInfo.realName</td>
+				<td #if($project.status == 2) style="color: #f57c00;" #else style="color: #2EA4C1;" #end> #if($project.status == 2) 已结束 #else 进行中 #end </td>
+			</tr>
+			#end
+		</tbody>
+	</table>
+    <div class="Center">共 $!projectList.totalCount 条<div id="fenye" style="display:inline-block;margin:0 10px;"></div></div>
+</div>
+<script >
+layui.use('laypage', function(){
+  	var laypage = layui.laypage;
+    laypage({
+        cont: 'fenye'
+        ,pages: $!projectList.totalPage
+		,curr: $!projectList.currPage
+        ,skin: '#1E9FFF'
+		,jump: function(obj, first){
+          	if(!first){
+				reloadContent2(obj.curr);
+          	}
+        }
+  	});
+})
+
+</script>

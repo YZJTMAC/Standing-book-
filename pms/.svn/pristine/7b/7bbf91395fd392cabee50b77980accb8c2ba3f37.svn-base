@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.teacheredu.mapping.ProjectYearSummaryMapper" >
+  <resultMap id="BaseResultMap" type="cn.teacheredu.entity.ProjectYearSummaryEntity" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="project_id" property="projectId" jdbcType="INTEGER" />
+    <result column="year" property="year" jdbcType="INTEGER" />
+    <result column="incomeAmount" property="incomeamount" jdbcType="DECIMAL" />
+    <result column="overAmount" property="overamount" jdbcType="DECIMAL" />
+    <result column="paymentAmount" property="paymentamount" jdbcType="DECIMAL" />
+    <result column="fundsAmount" property="fundsamount" jdbcType="DECIMAL" />
+    <result column="invoiceAmount" property="invoiceamount" jdbcType="DECIMAL" />
+    <result column="budgetAmount" property="budgetamount" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, project_id, year, incomeAmount, overAmount, paymentAmount, fundsAmount, invoiceAmount, 
+    budgetAmount
+  </sql>
+  <sql id="Summary_Column_List" >
+    id, project_id, year, 
+    incomeAmount, 
+    overAmount, 
+    (select sum(amount) from payment where  payment.project_id=p.project_id and payment.year=p.year and (EXISTS(select 1 from process where process.table_name="payment" and object_id=payment.id and STATUS=4) or not EXISTS(select 1 from process where process.table_name="payment" and object_id=payment.id)) GROUP BY project_id) paymentAmount,
+	(select sum(invoice_machine) from payment_invoice where project_id=p.project_id and YEAR(invoice_date)=p.year and (EXISTS(select 1 from process where process.table_name="invoice" and object_id=payment_invoice.invoice_id and STATUS=4) or not EXISTS(select 1 from process where process.table_name="invoice" and object_id=payment_invoice.invoice_id))GROUP BY project_id) fundsAmount,
+	(select sum(apply_amount) from funds where  project_id=p.project_id and YEAR(create_time)=p.year and (EXISTS(select 1 from process where process.table_name="funds" and object_id=funds.id and STATUS=4) or not EXISTS(select 1 from process where process.table_name="funds" and object_id=funds.id)) GROUP BY project_id) invoiceAmount, 
+    budgetAmount
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from project_year_summary
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByProjectId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from project_year_summary
+    where project_id = #{projectId,jdbcType=INTEGER}
+  </select>
+  <select id="selectYearSummaryValue" resultMap="BaseResultMap">
+    select <include refid="Summary_Column_List" />
+    from project_year_summary p
+    where project_id = #{projectId,jdbcType=INTEGER} and year = #{year,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from project_year_summary
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.teacheredu.entity.ProjectYearSummaryEntity" >
+    insert into project_year_summary (id, project_id, year)
+    values (#{id,jdbcType=INTEGER}, #{projectId,jdbcType=INTEGER}, #{year,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.teacheredu.entity.ProjectYearSummaryEntity" >
+    insert into project_year_summary
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="projectId != null" >
+        project_id,
+      </if>
+      <if test="year != null" >
+        year,
+      </if>
+      <if test="incomeamount != null" >
+        incomeAmount,
+      </if>
+      <if test="overamount != null" >
+        overAmount,
+      </if>
+      <if test="paymentamount != null" >
+        paymentAmount,
+      </if>
+      <if test="fundsamount != null" >
+        fundsAmount,
+      </if>
+      <if test="invoiceamount != null" >
+        invoiceAmount,
+      </if>
+      <if test="budgetamount != null" >
+        budgetAmount,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="projectId != null" >
+        #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="year != null" >
+        #{year,jdbcType=INTEGER},
+      </if>
+      <if test="incomeamount != null" >
+        #{incomeamount,jdbcType=DECIMAL},
+      </if>
+      <if test="overamount != null" >
+        #{overamount,jdbcType=DECIMAL},
+      </if>
+      <if test="paymentamount != null" >
+        #{paymentamount,jdbcType=DECIMAL},
+      </if>
+      <if test="fundsamount != null" >
+        #{fundsamount,jdbcType=DECIMAL},
+      </if>
+      <if test="invoiceamount != null" >
+        #{invoiceamount,jdbcType=DECIMAL},
+      </if>
+      <if test="budgetamount != null" >
+        #{budgetamount,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.teacheredu.entity.ProjectYearSummaryEntity" >
+    update project_year_summary
+    <set >
+      <if test="projectId != null" >
+        project_id = #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="year != null" >
+        year = #{year,jdbcType=INTEGER},
+      </if>
+      <if test="incomeamount != null" >
+        incomeAmount = #{incomeamount,jdbcType=DECIMAL},
+      </if>
+      <if test="overamount != null" >
+        overAmount = #{overamount,jdbcType=DECIMAL},
+      </if>
+      <if test="paymentamount != null" >
+        paymentAmount = #{paymentamount,jdbcType=DECIMAL},
+      </if>
+      <if test="fundsamount != null" >
+        fundsAmount = #{fundsamount,jdbcType=DECIMAL},
+      </if>
+      <if test="invoiceamount != null" >
+        invoiceAmount = #{invoiceamount,jdbcType=DECIMAL},
+      </if>
+      <if test="budgetamount != null" >
+        budgetAmount = #{budgetamount,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.teacheredu.entity.ProjectYearSummaryEntity" >
+    update project_year_summary
+    set project_id = #{projectId,jdbcType=INTEGER},
+      year = #{year,jdbcType=INTEGER},
+      incomeAmount = #{incomeamount,jdbcType=DECIMAL},
+      overAmount = #{overamount,jdbcType=DECIMAL},
+      paymentAmount = #{paymentamount,jdbcType=DECIMAL},
+      fundsAmount = #{fundsamount,jdbcType=DECIMAL},
+      invoiceAmount = #{invoiceamount,jdbcType=DECIMAL},
+      budgetAmount = #{budgetamount,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

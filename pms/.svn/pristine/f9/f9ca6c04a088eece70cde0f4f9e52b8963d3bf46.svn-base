@@ -1,0 +1,416 @@
+#set($layout = "/layout/layoutNew.vm") 
+<script type="text/javascript" src="${pms.contextPath}/resources/js/calculate.js"></script>
+<script >
+	$(document).ready(function() {
+    	// 输入人数后触发的事件
+		$(".NumTextForCalTotal").keyup(function(){
+		 	 $(this).val($(this).val().replace(/\D/gi,""));
+		})
+		// 输入金额后触发的事件
+		$(".NumDecTextForCalTotal").keyup(function(){
+		 	$(this).val($(this).val().replace(/[^0-9.]/g,'').replace(/^\./g,"").replace(/\.{2,}/g,".").replace(".","$#$").replace(/\./g,"").replace("$#$",".").replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'));
+		})
+		// 输入项目合作经费前期占比后触发的事件
+		$(".NumDecTextForCal1").keyup(function(){
+		 	$(this).val($(this).val().replace(/[^0-9.]/g,'').replace(/^\./g,"").replace(/\.{2,}/g,".").replace(".","$#$").replace(/\./g,"").replace("$#$",".").replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'));
+		})
+		// 输入项目合作经费后期占比后触发的事件
+		$(".NumDecTextForCal2").keyup(function(){
+		 	$(this).val($(this).val().replace(/[^0-9.]/g,'').replace(/^\./g,"").replace(/\.{2,}/g,".").replace(".","$#$").replace(/\./g,"").replace("$#$",".").replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'));
+		})
+	});
+</script>
+
+<form id="projectChangeForm">
+	<input type="hidden" name="projectId"  value="$!{project.id}">
+	<!--<input type="hidden" name="processId"  value="$!{process.id}">-->
+	<div class="new_tableBox clear" style="display: block;">
+		<div class="tabList">
+            <div class="tablewrap" style="margin-right: 185px;display:block;">
+                <div class="table_tit" >项目信息变更表</div>
+                <table border="1" cellspacing="0" cellpadding="0" class="table">
+                    <tr >
+                        <td width="15%" class="gray">项目编号</td>
+                        <td colspan="2">
+							<input type="text" class="disabled" readonly value="$!{project.serialNumber}" />
+						</td>
+                        <td width="15%" class="gray">项目名称</td>
+                        <td colspan="3">
+							<input type="text" class="disabled" readonly value="$!{project.name}" />
+						</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" width="40%" class="gray1">项目确认表原始信息</td>
+                        <td colspan="3" width="40%" class="gray1">项目确认表变更后信息</td>
+                        <td width="20%" class="gray1">变更原因</td>
+                    </tr>
+                    <tr>
+                        <td class="gray">报名人数</td>
+                        <td colspan="2">
+							<input type="text" class="disabled" readonly value="$!{project.expectedNum}" />
+						</td>
+                        <td class="gray">报名人数</td>
+                        <td colspan="2">
+							<input type="text" class="NumText" name="expectedNum" id="expectedNum" value="">
+						</td>
+                        <td><input type="text" name="expectedNumReason" id="expectedNumReason" value=""></td>
+                    </tr>
+                    <tr>
+                        <td class="gray">收费标准</td>
+                        <td>
+							<input type="text" class="disabled" readonly value="$!{project.chargeStandard}" />
+						</td>
+                        <td class="gray">元/人（校）</td>
+                        <td>收费标准</td>
+                        <td>
+							<input type="text" class="NumDecText" name="chargeStandard" id="chargeStandard" value="">
+						</td>
+                        <td class="gray">元/人（校）</td>
+                        <td><input type="text" name="chargeStandardReason" id="chargeStandardReason" value=""></td>
+                    </tr>
+                    <tr>
+                        <td rowspan="4" class="gray">项目合作经费前期占比</td>
+                        <td width="12.5%" class="gray">省级</td>
+                        <td>
+							<input type="text" class="disabled" readonly  value="$!{project.proFundProvincial}%" />
+						</td>
+                        <td rowspan="4" class="gray">项目合作经费前期占比</td>
+                        <td width="12.5%" class="gray">省级</td>
+                        <td>
+							<input type="text" class="NumDecText" name="proFundProvincial" id="proFundProvincial" value="">
+						</td>
+                        <td><input type="text" name="proFundProvincialReason" id="proFundProvincialReason" value=""></td>
+                    </tr>
+                    <tr>
+                        <td class="gray">市级</td>
+                        <td>
+							<input type="text" class="disabled" readonly value="$!{project.proFundCity}%" />
+						</td>
+                        <td class="gray">市级</td>
+                        <td>
+							<input type="text" class="NumDecText" name="proFundCity" id="proFundCity" value="">
+						</td>
+                        <td><input type="text" name="proFundCityReason" id="proFundCityReason" value=""></td>
+                    </tr>
+                    <tr>
+                        <td class="gray">县级</td>
+                        <td>
+							<input type="text" class="disabled" readonly value="$!{project.proFundCounty}%" />
+						</td>
+                        <td class="gray">县级</td>
+                        <td>
+							<input type="text" class="NumDecText" name="proFundCounty" id="proFundCounty" value="">
+						</td>
+                        <td><input type="text" name="proFundCountyReason" id="proFundCountyReason" value=""></td>
+                    </tr>
+                    <tr>
+                        <td class="gray">其他</td>
+                        <td>
+							<input type="text" class="disabled" readonly value="$!{project.proFundOther}%" />
+						</td>
+                        <td class="gray">其他</td>
+                        <td>
+							<input type="text" class="NumDecText" name="proFundOther" id="proFundOther" value="">
+						</td>
+                        <td><input type="text" name="proFundOtherReason" id="proFundOtherReason" value=""></td>
+                    </tr>
+                    <tr>
+                        <td rowspan="4" class="gray">项目合作经费后期占比</td>
+                        <td class="gray">省级</td>
+                        <td>
+							<input type="text" class="disabled" readonly value="$!{project.laterFundProvincial}%" />
+						</td>
+                        <td rowspan="4" class="gray">项目合作经费后期占比</td>
+                        <td class="gray">省级</td>
+                        <td>
+							<input type="text" class="NumDecText" name="laterFundProvincial" id="laterFundProvincial" value="">
+						</td>
+                        <td><input type="text" name="laterFundProvincialReason" id="laterFundProvincialReason" value=""></td>
+                    </tr>
+                    <tr>
+                        <td class="gray">市级</td>
+                        <td>
+							<input type="text" class="disabled" readonly value="$!{project.laterFundCity}%" />
+						</td>
+                        <td class="gray">市级</td>
+                        <td>
+							<input type="text" class="NumDecText" name="laterFundCity" id="laterFundCity" value="">
+						</td>
+                        <td><input type="text" name="laterFundCityReason" id="laterFundCityReason" value=""></td>
+                    </tr>
+                    <tr>
+                        <td class="gray">县级</td>
+                        <td>
+							<input type="text" class="disabled" readonly value="$!{project.laterFundCounty}%" />
+						</td>
+                        <td class="gray">县级</td>
+                        <td>
+							<input type="text" class="NumDecText" name="laterFundCounty" id="laterFundCounty" value="">
+						</td>
+                        <td><input type="text" name="laterFundCountyReason" id="laterFundCountyReason" value=""></td>
+                    </tr>
+                    <tr>
+                        <td class="gray">其他</td>
+                        <td>
+							<input type="text" class="disabled" readonly value="$!{project.laterFundOther}%" />
+						</td>
+                        <td class="gray">其他</td>
+                        <td>
+							<input type="text" class="NumDecText" name="laterFundOther" id="laterFundOther" value="">
+						</td>
+                        <td><input type="text" name="laterFundOtherReason" id="laterFundOtherReason" value=""></td>
+                    </tr>
+                    <tr>
+                        <td class="gray">培训起始日期</td>
+                        <td colspan="2">
+							<input type="text" class="disabled" readonly value="$date.format("yyyy-MM-dd",$project.startDate)" />
+						</td>
+                        <td class="gray">培训起始日期</td>
+                        <td colspan="2">
+							<input type="text" name="startDate" id="layDateStart" readonly="readonly" placeholder="请选择日期" onclick="layui.laydate({elem: this})">
+						</td>
+                        <td><input type="text" name="startDateReason" id="startDateReason"></td>
+                    </tr>
+                    <tr>
+                        <td class="gray">培训截止日期</td>
+                        <td colspan="2">
+							<input type="text" class="disabled" readonly value="$date.format("yyyy-MM-dd",$project.endDate)" />
+						</td>
+                        <td class="gray">培训截止日期</td>
+                        <td colspan="2">
+							<input type="text" name="endDate" id="layDateEnd" readonly="readonly" placeholder="请选择日期" onclick="layui.laydate({elem: this})">
+						</td>
+                        <td><input type="text" name="endDateReason" id="endDateReason"></td>
+                    </tr>
+                    <tr>
+                        <td class="gray">到款公司</td>
+                        <td colspan="2">
+							<input type="text" class="disabled" readonly value="$!{project.collectMoneyCompany}" />
+						</td>
+                        <td class="gray">到款公司</td>
+                        <td colspan="2">
+                            <select name="collectMoneyCompany" id="collectMoneyCompany">
+								<option value="">请选择</option>
+                                #foreach($company in $companyList)
+    							<option value="$company.name">$company.name</option>
+    							#end
+                            </select>
+                        </td>
+                        <td><input type="text" name="collectMoneyCompanyReason" id="collectMoneyCompanyReason"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="gray">办事处（分公司）负责人意见</td>
+                        <td colspan="2" style="background: #ebebe4;"><span>无需填写</span></td>
+                        <td colspan="" class="gray">分管领导意见</td>
+                        <td colspan="2" style="background: #ebebe4;"><span>无需填写</span></td>
+                    </tr>
+                    <tr>
+						<td colspan="2" class="gray">商务负责人意见</td>
+                        <td colspan="2" style="background: #ebebe4;"><span>无需填写</span></td>
+                        <td colspan="" class="gray">主管副总裁意见</td>
+                        <td colspan="2" style="background: #ebebe4;"><span>无需填写</span></td>
+                    </tr>
+                </table>
+                <div style="height: 50px;"></div>
+            </div>
+            <div class="new_beizhu fr mt10">
+        		<div class="beizhu_btn">
+        			<a href="javascript:;" title="点击此处可以伸缩此框">备注</a>
+        		</div>
+        		<div class="beizhu_tex mr10">
+        			<textarea name="note"></textarea>
+        		</div>
+        	</div>
+        </div>
+    </div>
+</form>
+	
+<!--额外三个/div，关闭的是layoutNew未关闭的标签-->
+</div>
+</div>
+</div>
+<!--下面是弹窗div -->
+<!--查看流程-->
+<span style="display:none" id="cklcname">信息变更流程</span>
+<div class="liuchengBox" id="cklc" style="display:none">
+	<div class="liucheng_list clear" style="height:400px;width:950px">
+		<div class="list2">
+			<ul class="clear fl">
+				<li title=""></li>
+				<li title=""></li>
+				<li title=""></li>
+				<li title=""></li>
+				<li title=""></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div class="prompt_cont_box" id="upload" style="display:none">
+	<div class="prompt_cont clear">
+		<div class="prompt_cont_text">
+			<p>您可以点击按钮上传文件或图片(文件大小为50MB以内)</p>
+			<div class="From mt10 mb10">
+				<div>
+					<input type="file" name="file" id="file" lay-type="file"  class="layui-upload-file">
+					<span style="padding-left: 10px;color: red;font-size: 14px;" id="uploadMsg"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script >
+// 保存待发
+function saveDraft(){
+	alert("暂存功能暂时未开发，请使用提交表单功能")
+}
+
+$(document).ready(function(){
+	// 表单提交
+	$("#submit_btn").click(function(){
+		var result = validateForm();
+		if(result){
+			submitForm();
+		}
+	});
+});
+
+// 流程加变更表单提交
+function submitForm(){
+	var attach =  $("#box").find("span").map(function(){
+            	return $(this).html();
+        }).toArray();
+	var processName = $.trim($("input[name='processName']").val())
+	var params2 = {'processName': processName,'attachIds':attach,'shiCaogao':false};
+	var params = $("#projectChangeForm").serializeJSON();
+	params.common = params2;
+	var params3 = JSON.stringify(params);
+	layer.load(2)
+	$.ajax({
+		type: "POST",
+	    url: "/projectChange/ajaxAddProcessAndChangeProject",
+	    data: params3,
+	    error: function(){
+			layer.closeAll('loading');
+			alert("服务器错误，请联系管理员处理数据")
+	    },
+	    success: function(res){
+	    	layer.closeAll('loading');
+			if(res.code === 0){
+				//跳转页面
+				layer.msg('提交成功', {icon:1,anim: 4 ,time: 1500},function(){
+					window.location.href = "${pms.contextPath}/process/alreadySend";
+				});
+			}else{
+				alert("提交失败！" + res.msg);
+			}
+		}
+	});
+}
+
+// 验证表单
+function validateForm(){
+	var expectedNum = $.trim($("#expectedNum").val())
+	var expectedNumReason = $.trim($("#expectedNumReason").val())
+	if(expectedNum != '' && expectedNumReason == ""){
+		alert("请填写预估人（校）数的修改原因！")
+		return false;
+	}
+	
+	var chargeStandard = $.trim($("#chargeStandard").val())
+	var chargeStandardReason = $.trim($("#chargeStandardReason").val())
+	if(chargeStandard != '' && chargeStandardReason == ""){
+		alert("请填写收费标准的修改原因！")
+		return false;
+	}
+	
+	var proFundProvincial = $.trim($("#proFundProvincial").val())
+	var proFundProvincialReason = $.trim($("#proFundProvincialReason").val())
+	if(proFundProvincial != '' && proFundProvincialReason == ""){
+		alert("请填写项目前期经费省级所占比例的修改原因！")
+		return false;
+	}
+	
+	var proFundCity = $.trim($("#proFundCity").val())
+	var proFundCityReason = $.trim($("#proFundCityReason").val())
+	if(proFundCity != '' && proFundCityReason == ""){
+		alert("请填写项目前期经费市级所占比例的修改原因！")
+		return false;
+	}
+	
+	var proFundCounty = $.trim($("#proFundCounty").val())
+	var proFundCountyReason = $.trim($("#proFundCountyReason").val())
+	if(proFundCounty != '' && proFundCountyReason == ""){
+		alert("请填写项目前期经费县级所占比例的修改原因！")
+		return false;
+	}
+	
+	var proFundOther = $.trim($("#proFundOther").val())
+	var proFundOtherReason = $.trim($("#proFundOtherReason").val())
+	if(proFundOther != '' && proFundOtherReason == ""){
+		alert("请填写项目前期经费其他所占比例的修改原因！")
+		return false;
+	}
+	
+	var laterFundProvincial = $.trim($("#laterFundProvincial").val())
+	var laterFundProvincialReason = $.trim($("#laterFundProvincialReason").val())
+	if(laterFundProvincial != '' && laterFundProvincialReason == ""){
+		alert("请填写项目后期经费省级所占比例的修改原因！")
+		return false;
+	}
+	
+	var laterFundCity = $.trim($("#laterFundCity").val())
+	var laterFundCityReason = $.trim($("#laterFundCityReason").val())
+	if(laterFundCity != '' && laterFundCityReason == ""){
+		alert("请填写项目后期经费市级所占比例的修改原因！")
+		return false;
+	}
+	
+	var laterFundCounty = $.trim($("#laterFundCounty").val())
+	var laterFundCountyReason = $.trim($("#laterFundCountyReason").val())
+	if(laterFundCounty != '' && laterFundCountyReason == ""){
+		alert("请填写项目后期经费县级所占比例的修改原因！")
+		return false;
+	}
+	
+	var laterFundOther = $.trim($("#laterFundOther").val())
+	var laterFundOtherReason = $.trim($("#laterFundOtherReason").val())
+	if(laterFundOther != '' && laterFundOtherReason == ""){
+		alert("请填写项目后期经费其他所占比例的修改原因！")
+		return false;
+	}
+	
+	var startDate = $.trim($("#layDateStart").val())
+	var startDateReason = $.trim($("#startDateReason").val())
+	if(startDate != '' && startDateReason == ""){
+		alert("请填写培训起始日期的修改原因！")
+		return false;
+	}
+	
+	var endDate = $.trim($("#layDateEnd").val())
+	var endDateReason = $.trim($("#endDateReason").val())
+	if(endDate != '' && endDateReason == ""){
+		alert("请填写培训结束日期的修改原因！")
+		return false;
+	}
+	
+	var collectMoneyCompany = $.trim($("#collectMoneyCompany").val())
+	var collectMoneyCompanyReason = $.trim($("#collectMoneyCompanyReason").val())
+	if(collectMoneyCompany != '' && collectMoneyCompanyReason == ""){
+		alert("请填写到款公司的修改原因！")
+		return false;
+	}
+	
+	if (collectMoneyCompany  == '' && endDate  == '' && startDate  == '' && laterFundOther  == '' && laterFundCounty  == ''
+		&& laterFundCity  == '' && laterFundProvincial  == '' && proFundOther  == '' && proFundCounty  == '' 
+		&& proFundCity  == '' && proFundProvincial  == '' && chargeStandard  == '' && expectedNum  == ''){
+		alert("您未作任何修改！")
+		return false;
+	}
+	
+	return true;
+}
+
+
+</script>

@@ -1,0 +1,24 @@
+package cn.teacheredu.mapping;
+
+import java.util.List;
+
+import cn.teacheredu.entity.ProjectSummariesEntity;
+import cn.teacheredu.vo.ProjectSummariesQueryVo;
+
+public interface ProjectSummariesMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(ProjectSummariesEntity record);
+
+    int insertSelective(ProjectSummariesEntity record);
+
+    ProjectSummariesEntity selectByPrimaryKey(Integer id);
+
+    List<ProjectSummariesEntity> selectByProjectId(Integer projectId);
+
+    int updateByPrimaryKeySelective(ProjectSummariesEntity record);
+
+    int updateByPrimaryKey(ProjectSummariesEntity record);
+    
+    List<ProjectSummariesEntity> selectSummaries(ProjectSummariesQueryVo vo);//zk
+}

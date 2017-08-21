@@ -1,0 +1,9 @@
+#set($layout = "/layout/layoutAdmin.vm") 
+<h1>本次操作出现了异常,信息如下：</h1>
+
+${ex}
+<br/>
+
+#foreach($s in ${ex.stackTrace})
+	$s <br/>
+#end

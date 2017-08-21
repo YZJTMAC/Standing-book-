@@ -1,0 +1,279 @@
+<div class="content_warp">
+	<div class="content_tit_box">
+		<div class="w1230 clear">
+			<div class="content_tit fl clear">
+				<a href="javascript:;">个人中心</a> <i></i>
+				<a href="javascript:;">账号安全</a>
+			</div>
+		</div>
+	</div>
+	<!--内容star-->
+	<div class="content w1230">
+		<div class="overflow boder-blue bg-blue">
+			<div class="security_tit clear">
+				<div class="security_tit_img fl">
+					<img src="../resources/images/password.png" />
+				</div>
+				<div class="security_tit_text fl">
+					<p class="bold fn14">登录密码：已设置</p>
+					<p>安全性高的密码，可以使账号更安全。</p>
+				</div>
+				<div class="security_tit_btn fr pt10">
+					<a href="javascript:;" class="btn">修改密码</a>
+				</div>
+			</div>
+			
+			<form id="pwdForm">
+				<input type="hidden" name="id" value="$!{user.id}">
+    			<div class="security_list pt20">
+    				<div class="message_from clear">
+    					<div class="message_from_name">原登录密码：</div>
+    					<div class="message_from_text"><input type="password" name="password" id="password" style="width: 280px; margin: 0 5px;"/></div>
+    					<div class="message_from_alert red">
+    						* 必填
+    					</div>
+    				</div>
+    				<div class="message_from clear">
+    					<div class="message_from_name">新登录密码：</div>
+    					<div class="message_from_text"><input type="text" name="newPwd" id="newPwd" placeholder="请输入6-16位字符" /></div>
+    					<div class="message_from_alert red">
+    						* 必填
+    					</div>
+    				</div>
+    				<div class="message_from clear">
+    					<div class="message_from_name">再次输入新登录密码：</div>
+    					<div class="message_from_text"><input type="text" name="againPwd" id="againPwd"  placeholder="请再次输入新密码" /></div>
+    					
+    					<div class="message_from_alert red">
+    						* 必填
+    						##<div style="color:red;font-size:10px;"><span id="errorpwd" style="display:none;">两次输入密码不一致</span></div>
+    					</div>
+    				</div>
+					##<div style="color:red;font-size:18px;margin-left:108px;"><span id="emptypwd" style="display:none;">请输入密码！</span></div>
+    				<div class="message_from clear">
+    					<div class="message_from_name"></div>
+    					<div class="message_from_text Left">
+    						<a href="javascript:;" class="btn" id="save">确认</a>
+    						<a href="javascript:;" class="btn_w" id="reset">重置</a>
+    					</div>
+    					<div class="message_from_alert red"></div>
+    				</div>
+    			</div>
+            </form>
+			
+			
+			<div class="security_tit clear">
+				<div class="security_tit_img fl">
+					<img src="../resources/images/phone.png" />
+				</div>
+				<div class="security_tit_text fl">
+					<p class="bold fn14">手机绑定：已设置</p>
+					<p>绑定手机后，可使用手机登录，手机找回密码等服务。</p>
+				</div>
+				<div class="security_tit_btn fr pt10">
+					<a href="javascript:;" class="btn" id="message_from_phone">更换手机</a>
+				</div>
+			</div>
+			
+			<form id="phoneForm">
+				<input type="hidden" name="id" value="$!{user.id}">
+    			<div class="security_list pt20">
+    				<div class="message_from clear">
+    					<div class="message_from_name">新手机号：</div>
+    					<div class="message_from_text"><input type="text" name="mobile" id="mobile" /></div>
+    					<div class="message_from_alert red">
+    						* 必填
+    					</div>
+    				</div>
+    				<div class="message_from clear">
+    					<div class="message_from_name"></div>
+    					<div class="message_from_text Left">
+							<a href="javascript:;" class="btn" id="msgCode">获取短信验证码</a>
+						</div>
+    					<div class="message_from_alert red"></div>
+    				</div>
+    				<div class="message_from clear">
+    					<div class="message_from_name">短信验证码：</div>
+    					<div class="message_from_text"><input type="text" name="validCode" id="validCode" placeholder="请输入验证码" /></div>
+    					<div class="message_from_alert red">
+    						* 必填
+    					</div>
+    				</div>
+    				<div class="message_from clear">
+    					<div class="message_from_name"></div>
+    					<div class="message_from_text Left">
+    						<a href="javascript:;" class="btn" id="newPhone_sub">确认</a>
+    						<a href="javascript:;" class="btn_w" id="reset2">重置</a>
+    					</div>
+    					<div class="message_from_alert red"></div>
+    				</div>
+    			</div>
+            </form>
+			
+		</div>
+	</div>
+	<!--内容end-->
+</div>
+</div>
+
+<script>	
+$(function(){
+	// 取消重置
+	$("#reset").click(function(){
+		$("#password").val('');
+		$("#newPwd").val('');
+		$("#againPwd").val('');
+	});
+	// 取消重置
+	$("#reset2").click(function(){
+		$("#mobile").val('')
+		$("#validCode").val('')
+		$("#mobile").removeAttr("disabled");
+	});
+	// 密码表单提交
+	$("#save").click(function(){
+		var result = validateForm();
+		if (result) {
+    		submitPwdForm();
+		}
+	});
+	// 验证验证码修改手机号
+	$("#newPhone_sub").click(function(){
+		var mobile = $.trim($("#mobile").val());
+		if(mobile == ""){
+			alert("您还没有输入新手机号呢")
+			return;
+		}
+		var validCode = $.trim($("#validCode").val());
+		if(validCode == ""){
+			alert("请输入您收到的6位验证码")
+			return;
+		}
+		$("#mobile").removeAttr("disabled");
+    	var params = JSON.stringify($("#phoneForm").serializeJSON());//把表单序列化成JSON的这插件会忽略那些拥有disabled属性的元素
+		$("#mobile").attr('disabled','disabled');
+		layer.load(2)
+		$.ajax({
+    		type: "POST",
+    	    url: "/personCenter/subValidCode",
+    	    data: params,
+    		error : function() {
+    			alert("发生错误！")
+    			layer.closeAll('loading');
+    		},
+    		success : function(res) {
+				if(res.code === 0){
+					layer.msg('修改成功，请重新登录！', {icon:1,anim: 4 ,time: 1500},function(){
+    					// 跳转页面
+        				window.location.href = "${pms.contextPath}/layout";
+        			});
+				} else {
+					layer.closeAll('loading');
+    				alert("修改失败："+res.msg);
+				}
+    		}
+    	});
+	});
+	
+	var bFlag=true;
+    $('#msgCode').click(function(){
+		if(bFlag==false)return;
+		var mobile = $.trim($("#mobile").val());
+		if(mobile == ""){
+			alert("请输入新手机号")
+			return;
+		}
+		var params = JSON.stringify($("#phoneForm").serializeJSON());
+		$("#mobile").attr('disabled','disabled');
+		layer.load(2);
+		$.ajax({
+    		type: "POST",
+    	    url: "/personCenter/modifyMobile",
+    	    data: params,
+    		error : function() {
+    			alert("发生错误！")
+    			layer.closeAll('loading');
+    		},
+    		success : function(res) {
+				layer.closeAll('loading');
+				if(res.code === 0){
+					layer.msg('验证码发送成功！', {icon:1,anim: 4 ,time: 1000});
+					var timer;
+                    var n=60;
+                    bFlag=false;
+                    clearInterval(timer);
+                    function change(){
+                        n--;
+                        $('#msgCode').css('background','#b1b1b1');
+                        $('#msgCode').text(n+'秒后可再次发送');
+                        if(n<=0){
+                            clearInterval(timer);
+                            $('#msgCode').css('background','#4faae7');
+                            $('#msgCode').text('发送验证码');
+                            bFlag=true;
+                        }
+                    }
+                    timer=setInterval(change,1000)
+                    change();
+				} else {
+    				alert("验证码发送失败："+res.msg);
+					$("#mobile").removeAttr("disabled");
+				}
+    		}
+    	});
+    })
+})
+
+// 置空
+function reset(){
+	$("#newPwd").val('');
+	$("#againPwd").val('');
+}
+
+// 验证两次密码输入是否一致
+function validateForm(){
+	var password = $("#password").val();
+	if(password == ''){
+		alert("请输入原密码");
+		return false;
+	}
+	var newPwd = $.trim($("#newPwd").val());
+	var againPwd = $.trim($("#againPwd").val());
+	if(newPwd == ''){
+		alert("请输入新密码");
+		return false;
+	}
+	if(newPwd != againPwd){
+		alert("两次输入密码不一致");
+		reset();
+		return false;
+	}
+	return true;
+}
+
+// 密码表单提交
+function submitPwdForm(){
+	var params = JSON.stringify($("#pwdForm").serializeJSON());
+	layer.load(2)
+	$.ajax({
+		type: "POST",
+	    url: "/personCenter/modifyPwd",
+	    data: params,
+		error : function() {
+			alert("发生错误！")
+			layer.closeAll('loading');
+		},
+		success : function(res) {
+			if(res.code === 0){
+				layer.msg('修改成功，请重新登录！', {icon:1,anim: 4 ,time: 1500},function(){
+					// 跳转页面
+    				window.location.href = "${pms.contextPath}/layout";
+    			});
+			} else {
+				layer.closeAll('loading');
+				alert("修改失败："+res.msg);
+			}
+		}
+	});
+}
+</script>

@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.teacheredu.mapping.ProjectSummaryOldMapper">
+<cache type = "org.mybatis.caches.memcached.MemcachedCache"/>
+  <resultMap id="BaseResultMap" type="cn.teacheredu.entity.ProjectSummaryOldEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="carryover_tw" jdbcType="DECIMAL" property="carryoverTw" />
+    <result column="carryover_sx" jdbcType="DECIMAL" property="carryoverSx" />
+    <result column="carryover_se" jdbcType="DECIMAL" property="carryoverSe" />
+    <result column="carryover_cost_tw" jdbcType="DECIMAL" property="carryoverCostTw" />
+    <result column="carryover_cost_th" jdbcType="DECIMAL" property="carryoverCostTh" />
+    <result column="carryover_cost_fo" jdbcType="DECIMAL" property="carryoverCostFo" />
+    <result column="carryover_cost_ff" jdbcType="DECIMAL" property="carryoverCostFf" />
+    <result column="carryover_cost_sx" jdbcType="DECIMAL" property="carryoverCostSx" />
+    <result column="carryover_cost_se" jdbcType="DECIMAL" property="carryoverCostSe" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <if test="projectId != null">
+        and project_id = #{projectId,jdbcType=INTEGER}
+      </if>
+      <if test="carryoverTw != null">
+        and carryover_tw = #{carryoverTw,jdbcType=DECIMAL}
+      </if>
+      <if test="carryoverSx != null">
+        and carryover_sx = #{carryoverSx,jdbcType=DECIMAL}
+      </if>
+      <if test="carryoverSe != null">
+        and carryover_se = #{carryoverSe,jdbcType=DECIMAL}
+      </if>
+      <if test="carryoverCostTw != null">
+        and carryover_cost_tw = #{carryoverCostTw,jdbcType=DECIMAL}
+      </if>
+      <if test="carryoverCostTh != null">
+        and carryover_cost_th = #{carryoverCostTh,jdbcType=DECIMAL}
+      </if>
+      <if test="carryoverCostFo != null">
+        and carryover_cost_fo = #{carryoverCostFo,jdbcType=DECIMAL}
+      </if>
+      <if test="carryoverCostFf != null">
+        and carryover_cost_ff = #{carryoverCostFf,jdbcType=DECIMAL}
+      </if>
+      <if test="carryoverCostSx != null">
+        and carryover_cost_sx = #{carryoverCostSx,jdbcType=DECIMAL}
+      </if>
+      <if test="carryoverCostSe != null">
+        and carryover_cost_se = #{carryoverCostSe,jdbcType=DECIMAL}
+      </if>
+    </where>
+  </sql>
+  
+  <sql id="Base_Column_List">
+    id, project_id, carryover_tw, carryover_sx, carryover_se, carryover_cost_tw, carryover_cost_th, 
+    carryover_cost_fo, carryover_cost_ff, carryover_cost_sx, carryover_cost_se
+  </sql>
+  <select id="selectByExample" parameterType="cn.teacheredu.vo.ProjectSummaryOldQueryVo" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from project_summary_old
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderProperty != null">
+		order by ${orderProperty} ${orderType}
+	</if>
+	<if test="isPaged == true">
+		limit #{startPosition} ,#{pageSize}
+	</if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from project_summary_old
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from project_summary_old
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insertSelective" parameterType="cn.teacheredu.entity.ProjectSummaryOldEntity">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into project_summary_old
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="projectId != null">
+        project_id,
+      </if>
+      <if test="carryoverTw != null">
+        carryover_tw,
+      </if>
+      <if test="carryoverSx != null">
+        carryover_sx,
+      </if>
+      <if test="carryoverSe != null">
+        carryover_se,
+      </if>
+      <if test="carryoverCostTw != null">
+        carryover_cost_tw,
+      </if>
+      <if test="carryoverCostTh != null">
+        carryover_cost_th,
+      </if>
+      <if test="carryoverCostFo != null">
+        carryover_cost_fo,
+      </if>
+      <if test="carryoverCostFf != null">
+        carryover_cost_ff,
+      </if>
+      <if test="carryoverCostSx != null">
+        carryover_cost_sx,
+      </if>
+      <if test="carryoverCostSe != null">
+        carryover_cost_se,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="projectId != null">
+        #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="carryoverTw != null">
+        #{carryoverTw,jdbcType=DECIMAL},
+      </if>
+      <if test="carryoverSx != null">
+        #{carryoverSx,jdbcType=DECIMAL},
+      </if>
+      <if test="carryoverSe != null">
+        #{carryoverSe,jdbcType=DECIMAL},
+      </if>
+      <if test="carryoverCostTw != null">
+        #{carryoverCostTw,jdbcType=DECIMAL},
+      </if>
+      <if test="carryoverCostTh != null">
+        #{carryoverCostTh,jdbcType=DECIMAL},
+      </if>
+      <if test="carryoverCostFo != null">
+        #{carryoverCostFo,jdbcType=DECIMAL},
+      </if>
+      <if test="carryoverCostFf != null">
+        #{carryoverCostFf,jdbcType=DECIMAL},
+      </if>
+      <if test="carryoverCostSx != null">
+        #{carryoverCostSx,jdbcType=DECIMAL},
+      </if>
+      <if test="carryoverCostSe != null">
+        #{carryoverCostSe,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="cn.teacheredu.vo.ProjectSummaryOldQueryVo" resultType="java.lang.Long">
+    select count(*) from project_summary_old
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  
+  
+  <update id="updateByPrimaryKeySelective" parameterType="cn.teacheredu.entity.ProjectSummaryOldEntity">
+    update project_summary_old
+    <set>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="carryoverTw != null">
+        carryover_tw = #{carryoverTw,jdbcType=DECIMAL},
+      </if>
+      <if test="carryoverSx != null">
+        carryover_sx = #{carryoverSx,jdbcType=DECIMAL},
+      </if>
+      <if test="carryoverSe != null">
+        carryover_se = #{carryoverSe,jdbcType=DECIMAL},
+      </if>
+      <if test="carryoverCostTw != null">
+        carryover_cost_tw = #{carryoverCostTw,jdbcType=DECIMAL},
+      </if>
+      <if test="carryoverCostTh != null">
+        carryover_cost_th = #{carryoverCostTh,jdbcType=DECIMAL},
+      </if>
+      <if test="carryoverCostFo != null">
+        carryover_cost_fo = #{carryoverCostFo,jdbcType=DECIMAL},
+      </if>
+      <if test="carryoverCostFf != null">
+        carryover_cost_ff = #{carryoverCostFf,jdbcType=DECIMAL},
+      </if>
+      <if test="carryoverCostSx != null">
+        carryover_cost_sx = #{carryoverCostSx,jdbcType=DECIMAL},
+      </if>
+      <if test="carryoverCostSe != null">
+        carryover_cost_se = #{carryoverCostSe,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+</mapper>

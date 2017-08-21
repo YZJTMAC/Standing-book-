@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.teacheredu.mapping.ProjectChangeMapper">
+<cache type = "org.mybatis.caches.memcached.MemcachedCache"/>
+  <resultMap id="BaseResultMap" type="cn.teacheredu.entity.ProjectChangeEntity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="process_id" jdbcType="INTEGER" property="processId" />
+    <result column="column_name" jdbcType="VARCHAR" property="columnName" />
+    <result column="column_value" jdbcType="VARCHAR" property="columnValue" />
+    <result column="reason" jdbcType="VARCHAR" property="reason" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+        <if test="userId != null">
+        	and user_id = #{userId,jdbcType=INTEGER}
+        </if>
+        <if test="projectId != null">
+        	and project_id = #{projectId,jdbcType=INTEGER}
+        </if>
+        <if test="processId != null">
+        	and process_id = #{processId,jdbcType=INTEGER}
+        </if>
+        <if test="columnName != null">
+        	and column_name = #{columnName,jdbcType=VARCHAR}
+        </if>
+        <if test="columnValue != null">
+        	and column_value = #{columnValue,jdbcType=VARCHAR}
+        </if>
+        <if test="reason != null">
+        	and reason = #{reason,jdbcType=VARCHAR}
+        </if>
+        <if test="note != null">
+			and note = #{note,jdbcType=VARCHAR}
+		</if>
+    </where>
+  </sql>
+  
+  <sql id="Base_Column_List">
+    id, user_id, project_id, process_id, column_name, column_value, reason, note
+  </sql>
+  
+  <select id="selectByExample" parameterType="cn.teacheredu.vo.ProjectChangeQueryVo" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from project_change
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderProperty != null">
+      	order by ${orderProperty} ${orderType}
+    </if>
+    <if test="isPaged == true">
+		limit #{startPosition} ,#{pageSize}
+	</if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from project_change
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from project_change
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insertSelective" parameterType="cn.teacheredu.entity.ProjectChangeEntity">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into project_change
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="projectId != null">
+        project_id,
+      </if>
+      <if test="processId != null">
+        process_id,
+      </if>
+      <if test="columnName != null">
+        column_name,
+      </if>
+      <if test="columnValue != null">
+        column_value,
+      </if>
+      <if test="reason != null">
+        reason,
+      </if>
+      <if test="note != null">
+		note,
+	  </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="projectId != null">
+        #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="processId != null">
+        #{processId,jdbcType=INTEGER},
+      </if>
+      <if test="columnName != null">
+        #{columnName,jdbcType=VARCHAR},
+      </if>
+      <if test="columnValue != null">
+        #{columnValue,jdbcType=VARCHAR},
+      </if>
+      <if test="reason != null">
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+		#{note,jdbcType=VARCHAR},
+	  </if>
+    </trim>
+  </insert>
+  
+  <select id="countByExample" parameterType="cn.teacheredu.vo.ProjectChangeQueryVo" resultType="java.lang.Long">
+    select count(*) from project_change
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  
+  
+  <update id="updateByPrimaryKeySelective" parameterType="cn.teacheredu.entity.ProjectChangeEntity">
+    update project_change
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="processId != null">
+        process_id = #{processId,jdbcType=INTEGER},
+      </if>
+      <if test="columnName != null">
+        column_name = #{columnName,jdbcType=VARCHAR},
+      </if>
+      <if test="columnValue != null">
+        column_value = #{columnValue,jdbcType=VARCHAR},
+      </if>
+      <if test="reason != null">
+        reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+		note = #{note,jdbcType=VARCHAR},
+	  </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

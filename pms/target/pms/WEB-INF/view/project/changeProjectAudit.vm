@@ -1,0 +1,349 @@
+#set($layout = "/layout/layoutAudit.vm")
+<div class="new_tableWrap">
+    <div class="new_tableBox clear" style="display: block;">
+        <div class="tablewrap" #if($type == 1) style="margin-right: 246px;" #end>
+            <div class="table_tit" >项目信息变更表</div>
+            <table border="1" cellspacing="0" cellpadding="0" class="table">
+                <tr >
+                    <td width="15%" class="gray">项目编号</td>
+                    <td colspan="2">
+						<input type="text" value="$!{project.serialNumber}" readonly="readonly" />
+					</td>
+                    <td width="15%" class="gray">项目名称</td>
+                    <td colspan="3">
+						<input type="text" value="$!{project.name}" readonly="readonly" />
+					</td>
+                </tr>
+                <tr>
+                    <td colspan="3" width="40%" class="gray1">项目确认表原始信息</td>
+                    <td colspan="3" width="40%" class="gray1">项目确认表变更后信息</td>
+                    <td width="20%" class="gray1">变更原因</td>
+                </tr>
+                <tr>
+                    <td class="gray">报名人数</td>
+                    <td colspan="2">
+						<input type="text" value="$!{project.expectedNum}" readonly="readonly" />
+					</td>
+                    <td class="gray">报名人数</td>
+                    <td colspan="2">
+						<input type="text" value="$!{en_columnValue}" readonly="readonly" />
+					</td>
+                    <td>
+						<input type="text" value="$!{en_reason}" readonly="readonly" />
+					</td>
+                </tr>
+                <tr>
+                    <td class="gray">收费标准</td>
+                    <td>
+						<input type="text" value="$!project.chargeStandard" readonly="readonly" />
+					</td>
+                    <td class="gray">元/人（校）</td>
+                    <td>收费标准</td>
+                    <td>
+						<input type="text" value="$!{cs_columnValue}" readonly="readonly" />
+					</td>
+                    <td class="gray">元/人（校）</td>
+                    <td>
+						<input type="text" value="$!{cs_reason}" readonly="readonly" />
+					</td>
+                </tr>
+                <tr>
+                    <td rowspan="4" class="gray">项目合作经费前期占比</td>
+                    <td width="12.5%" class="gray">省级</td>
+                    <td>
+						<input type="text" value="$!{project.proFundProvincial}%" readonly="readonly" />
+					</td>
+                    <td rowspan="4" class="gray">项目合作经费前期占比</td>
+                    <td width="12.5%" class="gray">省级</td>
+                    <td>
+						<input type="text" value="$!{pfp_columnValue}" readonly="readonly" />
+					</td>
+                    <td>
+						<input type="text" value="$!{pfp_reason}" readonly="readonly" />
+					</td>
+                </tr>
+                <tr>
+                    <td class="gray">市级</td>
+                    <td>
+						<input type="text" value="$!{project.proFundCity}%" readonly="readonly" />
+					</td>
+                    <td class="gray">市级</td>
+                    <td>
+						<input type="text" value="$!{pfci_columnValue}" readonly="readonly" />
+					</td>
+                    <td>
+						<input type="text" value="$!{pfci_reason}" readonly="readonly" />
+					</td>
+                </tr>
+                <tr>
+                    <td class="gray">县级</td>
+                    <td>
+						<input type="text" value="$!{project.proFundCounty}%" readonly="readonly" />
+					</td>
+                    <td class="gray">县级</td>
+                    <td>
+						<input type="text" value="$!{pfco_columnValue}" readonly="readonly" />
+					</td>
+                    <td>
+						<input type="text" value="$!{pfco_reason}" readonly="readonly" />
+					</td>
+                </tr>
+                <tr>
+                    <td class="gray">其他</td>
+                    <td>
+						<input type="text" value="$!{project.proFundOther}%" readonly="readonly" />
+					</td>
+                    <td class="gray">其他</td>
+                    <td>
+						<input type="text" value="$!{pfo_columnValue}" readonly="readonly" />
+					</td>
+                    <td>
+						<input type="text" value="$!{pfo_reason}" readonly="readonly" />
+					</td>
+                </tr>
+                <tr>
+                    <td rowspan="4" class="gray">项目合作经费后期占比</td>
+                    <td class="gray">省级</td>
+                    <td>
+						<input type="text" value="$!{project.laterFundProvincial}%" readonly="readonly" />
+					</td>
+                    <td rowspan="4" class="gray">项目合作经费后期占比</td>
+                    <td class="gray">省级</td>
+                    <td>
+						<input type="text" value="$!{lfp_columnValue}" readonly="readonly" />
+					</td>
+                    <td>
+						<input type="text" value="$!{lfp_reason}" readonly="readonly" />
+					</td>
+                </tr>
+                <tr>
+                    <td class="gray">市级</td>
+                    <td>
+						<input type="text" value="$!{project.laterFundCity}%" readonly="readonly" />
+					</td>
+                    <td class="gray">市级</td>
+                    <td>
+						<input type="text" value="$!{lfci_columnValue}" readonly="readonly" />
+					</td>
+                    <td>
+						<input type="text" value="$!{lfci_reason}" readonly="readonly" />
+					</td>
+                </tr>
+                <tr>
+                    <td class="gray">县级</td>
+                    <td>
+						<input type="text" value="$!{project.laterFundCounty}%" readonly="readonly" />
+					</td>
+                    <td class="gray">县级</td>
+                    <td>
+						<input type="text" value="$!{lfco_columnValue}" readonly="readonly" />
+					</td>
+                    <td>
+						<input type="text" value="$!{lfco_reason}" readonly="readonly" />
+					</td>
+                </tr>
+                <tr>
+                    <td class="gray">其他</td>
+                    <td>
+						<input type="text" value="$!{project.laterFundOther}%" readonly="readonly" />
+					</td>
+                    <td class="gray">其他</td>
+                    <td>
+						<input type="text" value="$!{lfo_columnValue}" readonly="readonly" />
+					</td>
+                    <td>
+						<input type="text" value="$!{lfo_reason}" readonly="readonly" />
+					</td>
+                </tr>
+                <tr>
+                    <td class="gray">培训起始日期</td>
+                    <td colspan="2">
+						<input type="text" value="$date.format("yyyy-MM-dd",$project.startDate)" readonly="readonly" />
+					</td>
+                    <td class="gray">培训起始日期</td>
+                    <td colspan="2">
+						<input type="text" value="$!{sd_columnValue}" readonly="readonly" />
+					</td>
+                    <td>
+						<input type="text" value="$!{sd_reason}" readonly="readonly" />
+					</td>
+                </tr>
+                <tr>
+                    <td class="gray">培训截止日期</td>
+                    <td colspan="2">
+						<input type="text" value="$date.format("yyyy-MM-dd",$project.endDate)" readonly="readonly" />
+					</td>
+                    <td class="gray">培训截止日期</td>
+                    <td colspan="2">
+						<input type="text" value="$!{ed_columnValue}" readonly="readonly" />
+					</td>
+                    <td>
+						<input type="text" value="$!{ed_reason}" readonly="readonly" />
+					</td>
+                </tr>
+                <tr>
+                    <td class="gray">到款公司</td>
+                    <td colspan="2">
+						<input type="text" value="$!{project.collectMoneyCompany}" readonly="readonly" />
+					</td>
+                    <td class="gray">到款公司</td>
+                    <td colspan="2">
+                        <input type="text" value="$!{cmc_columnValue}" readonly="readonly" />
+                    </td>
+                    <td>
+						<input type="text" value="$!{cmc_reason}" readonly="readonly" />
+					</td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="gray">办事处（分公司）负责人意见</td>
+                    <td colspan="2">
+                        <span>#if($ph_1) $!{ph_1.extInfo.realName}（$!{ph_1.dealResult}）#end</span>
+                        <i style="color:#999; position:relative; top:3px; font-style:normal;">#if($ph_1) $date.format("yyyy-MM-dd",${ph_1.dealTime}) #end</i>
+                    </td>
+                    <td colspan="" class="gray">分管领导意见</td>
+                    <td colspan="2">
+						<span>#if($ph_2) $!{ph_2.extInfo.realName}（$!{ph_2.dealResult}）#end</span>
+                        <i style="color:#999; position:relative; top:3px; font-style:normal;">#if($ph_2) $date.format("yyyy-MM-dd",${ph_2.dealTime}) #end</i>
+					</td>
+                </tr>
+                <tr>
+					<td colspan="2" class="gray">商务负责人意见</td>
+                    <td colspan="2">
+						<span>#if($ph_3) $!{ph_3.extInfo.realName}（$!{ph_3.dealResult}）#end</span>
+                        <i style="color:#999; position:relative; top:3px; font-style:normal;">#if($ph_3) $date.format("yyyy-MM-dd",${ph_3.dealTime}) #end</i>
+                    </td>
+                    <td colspan="" class="gray">主管副总裁意见</td>
+                    <td colspan="2">
+						<span>#if($ph_4) $!{ph_4.extInfo.realName}（$!{ph_4.dealResult}）#end</span>
+                        <i style="color:#999; position:relative; top:3px; font-style:normal;">#if($ph_4) $date.format("yyyy-MM-dd",${ph_4.dealTime}) #end</i>
+					</td>
+                </tr>
+            </table>
+            <div style="height: 50px;"></div>
+			<div class="opinion">
+                <h1>发起人备注</h1>
+                <div class="opinionCon">
+					<textarea style="width: 880px;height: 100px;border: 0px;padding: 5px;" readonly="readonly">$note</textarea>					
+				</div>
+                <h2 style="border-top: 2px solid #4faae7;">处理人意见</h2>
+                <div class="opinionBox">
+					#foreach($ph in $phList)
+                    <div class="opinionList">
+                        <h3>$!{ph.extInfo.realName}  <span #if(${ph.dealResult} == "同意") class="y" #else class="n" #end>（$!{ph.dealResult}）</span><i> #if(${ph.dealTime}) $date.format("yyyy-MM-dd",$!{ph.dealTime}) #end </i> </h3>	
+                        <div><textarea style="width: 880px;height: 100px;border: 0px;padding: 5px;background: #f0f8ff;" readonly="readonly">${ph.dealOpinion}</textarea></div>
+                    </div>
+					#end
+                </div>
+            </div>
+        </div>
+		
+		<div class="new_shenpi fr" #if($type != 1) style="display: none;" #end>
+            <h2 class="mb20">》 #if($process.type == 1) 审批 #elseif($process.type == 2) 查阅 #elseif($process.type == 3) 添加项目链接 #else ---- #end</h2>
+            <div class="shenpi_tex mr10">
+                <textarea id="dealOpinion"></textarea>
+            </div>
+            <div class="mb10 mt10">
+				#if($process.type == 2) 
+				<input type="radio" name = "dealResult" value="已阅" checked="checked" />已阅
+				#elseif($process.type == 3)
+				<input type="radio" name = "dealResult" value="添加项目链接" checked="checked" />在上面文本框输入项目链接
+				#else
+				<input type="radio" name = "dealResult" value="同意" />同意
+                <input type="radio" name = "dealResult" value="不同意" />不同意
+				#end
+            </div>
+            <div class="shenpi_btn mt20">
+                <a href="javascript:;" class="active" id="submit">提交</a>
+                <a href="javascript:;" id = "cancel">取消</a>
+            </div>
+        </div>
+    </div>
+	<!-- 流程start -->
+	<div class="new_tableBox">
+        <div class="liuchengBox">
+            <div class="liucheng_list clear">
+                <div class="list2">
+                    <ul class="clear fl">
+                        <li title="" ></li>
+                        <li title="" ></li>##class="weikan"
+                        <li title="" ></li>##class="tongguo"
+                        <li title="" ></li>##class="yikan"
+                    </ul>
+                    <div class="fl">
+                        <div style="margin-bottom:75px;" class="caiwu">
+                            <div class="caiwu_list =" style="display: none;">
+                                <h1>财务部</h1>
+                                <ul>
+                                    ##<li>田文强</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div style="margin-bottom:75px;" class="caiwu">
+                            <div class="caiwu_list =" style="display: none;">
+                                <h1>教务部</h1>
+                                <ul>
+                                    ##<li>田文强</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div style="margin-bottom:75px;" class="caiwu">
+                            <div class="caiwu_list =" style="display: none;">
+                                <h1>商务部</h1>
+                                <ul>
+                                    ##<li>田文强</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	<!-- 流程end -->
+</div><!--new_tableWrap结束-->
+
+<!--下面3个</div>关闭的是layout中的div-->
+</div>
+<!--内容end-->
+</div>
+</div>
+	
+<script>
+	$(document).ready(function() {
+		$('#cancel').click(function() {
+			window.location.href = "${pms.contextPath}/process/needDeal"
+		});
+		
+		$('#submit').click(function() {
+			var spyj = $('#dealOpinion').val();
+			//验证有没有选择审批结果
+			var val=$('input:radio[name="dealResult"]:checked').val();
+            if (val == null) {
+                alert("请选择审批结果！");
+                return false;
+            } else {
+				layer.load(2);
+                var params = JSON.stringify({'dealOpinion': spyj,'dealResult':val,'processId':$process.id,'type':$needProcess.type,'needId':$needProcess.id});
+        		$.ajax({
+            		type: "POST",
+            	    url: "/processDeal/needDeal",
+            	    data: params,
+            	    error: function(){
+    					layer.closeAll('loading');
+            			alert("提交失败，服务器错误！")
+            	    },
+            	    success: function(res){
+            	    	layer.closeAll('loading');
+            			if(res.code === 0){
+            				layer.msg('提交成功', {icon:1,anim: 4 ,time: 2000},function(){
+								window.location.href = "${pms.contextPath}/process/needDeal";
+							});
+            			}else{
+            				alert("提交失败："+res.msg);
+            			}
+            		}
+            	});
+            }
+		});
+	})
+</script>

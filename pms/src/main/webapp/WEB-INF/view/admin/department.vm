@@ -1,0 +1,111 @@
+#set($layout = "/layout/layoutAdmin.vm")
+<!DOCTYPE html>
+<html>
+<head>
+<title>部门列表</title>
+#parse("admin/header.vm")
+</head>
+<body>
+<div id="rrapp" v-cloak>
+	<div v-show="showList">
+		<div class="grid-btn">
+			<a class="btn btn-info" @click="query"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+			<a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			<a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+			<a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+		</div>
+	    <table id="jqGrid"></table>
+	    <div id="jqGridPager"></div>
+    </div>
+    <div v-show="!showList" class="panel panel-default">
+		<div class="panel-heading">{{title}}</div>
+		<form class="form-horizontal">
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">部门名称</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model.trim="department.dmName" placeholder="部门名称"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">部门描述</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="department.description" placeholder="部门描述"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">上级部门</div>
+			   	<div class="col-sm-10">
+				   	<label v-for="dm in dmList" class="radio-inline">
+					  <input type="radio" name="dm" :value="dm.id" v-model="department.parentId">{{dm.dmName}}
+					</label>
+				</div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">所属省份</div>
+			   	<div class="col-xs-4">
+				   	<select v-model="department.province" class="form-control">
+                      <option v-for="option in options" v-bind:value="option.id">
+                        {{ option.name }}
+                      </option>
+                    </select>
+				</div>
+				<div class="col-sm-2"><span class="badge">办事处、分公司、子公司类型的部门选择所在省份，其他选择无</span></div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">所属公司</div>
+			   	<div class="col-xs-5">
+				   	<select v-model="department.level" class="form-control">
+                      <option v-for="option in companys" v-bind:value="option.id">
+                        {{ option.name }}
+                      </option>
+                    </select>
+				</div>
+				<div class="col-sm-2"><span class="badge">渠道服务类型的部门如果服务多个公司，或总部部门请选择无</span></div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">部门类型</div>
+				<div class="col-sm-10">
+    			   	<label class="radio-inline">
+    				  <input type="radio" name="dmType" value="0" v-model="department.dmType"/> 研发
+    				</label>
+    				<label class="radio-inline">
+    				  <input type="radio" name="dmType" value="1" v-model="department.dmType"/> 教务
+    				</label>
+    				<label class="radio-inline">
+    				  <input type="radio" name="dmType" value="2" v-model="department.dmType"/> 商务
+    				</label>
+    				<label class="radio-inline">
+    				  <input type="radio" name="dmType" value="3" v-model="department.dmType"/> 财务
+    				</label>
+    				<label class="radio-inline">
+    				  <input type="radio" name="dmType" value="4" v-model="department.dmType"/> 办事处、子公司、分公司
+    				</label>
+    				<label class="radio-inline">
+    				  <input type="radio" name="dmType" value="5" v-model="department.dmType"/> 总经理办公室
+    				</label>
+    				<label class="radio-inline">
+    				  <input type="radio" name="dmType" value="6" v-model="department.dmType"/> 分管部门
+    				</label>
+                </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">部门主管</div>
+			   	<div class="col-sm-10">
+				   	<label v-for="user in userList" class="checkbox-inline">
+					  <input type="checkbox" :value="user.id" v-model="department.userIdList">{{user.realname}}
+					</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label"></div> 
+				<input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+				&nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+			</div>
+		</form>
+	</div>
+    
+</div>
+
+<script src="${pms.contextPath}/resources/admin/js/sys/department.js?_${date.systemTime}"></script>
+</body>
+</html>

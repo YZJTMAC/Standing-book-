@@ -1,0 +1,675 @@
+<script type="text/javascript" src="${pms.contextPath}/resources/js/cascade.js"></script>
+<div class="content_warp">
+	<div class="content_tit_box">
+    	<div class="w1230 clear">
+    		<div class="content_tit fl clear">
+    			<a href="javascript:;">工作台</a> <i></i>
+    			<a href="javascript:;">项目汇总</a>
+    		</div>
+    	</div>
+    </div>
+	<!--内容star-->
+	<div class="content w1230">
+		<div class="search_warp p10">
+			<div class="clear">
+				<div class="select_box fl" style="width: 100%">
+    				<h1 style="display: none">基本条件</h1>
+    				<div class="From" style="display: none">
+						
+    					<div class="From_text">
+    						<select id="company">
+								<option value="">公司名称</option>
+								#foreach($company in $companyList)
+        						<option value="$company.name">$company.name</option>
+								#end
+        					</select>
+    					</div>
+						
+    					<div class="From_text" >
+    						<select id="dmId">
+								#foreach($prov in $dmListQuery)
+        						<option value="$prov.province">$prov.dmName</option>
+								#end
+        					</select>
+    					</div>
+    				</div>
+    				<div class="From mt10" style="width: 100%">
+    					<div class="From_text" style="width: 100%">
+        					<select id="type"  style="display:none; >
+    							<option value="0">全部</option>
+    							<option value="1">项目类型</option>
+								<option value="19">培训形式</option>
+    							<option value="2">年份</option>
+    							<option value="3">省份</option>
+    							<option value="4">项目编号</option>
+    							<option value="5">项目名称</option>
+    							<option value="6">培训起始时间</option>
+    							<option value="7">培训结束时间</option>
+    							<option value="8">预计项目总额</option>
+    							<option value="9">实际项目总额</option>
+								<option value="20">项目运营状态</option>
+    							<option value="10">是否有协议</option>
+    							<option value="11">项目到款总额</option>
+    							<option value="12">预计后期到款金额</option>
+    							<option value="13">应收账款</option>
+    							<option value="14">已转收入</option>
+    							<option value="15">前期应付经费总额</option>
+    							<option value="16">后期应付经费总额</option>
+    							<option value="17">已支付经费金额</option>
+    							<option value="18">未付经费金额</option>
+        					</select>
+						<table >
+								<tr><td colspan=4><h1>筛选条件</h1></td></tr>
+								<tr> 
+									<td>
+										<!--项目类型-->
+										<h1>项目类型:</h1> 
+										<select id="proType" width: 100px">
+											<option value = "">请选择</option>
+											<option value = "1">国培</option>
+											<option value = "2">地培</option>
+								        </select> 
+									</td>  
+									<td>
+										<!--年份-->
+										<h1>年份:</h1> 
+										<select id="years" width: 100px" >
+											<option value = "">请选择</option>
+											#foreach($strYear in $years)
+												<option value = "$!strYear">$!strYear</option>
+											#end
+										</select>
+									</td>  
+									<td>
+										<!--省份-->
+										<h1>省份:</h1> 
+										<select id="province" width: 100px">
+											<option value="">请选择</option>
+											#foreach($province in $provinceList)
+												#if($province.id > 0)
+													<option value="$province.id" title="$province.name">$province.name</option>
+												#end
+											#end
+										</select>
+									</td> 
+									<td>
+										<!--项目编号-->
+										<h1>项目编号:</h1> 
+										<input type="text" id="projectNo" placeholder="输入内容进行查询"  />
+									</td> 
+                                </tr>
+								<tr> 
+									<td>
+                						<h1>培训形式:</h1> 
+            							<select id="trainType" >
+                                            <option value = "">请选择</option>
+                                            <option value = "1">在线</option>
+                                            <option value = "2">面授</option>
+            							</select>
+									</td> 
+									<td>
+            							<!--协议名字-->
+                						<h1>协议名:</h1> 
+										<input type="text" id="protocolName" placeholder="输入内容进行查询"  />
+									</td>
+									<td>
+										<!--项目名称-->
+                						<h1>项目名称:</h1> 
+                						<input type="text" id="projectName" placeholder="输入内容进行查询"  />
+									</td> 
+									<td>
+    									<h1>项目运营状态:</h1> 
+    										<select id="projectStatus" >
+    			                                <option value = "">请选择</option>
+    			                                <option value = "0">审批中或草稿</option>
+    			                                <option value = "1">进行中</option>
+    			                                <option value = "2">已完成</option>
+    			                                <option value = "3">正在走完结流程</option>
+    			                                <option value = "4">待完结</option>
+    										</select>
+									</td> 
+								</tr>
+								
+								<tr> 
+									<td>
+										<h1>预计后期到款金额:</h1> 
+										<span id="amount" >
+											<input type="text" class="NumDecText"  placeholder="请输入最小金额" name="" id="estimatedAmountLater_min" style="width: 100px"/>
+											<i>-</i><input type="text" class="NumDecText"  placeholder="请输入最大金额" name="" id="estimatedAmountLater_max" style="width: 100px"/>
+									</td> 
+									<td>
+										<!--培训起始时间、培训截止时间-->
+										<h1 style="float:left;margin-top: 5px">培训起始时间、培训截止时间:</h1> 
+										<span id="demo" >
+											<input type="text" placeholder="请选择起始日期" name="" id="layDateStartForQuery" readonly="readonly" style="width: 100px"/>
+											<i>-</i><input type="text" placeholder="请选择结束日期" name="" id="layDateEndForQuery" readonly="readonly" style="width: 100px"/>
+										</span>
+									</td>
+									<td>
+										<!--预计项目总额、实际项目总额-->
+										<h1 style="float:left;margin-top: 5px">预计项目总额:</h1> 
+										<span id="amount" >
+											<input type="text" class="NumDecText"  placeholder="请输入最小金额" name="" id="estimatedAmount_min" style="width: 100px"/>
+											<i>-</i><input type="text" class="NumDecText"  placeholder="请输入最大金额" name="" id="estimatedAmount_max" style="width: 100px"/>
+										</span>
+									</td> 
+									<td>
+										<h1 style="float:left;margin-top: 5px">实际项目总额:</h1> 
+										<span id="amount" >
+											<input type="text" class="NumDecText"  placeholder="请输入最小金额" name="" id="projectDueAmount_min" style="width: 100px"/>
+											<i>-</i><input type="text" class="NumDecText"  placeholder="请输入最大金额" name="" id="projectDueAmount_max" style="width: 100px"/>
+									</td> 
+								</tr>
+								<tr> 
+									<td>
+                						<h1>应收账款:</h1> 
+                    					<span id="amount" >
+                    						<input type="text" class="NumDecText"  placeholder="请输入最小金额" name="" id="receivableAccounts_min" style="width: 100px"/>
+                							<i>-</i><input type="text" class="NumDecText"  placeholder="请输入最大金额" name="" id="receivableAccounts_max" style="width: 100px"/>
+									</td> 
+									<td>
+                						<h1>已转收入:</h1> 
+                    					<span id="amount" >
+                    						<input type="text" class="NumDecText"  placeholder="请输入最小金额" name="" id="transferredIncome_min" style="width: 100px"/>
+                							<i>-</i><input type="text" class="NumDecText"  placeholder="请输入最大金额" name="" id="transferredIncome_max" style="width: 100px"/>
+            							</span>
+									</td>
+									<td>
+										<h1>前期应付经费总额:</h1> 
+                    					<span id="amount" >
+                    						<input type="text" class="NumDecText"  placeholder="请输入最小金额" name="" id="payableFundsPeriod_min" style="width: 100px"/>
+                							<i>-</i><input type="text" class="NumDecText"  placeholder="请输入最大金额" name="" id="payableFundsPeriod_max" style="width: 100px"/>
+									</td> 
+									<td>
+                						<h1>后期应付经费总额:</h1> 
+                    					<span id="amount" >
+                    						<input type="text" class="NumDecText"  placeholder="请输入最小金额" name="" id="payableFundsLater_min" style="width: 100px"/>
+                							<i>-</i><input type="text" class="NumDecText"  placeholder="请输入最大金额" name="" id="payableFundsLater_max" style="width: 100px"/>
+									</td> 
+								</tr>
+								<tr> 
+									<td>
+                						<h1>已支付经费金额:</h1> 
+                    					<span id="amount" >
+                    						<input type="text" class="NumDecText"  placeholder="请输入最小金额" name="" id="completePayableFunds_min" style="width: 100px"/>
+                							<i>-</i><input type="text" class="NumDecText"  placeholder="请输入最大金额" name="" id="completePayableFunds_max" style="width: 100px"/>
+									</td> 
+									<td>
+                						<h1>未付经费金额:</h1> 
+                    					<span id="amount" >
+                    						<input type="text" class="NumDecText"  placeholder="请输入最小金额" name="" id="uncompletePayableFunds_min" style="width: 100px"/>
+                							<i>-</i><input type="text" class="NumDecText"  placeholder="请输入最大金额" name="" id="uncompletePayableFunds_max" style="width: 100px"/>
+									</td>
+									
+								</tr>
+								
+							</table>
+							
+        				</div>
+						
+						<a href="javascript:;" class="btn fl" id="query" >查询</a>
+    			</div>
+					
+					
+				</div>
+				<div class="select_box fr" style="display: none">
+					<h1>查询设置</h1>
+    				<div class="From">
+    					<div class="From_name">
+    						显示设置：
+    					</div>
+    					<div class="From_text">
+    						<input type="text" style="width: 300px;" value="项目编号、项目名称、发起时间，培训起始时间……" disabled/>
+    						<a href="javascript:;" class="btn_h set_btn" onclick="javascript:layer.tips('抱歉...功能暂时未开发', this, {tips: [1, '#78BA32']});">设置</a>
+    					</div>
+    				</div>
+    				<div class="From mt10">
+    					<div class="From_name">
+    						排序设置：
+    					</div>
+    					<div class="From_text">
+    						<input type="text" style="width: 300px;" value="默认以填表日期倒序排列" disabled/>
+    						<a href="javascript:;" class="btn_h set_btn" onclick="javascript:layer.tips('抱歉...功能暂时未开发', this, {tips: [1, '#78BA32']});">设置</a>
+    					</div>
+    				</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="content_list_wrap mt10">
+			<div class="summary_tit">
+				<span class="bold fn14 mr10">查询结果:</span>
+				<a href="exportExecl.do" class="btn_h" ">导出</a>
+				<a href="javascript:;" class="btn_h" onclick="javascript:layer.tips('抱歉...功能暂时未开发', this, {tips: [1, '#78BA32']});">打印</a>
+			</div>
+		</div>
+		
+		<div id="projectSummaryLoad" class = "summary_box">
+			
+		</div>
+	</div>
+	<!--内容end-->
+</div>
+</div>
+<script >
+
+
+
+$(function(){
+
+	$("#type").change(function(){
+		var type = $("#type").val();
+		if (type == '0') { // 全部
+			$("#proType").val('');
+			$("#years").val('');
+			$("#province").val('');
+			$("#layDateStartForQuery").val('');
+			$("#layDateEndForQuery").val('');
+			$("#minAmount").val('');
+			$("#maxAmount").val('');
+			$("#value").val('');
+			$("#protocol").val('');
+			$("#trainType").val('');
+			$("#projectStatus").val('');
+			$("#proType").css("display","none");
+			$("#years").css("display","none");
+			$("#province").css("display","none");
+			$("#value").css("display","none");
+			$("#demo").css("display","none");
+			$("#amount").css("display","none");
+			$("#protocol").css("display","none");
+			$("#trainType").css("display","none");
+			$("#projectStatus").css("display","none");
+		} else if (type == '1') { // 项目类型
+			$("#proType").val('');
+			$("#years").val('');
+			$("#province").val('');
+			$("#layDateStartForQuery").val('');
+			$("#layDateEndForQuery").val('');
+			$("#minAmount").val('');
+			$("#maxAmount").val('');
+			$("#value").val('');
+			$("#protocol").val('');
+			$("#trainType").val('');
+			$("#projectStatus").val('');
+			$("#proType").css("display","block");
+			$("#years").css("display","none");
+			$("#province").css("display","none");
+			$("#value").css("display","none");
+			$("#demo").css("display","none");
+			$("#amount").css("display","none");
+			$("#protocol").css("display","none");
+			$("#trainType").css("display","none");
+			$("#projectStatus").css("display","none");
+		}  else if (type == '2') { // 年份
+			$("#proType").css("display","none");
+			$("#proType").val('');
+			$("#years").val('');
+			$("#province").val('');
+			$("#layDateStartForQuery").val('');
+			$("#layDateEndForQuery").val('');
+			$("#minAmount").val('');
+			$("#maxAmount").val('');
+			$("#value").val('');
+			$("#protocol").val('');
+			$("#trainType").val('');
+			$("#projectStatus").val('');
+			$("#years").css("display","block");
+			$("#province").css("display","none");
+			$("#value").css("display","none");
+			$("#demo").css("display","none");
+			$("#amount").css("display","none");
+			$("#protocol").css("display","none");
+			$("#trainType").css("display","none");
+			$("#projectStatus").css("display","none");
+		} else if (type == '3') { // 省份
+			$("#proType").css("display","none");
+			$("#years").css("display","none");
+			$("#proType").val('');
+			$("#years").val('');
+			$("#province").val('');
+			$("#layDateStartForQuery").val('');
+			$("#layDateEndForQuery").val('');
+			$("#minAmount").val('');
+			$("#maxAmount").val('');
+			$("#value").val('');
+			$("#protocol").val('');
+			$("#trainType").val('');
+			$("#projectStatus").val('');
+			$("#province").css("display","block");
+			$("#value").css("display","none");
+			$("#demo").css("display","none");
+			$("#amount").css("display","none");
+			$("#protocol").css("display","none");
+			$("#trainType").css("display","none");
+			$("#projectStatus").css("display","none");
+		} else if (type == '4' || type == '5') { // 项目编号、项目名称
+			$("#proType").css("display","none");
+			$("#years").css("display","none");
+			$("#province").css("display","none");
+			$("#proType").val('');
+			$("#years").val('');
+			$("#province").val('');
+			$("#layDateStartForQuery").val('');
+			$("#layDateEndForQuery").val('');
+			$("#minAmount").val('');
+			$("#maxAmount").val('');
+			$("#value").val('');
+			$("#protocol").val('');
+			$("#trainType").val('');
+			$("#projectStatus").val('');
+			$("#value").css("display","block");
+			$("#demo").css("display","none");
+			$("#amount").css("display","none");
+			$("#protocol").css("display","none");
+			$("#trainType").css("display","none");
+			$("#projectStatus").css("display","none");
+		} else if (type == '6' || type == '7' || type == '11' || type == '12' || type == '14' || type == '17') { 
+			$("#proType").css("display","none"); // 培训起始时间、截止时间、项目到款总额、预计后期到款金额、已转收入、已支付经费金额
+			$("#years").css("display","none");
+			$("#province").css("display","none");
+			$("#value").css("display","none");
+			$("#proType").val('');
+			$("#years").val('');
+			$("#province").val('');
+			$("#layDateStartForQuery").val('');
+			$("#layDateEndForQuery").val('');
+			$("#minAmount").val('');
+			$("#maxAmount").val('');
+			$("#value").val('');
+			$("#protocol").val('');
+			$("#trainType").val('');
+			$("#projectStatus").val('');
+			$("#demo").css("display","block");
+			$("#amount").css("display","none");
+			$("#protocol").css("display","none");
+			$("#trainType").css("display","none");
+			$("#projectStatus").css("display","none");
+		} else if (type == '8' || type == '9' || type == '13' || type == '15' || type == '16' || type == '18') { // 预计项目总额、实际项目总额、应收账款、前期应付经费总额、后期应付经费总额、未付经费金额
+			$("#proType").css("display","none");
+			$("#years").css("display","none");
+			$("#province").css("display","none");
+			$("#value").css("display","none");
+			$("#demo").css("display","none");
+			$("#proType").val('');
+			$("#years").val('');
+			$("#province").val('');
+			$("#layDateStartForQuery").val('');
+			$("#layDateEndForQuery").val('');
+			$("#minAmount").val('');
+			$("#maxAmount").val('');
+			$("#value").val('');
+			$("#protocol").val('');
+			$("#trainType").val('');
+			$("#projectStatus").val('');
+			$("#amount").css("display","block");
+			$("#protocol").css("display","none");
+			$("#trainType").css("display","none");
+			$("#projectStatus").css("display","none");
+		} else if (type == '10') {
+			$("#proType").css("display","none");
+			$("#years").css("display","none");
+			$("#province").css("display","none");
+			$("#value").css("display","none");
+			$("#demo").css("display","none");
+			$("#amount").css("display","none");
+			$("#proType").val('');
+			$("#years").val('');
+			$("#province").val('');
+			$("#layDateStartForQuery").val('');
+			$("#layDateEndForQuery").val('');
+			$("#minAmount").val('');
+			$("#maxAmount").val('');
+			$("#value").val('');
+			$("#protocol").val('');
+			$("#trainType").val('');
+			$("#projectStatus").val('');
+			$("#protocol").css("display","block");
+			$("#trainType").css("display","none");
+			$("#projectStatus").css("display","none");
+		}else if (type == '19') {
+			$("#proType").css("display","none");
+			$("#years").css("display","none");
+			$("#province").css("display","none");
+			$("#value").css("display","none");
+			$("#demo").css("display","none");
+			$("#amount").css("display","none");
+			$("#protocol").css("display","none");
+			$("#trainType").css("display","block");
+			$("#proType").val('');
+			$("#years").val('');
+			$("#province").val('');
+			$("#layDateStartForQuery").val('');
+			$("#layDateEndForQuery").val('');
+			$("#minAmount").val('');
+			$("#maxAmount").val('');
+			$("#value").val('');
+			$("#protocol").val('');
+			$("#trainType").val('');
+			$("#projectStatus").val('');
+			$("#projectStatus").css("display","none");
+		}else if (type == '20') {
+			$("#proType").css("display","none");
+			$("#years").css("display","none");
+			$("#province").css("display","none");
+			$("#value").css("display","none");
+			$("#demo").css("display","none");
+			$("#amount").css("display","none");
+			$("#protocol").css("display","none");
+			$("#trainType").css("display","none");
+			$("#projectStatus").css("display","block");
+			$("#proType").val('');
+			$("#years").val('');
+			$("#province").val('');
+			$("#layDateStartForQuery").val('');
+			$("#layDateEndForQuery").val('');
+			$("#minAmount").val('');
+			$("#maxAmount").val('');
+			$("#value").val('');
+			$("#protocol").val('');
+			$("#trainType").val('');
+			$("#projectStatus").val('');
+		}
+	});
+	reloadContent2("1");
+	$("#query").click(function(){
+		reloadContentByCondition("1");
+	});
+});
+
+//封装请求后台的url（根据用户选择的查询条件）
+function reloadContent2(currPage){
+
+	var type = $("#type").val();
+	var t1 = $("#proType").val();
+	var t2 = $("#years").val();
+	var t3 = $("#province").val();
+	var t4 = $("#layDateStartForQuery").val();
+	var t5 = $("#layDateEndForQuery").val();
+	var t6 = $("#minAmount").val();
+	var t7 = $("#maxAmount").val();
+	var t8 = $("#value").val();
+	var t9 = $("#protocol").val();
+	var t10 = $("#trainType").val();
+	var t11 = $("#projectStatus").val();
+	if(!t1 && !t2 && !t3 && !t4 && !t5 && !t6 && !t7 && !t8 && !t9 && !t10 && !t11 ){
+		type = 0;
+	}
+	
+	var company = $("#company").val();
+	if(!company)company="all";
+	var dmId = $("#dmId").val();
+	if(type == '0') {
+		reloadContent('projectSummaryLoad','${pms.contextPath}/project/projectSummaryList?currPage='+currPage +'&company='+company+'&dmId='+dmId+'&dmId='+dmId)
+	} else if (type == '1') { // 项目类型
+		var param = encodeURI('&proType='+$("#proType").val());
+		reloadContent('projectSummaryLoad','${pms.contextPath}/project/projectSummaryList?currPage='+currPage+'&type=1'+param+'&company='+company+'&dmId='+dmId)
+	} else if (type == '2') { // 年份
+		var param = encodeURI('&proYear='+$("#years").val());
+		reloadContent('projectSummaryLoad','${pms.contextPath}/project/projectSummaryList?currPage='+currPage+'&type=2'+param+'&company='+company+'&dmId='+dmId)
+	} else if (type == '3') { // 省份
+		var param = encodeURI('&province='+$("#province").val());
+		reloadContent('projectSummaryLoad','${pms.contextPath}/project/projectSummaryList?currPage='+currPage+'&type=3'+param+'&company='+company+'&dmId='+dmId)
+	} else if (type == '4') { // 项目编号
+		var param = encodeURI('&value='+$("#value").val());
+		reloadContent('projectSummaryLoad','${pms.contextPath}/project/projectSummaryList?currPage='+currPage+'&type=4'+param+'&company='+company+'&dmId='+dmId)
+	} else if (type == '5') { // 项目名称
+		var param = encodeURI('&value='+$("#value").val());
+		reloadContent('projectSummaryLoad','${pms.contextPath}/project/projectSummaryList?currPage='+currPage+'&type=5'+param+'&company='+company+'&dmId='+dmId)
+	} else if (type == '6') { // 培训起始时间 
+		var startTime = $("#layDateStartForQuery").val();
+		if(startTime != ""){
+			startTime += " 08:00:00"
+		}
+		var endTime = $("#layDateEndForQuery").val();
+		if(endTime != ""){
+			endTime += " 08:00:00"
+		}
+		var param = encodeURI('&startDate='+startTime+'&endDate='+endTime);
+		reloadContent('projectSummaryLoad','${pms.contextPath}/project/projectSummaryList?currPage='+currPage+'&type=6'+param+'&company='+company+'&dmId='+dmId)
+	} else if (type == '7') { // 培训结束时间
+		var startTime = $("#layDateStartForQuery").val();
+		if(startTime != ""){
+			startTime += " 08:00:00"
+		}
+		var endTime = $("#layDateEndForQuery").val();
+		if(endTime != ""){
+			endTime += " 08:00:00"
+		}
+		var param = encodeURI('&startDate='+startTime+'&endDate='+endTime);
+		reloadContent('projectSummaryLoad','${pms.contextPath}/project/projectSummaryList?currPage='+currPage+'&type=7'+param+'&company='+company+'&dmId='+dmId)
+	} else if (type == '8') { // 预计项目总额
+		var param = encodeURI('&minAmount='+$("#minAmount").val()+'&maxAmount='+$("#maxAmount").val());
+		reloadContent('projectSummaryLoad','${pms.contextPath}/project/projectSummaryList?currPage='+currPage+'&type=8'+param+'&company='+company+'&dmId='+dmId)
+	} else if (type == '9') { // 实际项目总额
+		var param = encodeURI('&minAmount='+$("#minAmount").val()+'&maxAmount='+$("#maxAmount").val());
+		reloadContent('projectSummaryLoad','${pms.contextPath}/project/projectSummaryList?currPage='+currPage+'&type=9'+param+'&company='+company+'&dmId='+dmId)
+	} else if (type == '10') { // 是否有协议
+		var param = encodeURI('&protocol='+$("#protocol").val());
+		if(!$("#protocol").val()) {alert("请选择是否有协议");return;}
+		reloadContent('projectSummaryLoad','${pms.contextPath}/project/projectSummaryList?currPage='+currPage+'&type=10'+param+'&company='+company+'&dmId='+dmId)
+	} else if (type == '11') { // 项目到款总额
+		var startTime = $("#layDateStartForQuery").val();
+		if(startTime != ""){
+			startTime += " 08:00:00"
+		}
+		var endTime = $("#layDateEndForQuery").val();
+		if(endTime != ""){
+			endTime += " 08:00:00"
+		}
+		var param = encodeURI('&startDate='+startTime+'&endDate='+endTime);
+		reloadContent('projectSummaryLoad','${pms.contextPath}/project/projectSummaryList?currPage='+currPage+'&type=11'+param+'&company='+company+'&dmId='+dmId)
+	} else if (type == '12') { // 预计后期到款金额
+		var startTime = $("#layDateStartForQuery").val();
+		if(startTime != ""){
+			startTime += " 08:00:00"
+		}
+		var endTime = $("#layDateEndForQuery").val();
+		if(endTime != ""){
+			endTime += " 08:00:00"
+		}
+		var param = encodeURI('&startDate='+startTime+'&endDate='+endTime);
+		reloadContent('projectSummaryLoad','${pms.contextPath}/project/projectSummaryList?currPage='+currPage+'&type=12'+param+'&company='+company+'&dmId='+dmId)
+	} else if (type == '13') { // 应收账款
+		var param = encodeURI('&minAmount='+$("#minAmount").val()+'&maxAmount='+$("#maxAmount").val());
+		reloadContent('projectSummaryLoad','${pms.contextPath}/project/projectSummaryList?currPage='+currPage+'&type=13'+param+'&company='+company+'&dmId='+dmId)
+	} else if (type == '14') { // 已转收入
+		var startTime = $("#layDateStartForQuery").val();
+		if(startTime != ""){
+			startTime += " 08:00:00"
+		}
+		var endTime = $("#layDateEndForQuery").val();
+		if(endTime != ""){
+			endTime += " 08:00:00"
+		}
+		var param = encodeURI('&startDate='+startTime+'&endDate='+endTime);
+		reloadContent('projectSummaryLoad','${pms.contextPath}/project/projectSummaryList?currPage='+currPage+'&type=14'+param+'&company='+company+'&dmId='+dmId)
+	} else if (type == '15') { // 前期应付经费总额
+		var param = encodeURI('&minAmount='+$("#minAmount").val()+'&maxAmount='+$("#maxAmount").val());
+		reloadContent('projectSummaryLoad','${pms.contextPath}/project/projectSummaryList?currPage='+currPage+'&type=15'+param+'&company='+company+'&dmId='+dmId)
+	} else if (type == '16') { // 后期应付经费总额
+		var param = encodeURI('&minAmount='+$("#minAmount").val()+'&maxAmount='+$("#maxAmount").val());
+		reloadContent('projectSummaryLoad','${pms.contextPath}/project/projectSummaryList?currPage='+currPage+'&type=16'+param+'&company='+company+'&dmId='+dmId)
+	} else if (type == '17') { // 已支付经费金额
+		var startTime = $("#layDateStartForQuery").val();
+		if(startTime != ""){
+			startTime += " 08:00:00"
+		}
+		var endTime = $("#layDateEndForQuery").val();
+		if(endTime != ""){
+			endTime += " 08:00:00"
+		}
+		var param = encodeURI('&startDate='+startTime+'&endDate='+endTime);
+		reloadContent('projectSummaryLoad','${pms.contextPath}/project/projectSummaryList?currPage='+currPage+'&type=17'+param+'&company='+company+'&dmId='+dmId)
+	} else if (type == '18') { // 未付经费金额
+		var param = encodeURI('&minAmount='+$("#minAmount").val()+'&maxAmount='+$("#maxAmount").val());
+		reloadContent('projectSummaryLoad','${pms.contextPath}/project/projectSummaryList?currPage='+currPage+'&type=18'+param+'&company='+company+'&dmId='+dmId)
+	}else if (type == '19') { // 培训形式
+		var param = encodeURI('&trainType='+$("#trainType").val());
+		reloadContent('projectSummaryLoad','${pms.contextPath}/project/projectSummaryList?currPage='+currPage+'&type=19'+param+'&company='+company+'&dmId='+dmId)
+	}else if (type == '20') { // 项目运营状态
+		var param = encodeURI('&status='+$("#projectStatus").val());
+		reloadContent('projectSummaryLoad','${pms.contextPath}/project/projectSummaryList?currPage='+currPage+'&type=20'+param+'&company='+company+'&dmId='+dmId)
+	}
+}
+
+
+//根据筛选条件查询汇总表
+function reloadContentByCondition(currPage){
+	var company = $("#company").val();
+	if(!company)company="all";
+	var dmId = $("#dmId").val();
+	var proType = $("#proType").val();
+	var years = $("#years").val();
+	var projectNo = $("#projectNo").val();
+	var trainType = $("#trainType").val();
+	var protocolName = $("#protocolName").val();
+	var projectName = $("#projectName").val();
+	var province = $("#province").val();
+	var projectStatus = $("#projectStatus").val();
+	var estimatedAmountLater_min = $("#estimatedAmountLater_min").val();
+	var estimatedAmountLater_max = $("#estimatedAmountLater_max").val();
+	var layDateStartForQuery = $("#layDateStartForQuery").val(); 
+	var layDateEndForQuery = $("#layDateEndForQuery").val();
+	var estimatedAmount_min = $("#estimatedAmount_min").val();
+	var estimatedAmount_max = $("#estimatedAmount_max").val();
+	var projectDueAmount_min = $("#projectDueAmount_min").val();
+	var projectDueAmount_max = $("#projectDueAmount_max").val();
+	var receivableAccounts_min = $("#receivableAccounts_min").val();
+	var receivableAccounts_max = $("#receivableAccounts_max").val();
+	var transferredIncome_min = $("#transferredIncome_min").val();
+	var transferredIncome_max = $("#transferredIncome_max").val();
+	var payableFundsPeriod_min = $("#payableFundsPeriod_min").val();
+	var payableFundsPeriod_max = $("#payableFundsPeriod_max").val();
+	var payableFundsLater_min = $("#payableFundsLater_min").val();
+	var payableFundsLater_max = $("#payableFundsLater_max").val();
+	var completePayableFunds_min = $("#completePayableFunds_min").val();
+	var completePayableFunds_max = $("#completePayableFunds_max").val();
+	var uncompletePayableFunds_min = $("#uncompletePayableFunds_min").val();
+	var uncompletePayableFunds_max = $("#uncompletePayableFunds_max").val();
+	var param = encodeURI('&proType='+proType+'&years='+years+'&proNo='+projectNo+'&proName='+projectName+
+						  '&trainType='+trainType+'&province='+province+'&protoName='+protocolName+
+						  '&projectStatus='+projectStatus+'&estimatedAmountLater_min='+estimatedAmountLater_min+'&estimatedAmountLater_max='+estimatedAmountLater_max+
+						  '&layDateStartForQuery='+layDateStartForQuery+'&layDateEndForQuery='+layDateEndForQuery+'&estimatedAmount_min='+estimatedAmount_min+
+						  '&estimatedAmount_max='+estimatedAmount_max+'&projectDueAmount_min='+projectDueAmount_min+'&projectDueAmount_max='+projectDueAmount_max+
+						  '&receivableAccounts_min='+receivableAccounts_min+'&receivableAccounts_max='+receivableAccounts_max+'&transferredIncome_min='+transferredIncome_min+
+						  '&transferredIncome_max='+transferredIncome_max+'&payableFundsPeriod_min='+payableFundsPeriod_min+'&payableFundsPeriod_max='+payableFundsPeriod_max+
+						  '&payableFundsLater_min='+payableFundsLater_min+'&payableFundsLater_max='+payableFundsLater_max+'&completePayableFunds_min='+completePayableFunds_min+'&completePayableFunds_max='+completePayableFunds_max+
+						  '&uncompletePayableFunds_min='+uncompletePayableFunds_min+'&uncompletePayableFunds_max='+uncompletePayableFunds_max);
+	reloadContent('projectSummaryLoad','${pms.contextPath}/project/projectSummaryList?currPage='+currPage+'&type=20'+param+'&company='+company+'&dmId='+dmId)
+}
+
+function reloadContent(contentId,url){
+    $.ajaxSetup ({
+    	cache:false
+    });
+	layui.use('layer', function(){
+  		layer = layui.layer; 
+		layer.load(0, {shade: false})
+	});
+	$("#"+contentId).html('');
+	$("#"+contentId).load(url,function(){
+		layer.closeAll('loading');
+	});
+}
+</script>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tools>
+<toolbox scope="application">
+	<tool key = "date" format = "yyyy-MM-dd HH:mm:ss" class="org.apache.velocity.tools.generic.DateTool" />
+    <tool key = "math" class="org.apache.velocity.tools.generic.MathTool"/>
+    <tool key = "stringUtils" class="org.apache.velocity.util.StringUtils" />
+    <tool key = "myUtil" class="cn.teacheredu.utils.CommonUtils" />
+</toolbox>
+<toolbox scope="request">
+    <tool key = "params" class= "org.apache.velocity.tools.view.ParameterTool"/>
+    <tool key = "link" class="org.apache.velocity.tools.view.LinkTool" />
+</toolbox>
+</tools>
+
